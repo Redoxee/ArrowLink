@@ -10,4 +10,6 @@ public abstract class BaseUITween : MonoBehaviour {
 	public abstract void StartTween(Action onTweenEnd = null);
 
 	public abstract bool isAnimating();
+
+	public abstract UITweenParameters[] GetParameters ();
 }

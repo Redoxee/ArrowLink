@@ -30,6 +30,24 @@ namespace ArrowLink
 		SingleUITween m_goToSlot = null;
 		public SingleUITween GoToSlotTween { get { return m_goToSlot; } }
 
+		[SerializeField]
+		BaseUITween m_fadeInTween = null;
+		public BaseUITween FadeInTween { get { return m_fadeInTween; } }
+
+		[SerializeField]
+		BaseUITween m_toPlayableTween = null;
+		public BaseUITween ToPlayableTween { get { return m_toPlayableTween; } }
+
+
+		CanvasGroup m_cGroupe = null;
+		public void Hide()
+		{
+			if (m_cGroupe == null) {
+				m_cGroupe = GetComponent<CanvasGroup>();
+			}
+			m_cGroupe.alpha = 0f;
+		}
+
 		private void Awake()
 		{
 			RandomizeArrow();

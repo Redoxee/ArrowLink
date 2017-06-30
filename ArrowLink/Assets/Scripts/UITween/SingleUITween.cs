@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SingleUITween : BaseUITween {
 
@@ -43,6 +44,15 @@ public class SingleUITween : BaseUITween {
 			m_parameters.PositionDelta = m_parameters.PositionEnd - m_parameters.PositionStart;
 		if (m_parameters.isScale)
 			m_parameters.ScaleDelta = m_parameters.ScaleEnd - m_parameters.ScaleStart;
+		if (m_parameters.isAlpha) {
+			m_parameters.AlphaDelta = m_parameters.AlphaEnd - m_parameters.AlphaStart;
+			if (m_parameters.isCanvasGroup)
+				m_parameters.CanvasGroup = transform.GetComponent<CanvasGroup> ();
+			else {
+				m_parameters.Image = transform.GetComponent<Image> ();
+				m_parameters.ImageColor = m_parameters.Image.color;
+			}
+		}
 	}
 
 	public void UpdateTween()
@@ -68,6 +78,17 @@ public class SingleUITween : BaseUITween {
 			m_rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, scale.y);
 		}
 
+		if (m_parameters.isAlpha) {
+			var alpha = m_parameters.AlphaStart + m_parameters.AlphaCurve.Evaluate (progression) * m_parameters.AlphaDelta;
+			if (m_parameters.isCanvasGroup) {
+				m_parameters.CanvasGroup.alpha = alpha;
+			} else {
+			
+				m_parameters.ImageColor.a = alpha;
+				m_parameters.Image.color = m_parameters.ImageColor;
+			}
+		}
+
 		if (m_timer > m_parameters.Duration)
 		{
 			if(m_endTweenAction != null)
@@ -75,6 +96,11 @@ public class SingleUITween : BaseUITween {
 			enabled = false;
 			return;
 		}
+	}
+
+	public override UITweenParameters[] GetParameters ()
+	{
+		return new UITweenParameters[]{ m_parameters };
 	}
 }
 
@@ -98,4 +124,21 @@ public class UITweenParameters
 	[NonSerialized]
 	public Vector2 ScaleDelta;
 	public AnimationCurve ScaleCurve;
+
+
+	[Header("Alpha")]
+	public bool isAlpha;
+	public bool isCanvasGroup;
+	public float AlphaStart;
+	public float AlphaEnd;
+	[NonSerialized]
+	public float AlphaDelta;
+	public AnimationCurve AlphaCurve;
+
+	[NonSerialized]
+	public CanvasGroup CanvasGroup;
+	[NonSerialized]
+	public Image Image;
+	[NonSerialized]
+	public Color ImageColor;
 }

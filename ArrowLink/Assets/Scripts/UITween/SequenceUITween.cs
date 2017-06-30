@@ -5,7 +5,7 @@ using UnityEngine;
 public class SequenceUITween : BaseUITween {
 
 	[SerializeField]
-	UITweenList m_tweenList = new UITweenList();
+	TweenSequenceEntry[] m_tweenList = null;
 
 	int currentIndex = -1;
 
@@ -18,13 +18,14 @@ public class SequenceUITween : BaseUITween {
 
 	public override void StartTween(Action onTweenEnd)
 	{
+		m_endAction = onTweenEnd;
 		FireTween();
 	}
 
 	void FireTween()
 	{
 		currentIndex++;
-		if (currentIndex >= m_tweenList.Count)
+		if (currentIndex >= m_tweenList.Length)
 		{
 			currentIndex = -1;
 			if (m_endAction != null)
@@ -32,11 +33,12 @@ public class SequenceUITween : BaseUITween {
 
 			return;
 		}
-		bool isLastTween = currentIndex == m_tweenList.Count - 1;
+		bool isLastTween = currentIndex == m_tweenList.Length - 1;
 		bool isBlocing = m_tweenList[currentIndex].IsBlocking;
 		Action endStep = null;
 		if (isBlocing || isLastTween)
 			endStep = FireTween;
+		
 		m_tweenList[currentIndex].TweenToPlay.StartTween(endStep);
 		if (!isBlocing)
 			FireTween();
@@ -53,4 +55,20 @@ public class SequenceUITween : BaseUITween {
 		public SingleUITween TweenToPlay = null;
 	}
 
+
+	public override UITweenParameters[] GetParameters ()
+	{
+		UITweenParameters[] parameters = new UITweenParameters[0];
+		int currentLength = 0;
+		foreach(TweenSequenceEntry entry in m_tweenList)
+		{
+			
+			UITweenParameters[] array2 = entry.TweenToPlay.GetParameters();
+
+			Array.Resize<UITweenParameters>(ref parameters, currentLength + array2.Length);
+			Array.Copy(array2, 0, parameters, currentLength, array2.Length);
+			currentLength = parameters.Length;
+		}
+		return parameters;
+	}
 }
