@@ -15,7 +15,7 @@ public class BoardLogic{
 		{
 			m_board = new List<List<LogicTile>> (c_col);
 			for (int i = 0; i < c_col; ++i) {
-				m_board 
+				m_board [i] = new List<LogicTile> ();
 			}
 		}
 
