@@ -9,10 +9,11 @@ namespace ArrowLink
 		const int c_nbSlot = 16;
 		const int c_nbColumn = 4;
 
+
 		List<CardSlot> m_slots;
 
-		Action<CardSlot, int> m_onTilePressed = null;
-		public Action<CardSlot, int> OnTilePressed { set { m_onTilePressed = value; } }
+		Action<CardSlot, int, int> m_onTilePressed = null;
+		public Action<CardSlot, int, int> OnTilePressed { set { m_onTilePressed = value; } }
 
 		private void Awake()
 		{
@@ -31,7 +32,9 @@ namespace ArrowLink
 
 		void OnSlotPressed(CardSlot slot, int id)
 		{
-			m_onTilePressed(slot, id);
+			int y = id / c_nbColumn;
+			int x = id % c_nbColumn;
+			m_onTilePressed(slot, x, y);
 		}
 	}
 }

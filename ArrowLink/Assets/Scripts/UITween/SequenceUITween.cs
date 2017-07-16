@@ -36,7 +36,7 @@ public class SequenceUITween : BaseUITween {
 		bool isLastTween = currentIndex == m_tweenList.Length - 1;
 		bool isBlocing = m_tweenList[currentIndex].IsBlocking;
 		Action endStep = null;
-		if (isBlocing || isLastTween)
+		if (isBlocing || isLastTween)//TODO : theres a bug lying somewhere here (if !IsBlocking && isLast Tween => end is called two time)
 			endStep = FireTween;
 		
 		m_tweenList[currentIndex].TweenToPlay.StartTween(endStep);
@@ -70,5 +70,23 @@ public class SequenceUITween : BaseUITween {
 			currentLength = parameters.Length;
 		}
 		return parameters;
+	}
+
+	public override void Stop(bool fireEvents)
+	{
+		if (!isAnimating())
+			return;
+		m_tweenList[currentIndex].TweenToPlay.Stop(false);
+		currentIndex = -1;
+		if (m_endAction != null)
+			m_endAction();
+	}
+
+	public override void SkipToEnd()
+	{
+		foreach (var t in m_tweenList)
+		{
+			t.TweenToPlay.SkipToEnd();
+		}
 	}
 }

@@ -7,6 +7,8 @@ namespace ArrowLink
 	public class GameProcess : MonoBehaviour
 	{
 
+		BoardLogic m_boardLogic;
+
 		[SerializeField]
 		GameObject m_cardPrefab = null;
 
@@ -28,6 +30,7 @@ namespace ArrowLink
 
 		private void Start()
 		{
+			m_boardLogic = new BoardLogic();
 			m_board.OnTilePressed = OnTilePressed;
 			DrawNextCard();
 		}
@@ -80,10 +83,16 @@ namespace ArrowLink
 
 		}
 
-		void OnTilePressed(CardSlot slot, int slotId)
+		void OnTilePressed(CardSlot slot, int x, int y)
 		{
-			if (m_waitingForAnimation < 0)
+			if (m_boardLogic.IsFilled(x, y))
 				return;
+			m_boardLogic.AddTile(x, y, m_currentCard.MultiFlags);
+
+			m_currentCard.FadeInTween.Stop(false);
+			m_currentCard.FadeInTween.SkipToEnd();
+			m_currentCard.ToPlayableTween.Stop(false);
+			m_currentCard.ToPlayableTween.SkipToEnd();
 
 			var tween = m_currentCard.GoToSlotTween;
 			tween.Parameters.PositionStart = m_playingCardTransform.position;

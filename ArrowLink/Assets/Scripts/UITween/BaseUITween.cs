@@ -11,5 +11,9 @@ public abstract class BaseUITween : MonoBehaviour {
 
 	public abstract bool isAnimating();
 
+	public abstract void SkipToEnd();
+
+	public abstract void Stop(bool fireEvents);
+
 	public abstract UITweenParameters[] GetParameters ();
 }
