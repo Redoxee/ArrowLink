@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,32 +6,40 @@ namespace ArrowLink
 {
 	public class GameProcess : MonoBehaviour
 	{
-
 		BoardLogic m_boardLogic;
 
 		[SerializeField]
 		GameObject m_cardPrefab = null;
+		
+		[SerializeField]
+		BoardInput m_board = null;
 
 		[SerializeField]
-		GameObject m_playingCanvas = null;
-
-		[SerializeField]
-		Board m_board = null;
+		GameCamera m_gameCamera = null;
 
 		[SerializeField]
 		Transform m_playingCardTransform = null;
 		[SerializeField]
 		Transform m_nextPlayingCardTransform = null;
 
-		ArrowCards m_currentCard = null;
-		ArrowCards m_nextCard = null;
-
-		int m_waitingForAnimation = 0;
+		ArrowCard m_currentCard = null;
+		ArrowCard m_nextCard = null;
 
 		private void Start()
 		{
 			m_boardLogic = new BoardLogic();
-			m_board.OnTilePressed = OnTilePressed;
+
+			m_gameCamera.Initialize();
+			m_board.Initialize(this);
+
+			var pos = m_playingCardTransform.position;
+			pos.z = ArrowCard.c_secondLevel; ;
+			m_playingCardTransform.position = pos;
+
+			pos = m_nextPlayingCardTransform.position;
+			pos.z = ArrowCard.c_firstLevel;
+			m_nextPlayingCardTransform.position = pos;
+
 			DrawNextCard();
 		}
 
@@ -39,68 +47,72 @@ namespace ArrowLink
 		{
 
 			GameObject nextCardObject = Instantiate(m_cardPrefab);
-			nextCardObject.transform.SetParent (m_playingCanvas.transform,false);
 			GameObject currentCardObject;
+			
+			BaseTween currentCardTween = null;
 
 			if (m_nextCard == null) {
 				currentCardObject = Instantiate (m_cardPrefab);
-				currentCardObject.transform.SetParent (m_playingCanvas.transform,false);
-				m_currentCard = currentCardObject.GetComponent<ArrowCards> ();
+				m_currentCard = currentCardObject.GetComponent<ArrowCard> ();
+				m_currentCard.transform.position = m_playingCardTransform.position;
+				m_currentCard.PrepareIntroductionTween();
+				currentCardTween = m_currentCard.m_tweens.Introduction;
+
+				var unveil = m_currentCard.m_tweens.ActivationUnveil;
+				unveil.StartTween(null);
 
 			} else {
 				m_currentCard = m_nextCard;
 				currentCardObject = m_currentCard.gameObject;
+
+				currentCardTween = m_currentCard.m_tweens.Activation;
+				m_currentCard.PrepareActivationTween(m_playingCardTransform.position);
 			}
 
-			m_nextCard = nextCardObject.GetComponent<ArrowCards> ();
-			m_nextCard.Hide ();
+			m_nextCard = nextCardObject.GetComponent<ArrowCard> ();
+			m_nextCard.transform.position = m_nextPlayingCardTransform.position ;
 
-			var currentCardParameters = m_currentCard.ToPlayableTween.GetParameters()[0];
-			currentCardParameters.PositionStart = m_nextPlayingCardTransform.position;
-			currentCardParameters.PositionEnd = m_playingCardTransform.position;
-			m_waitingForAnimation -= 1;
-			m_currentCard.ToPlayableTween.StartTween (FadeInNextCard);
+			BaseTween nextCardTween = m_nextCard.m_tweens.Introduction;
+			m_nextCard.PrepareIntroductionTween();
 
 
-			nextCardObject.transform.position = m_nextPlayingCardTransform.position;
-
+			currentCardTween.StartTween(null);
+			nextCardTween.StartTween(null);
 		}
 
-		void FadeInNextCard()
-		{
-			
-			m_nextCard.FadeInTween.StartTween(_TweenEnded);
-		}
-
-		void _TweenEnded()
-		{
-			m_waitingForAnimation += 1;
-			if(m_waitingForAnimation > 0)
-			{
-				Debug.LogWarning ("You need a FSM mate, problems in tween callbacks");
-				m_waitingForAnimation = 0;
-			}
-
-		}
-
-		void OnTilePressed(CardSlot slot, int x, int y)
+		public void OnTilePressed(BoardSlot slot, int x, int y)
 		{
 			if (m_boardLogic.IsFilled(x, y))
 				return;
-			m_boardLogic.AddTile(x, y, m_currentCard.MultiFlags);
+			var logicTile = m_boardLogic.AddTile(x, y, m_currentCard.MultiFlags);
+			logicTile.m_physicCardRef = m_currentCard;
 
-			m_currentCard.FadeInTween.Stop(false);
-			m_currentCard.FadeInTween.SkipToEnd();
-			m_currentCard.ToPlayableTween.Stop(false);
-			m_currentCard.ToPlayableTween.SkipToEnd();
+			var position = slot.transform.position;
+			position.z = ArrowCard.c_thirdLevel;
+			
+			m_currentCard.PreparePlayTween(position);
 
-			var tween = m_currentCard.GoToSlotTween;
-			tween.Parameters.PositionStart = m_playingCardTransform.position;
-			tween.Parameters.PositionEnd = slot.transform.position;
-			m_waitingForAnimation -= 1;
-			tween.StartTween(_TweenEnded);
+			var cardRef = m_currentCard;
+			Action cardPlayedAction = ()=> { CardTweenToSlotEnd(logicTile); }; // garbage here
+
+			m_currentCard.m_tweens.Play.StartTween(cardPlayedAction);
 
 			DrawNextCard();
+		}
+
+		void CardTweenToSlotEnd(BoardLogic.LogicTile tile)
+		{
+
+			var card = tile.m_physicCardRef;
+
+			var pos = card.transform.position;
+			pos.z = ArrowCard.c_firstLevel;
+			card.transform.position = pos;
+
+			HashSet<BoardLogic.LogicTile> chain = new HashSet<BoardLogic.LogicTile>();
+			tile.GetLinkedChain(ref chain);
+			Debug.Log(chain.Count);
+
 		}
 
 	}

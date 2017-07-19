@@ -18,7 +18,7 @@ namespace ArrowLink
 		float m_timer = -1;
 
 		#region MonoBehaviour
-		private void Start()
+		private void Awake()
 		{
 			m_parameters.Initialize(this.gameObject);
 		}
@@ -49,7 +49,7 @@ namespace ArrowLink
 			return !(m_timer < 0);
 		}
 
-		public override void StartTween(Action endAction)
+		public override void StartTween(Action endAction = null)
 		{
 			m_endAction = endAction;
 			m_parameters.ComputeDeltas();

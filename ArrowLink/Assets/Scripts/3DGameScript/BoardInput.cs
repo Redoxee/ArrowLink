@@ -8,10 +8,19 @@ namespace ArrowLink
 		[SerializeField]
 		public BoardSlot[] m_slots;
 
-		//public void OnTilePressed(int tileIndex)
-		//{
-		//	Debug.LogFormat("Tile Pressed {0}", tileIndex);
-		//}
+		GameProcess m_gameProcess = null;
+
+		public void Initialize(GameProcess gp)
+		{
+			m_gameProcess = gp;
+		}
+
+		public void OnTilePressed(int tileIndex)
+		{
+			int x = tileIndex % BoardLogic.c_col;
+			int y = tileIndex / BoardLogic.c_col;
+			m_gameProcess.OnTilePressed(m_slots[tileIndex], x, y);
+		}
 
 		public void OnTileDown(int index)
 		{

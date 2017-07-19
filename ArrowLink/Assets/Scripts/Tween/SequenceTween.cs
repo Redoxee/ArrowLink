@@ -12,7 +12,7 @@ namespace ArrowLink
 		int m_currentIndex = -1;
 
 		[SerializeField]
-		TweenSequenceEntry[] m_tweenSequence;
+		TweenSequenceEntry[] m_tweenSequence = null;
 
 		Action m_endAction;
 
@@ -26,7 +26,6 @@ namespace ArrowLink
 			m_endAction = endAction;
 			m_currentIndex = -1;
 			FireNextTween();
-			throw new NotImplementedException();
 		}
 
 		void FireNextTween()
@@ -64,8 +63,7 @@ namespace ArrowLink
 				m_tweenSequence[i].Tween.SkipToEnd();
 			}
 		}
-
-
+		
 	}
 
 	[Serializable]

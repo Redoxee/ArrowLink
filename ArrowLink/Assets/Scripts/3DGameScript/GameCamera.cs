@@ -20,7 +20,7 @@ namespace ArrowLink
 		[SerializeField]
 		GameObject m_palyableTileAnchor = null;
 
-		private void Start()
+		public void Initialize()
 		{
 			Debug.Assert(m_boardRef != null);
 

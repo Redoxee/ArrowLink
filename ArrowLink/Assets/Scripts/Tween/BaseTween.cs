@@ -7,17 +7,18 @@ namespace ArrowLink
 {
 	public abstract class BaseTween: MonoBehaviour
 	{
-		public abstract void StartTween(Action endAction);
+		public abstract void StartTween(Action endAction = null);
 		public abstract bool IsTweening();
 		public abstract void StopTween();
 		public abstract void SkipToEnd();
+		
 	}
 
 	[Serializable]
 	public class TweenParameters
 	{
 		[SerializeField]
-		GameObject m_optionalTarget;
+		GameObject m_optionalTarget= null;
 		[NonSerialized]
 		public Transform Target;
 
