@@ -33,12 +33,16 @@ namespace ArrowLink{
 			LogicTile tile = new LogicTile(flags, x, y);
 			m_board[x, y] = tile;
 
+			return tile;
+		}
 
+		public void ComputeTileNeighbor(LogicTile tile)
+		{
 			for (int i = 0; i < tile.m_arrowCount; ++i)
 			{
 				ArrowFlag dir = tile.m_arrows[i];
 
-				int nx = x, ny = y;
+				int nx = tile.X, ny = tile.Y;
 				dir.GetDecal(ref nx, ref ny);
 				if (IsInside(nx, ny))
 				{
@@ -52,11 +56,8 @@ namespace ArrowLink{
 							neighbor.m_linkedTile[oposite] = tile;
 						}
 					}
-
 				}
 			}
-
-			return tile;
 		}
 
 		public void RemoveTile(int x, int y)

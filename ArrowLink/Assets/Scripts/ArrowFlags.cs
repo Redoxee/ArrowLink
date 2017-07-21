@@ -9,14 +9,14 @@ namespace ArrowLink
 	public enum ArrowFlag
 	{
 		NONE = 0,
-		N = 1,
-		NE = 2,
-		E = 4,
-		SE = 8,
-		S = 16,
-		SW = 32,
-		W = 64,
-		NW = 128,
+		N	= (1 << 0),
+		NE	= (1 << 1),
+		E	= (1 << 2),
+		SE	= (1 << 3),
+		S	= (1 << 4),
+		SW	= (1 << 5),
+		W	= (1 << 6),
+		NW	= (1 << 7),
 	}
 
 

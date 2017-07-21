@@ -132,6 +132,7 @@ namespace ArrowLink
 			card.transform.position = pos;
 
 			HashSet<LogicTile> chain = new HashSet<LogicTile>();
+			m_boardLogic.ComputeTileNeighbor(tile);
 			tile.GetLinkedChain(ref chain);
 
 			if (chain.Count > 3)
@@ -157,6 +158,7 @@ namespace ArrowLink
 						var card = tile.m_physicCardRef;
 						Destroy(card.gameObject);
 					}
+					m_currentCombo.Clear();
 				}
 			}
 		}
