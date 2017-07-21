@@ -6,6 +6,8 @@ namespace ArrowLink
 {
 	public class GameProcess : MonoBehaviour
 	{
+		const float c_comboDuration = 5f;
+
 		BoardLogic m_boardLogic;
 
 		[SerializeField]
@@ -22,9 +24,15 @@ namespace ArrowLink
 		[SerializeField]
 		Transform m_nextPlayingCardTransform = null;
 
+		[SerializeField]
+		ComboGauge m_comboGauge = null;
+
 		ArrowCard m_currentCard = null;
 		ArrowCard m_nextCard = null;
 
+		BoardSlot m_playedSlot;
+		float m_comboTimer = -1f;
+		HashSet<LogicTile> m_currentCombo = new HashSet<LogicTile>();
 		private void Start()
 		{
 			m_boardLogic = new BoardLogic();
@@ -41,6 +49,14 @@ namespace ArrowLink
 			m_nextPlayingCardTransform.position = pos;
 
 			DrawNextCard();
+
+			m_comboGauge.SetProgression(0);
+		}
+
+		private void Update()
+		{
+			ProcessPlayedSlot();
+			UpdateComboMeter();
 		}
 
 		void DrawNextCard()
@@ -80,27 +96,33 @@ namespace ArrowLink
 			nextCardTween.StartTween(null);
 		}
 
-		public void OnTilePressed(BoardSlot slot, int x, int y)
+		public void OnTilePressed(BoardSlot slot)
 		{
-			if (m_boardLogic.IsFilled(x, y))
-				return;
-			var logicTile = m_boardLogic.AddTile(x, y, m_currentCard.MultiFlags);
-			logicTile.m_physicCardRef = m_currentCard;
-
-			var position = slot.transform.position;
-			position.z = ArrowCard.c_thirdLevel;
-			
-			m_currentCard.PreparePlayTween(position);
-
-			var cardRef = m_currentCard;
-			Action cardPlayedAction = ()=> { CardTweenToSlotEnd(logicTile); }; // garbage here
-
-			m_currentCard.m_tweens.Play.StartTween(cardPlayedAction);
-
-			DrawNextCard();
+			m_playedSlot = slot;
 		}
 
-		void CardTweenToSlotEnd(BoardLogic.LogicTile tile)
+		void ProcessPlayedSlot()
+		{
+			if ((m_playedSlot != null) && !m_boardLogic.IsFilled(m_playedSlot.X, m_playedSlot.Y))
+			{
+				var logicTile = m_boardLogic.AddTile(m_playedSlot.X, m_playedSlot.Y, m_currentCard.MultiFlags);
+				logicTile.m_physicCardRef = m_currentCard;
+
+				var position = m_playedSlot.transform.position;
+				position.z = ArrowCard.c_thirdLevel;
+
+				m_currentCard.PreparePlayTween(position);
+				
+				Action cardPlayedAction = () => { CardTweenToSlotEnd(logicTile); }; // garbage here
+
+				m_currentCard.m_tweens.Play.StartTween(cardPlayedAction);
+
+				DrawNextCard();
+			}
+			m_playedSlot = null;
+		}
+
+		void CardTweenToSlotEnd(LogicTile tile)
 		{
 
 			var card = tile.m_physicCardRef;
@@ -109,11 +131,34 @@ namespace ArrowLink
 			pos.z = ArrowCard.c_firstLevel;
 			card.transform.position = pos;
 
-			HashSet<BoardLogic.LogicTile> chain = new HashSet<BoardLogic.LogicTile>();
+			HashSet<LogicTile> chain = new HashSet<LogicTile>();
 			tile.GetLinkedChain(ref chain);
-			Debug.Log(chain.Count);
 
+			if (chain.Count > 3)
+			{
+				m_comboTimer = c_comboDuration;
+				m_currentCombo.UnionWith(chain);
+			}
 		}
 
+		void UpdateComboMeter()
+		{
+			if (m_comboTimer > 0)
+			{
+				m_comboTimer -= Time.deltaTime;
+				float progression = Mathf.Clamp01(m_comboTimer / c_comboDuration);
+				m_comboGauge.SetProgression(progression);
+				if (m_comboTimer <= 0)
+				{
+					Debug.Log("Combo end !");
+					foreach (var tile in m_currentCombo)
+					{
+						m_boardLogic.RemoveTile(tile.X, tile.Y);
+						var card = tile.m_physicCardRef;
+						Destroy(card.gameObject);
+					}
+				}
+			}
+		}
 	}
 }

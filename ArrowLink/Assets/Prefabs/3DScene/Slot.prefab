@@ -96,7 +96,7 @@ Transform:
   m_GameObject: {fileID: 1065674328535258}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -5.25, y: 5.25, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.9, y: 0.9, z: 1}
   m_Children:
   - {fileID: 4414572915845226}
   - {fileID: 4259554929969732}
@@ -171,6 +171,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_focusTween: {fileID: 114953842111744066}
   m_unfocusTween: {fileID: 114443083486040572}
+  X: 0
+  Y: 0
 --- !u!114 &114953842111744066
 MonoBehaviour:
   m_ObjectHideFlags: 1

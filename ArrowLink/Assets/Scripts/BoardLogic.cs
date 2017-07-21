@@ -65,42 +65,42 @@ namespace ArrowLink{
 			m_board[x, y] = null;
 		}
 
-		public class LogicTile
+	}
+	public class LogicTile
+	{
+		public int X, Y;
+		public ArrowFlag m_flags;
+		public ArrowFlag[] m_arrows;
+		public int m_arrowCount;
+		public Dictionary<ArrowFlag, LogicTile> m_linkedTile = new Dictionary<ArrowFlag, LogicTile>(8);
+
+		public ArrowCard m_physicCardRef = null;
+
+		public LogicTile(ArrowFlag multiFlags, int x, int y)
 		{
-			int X, Y;
-			public ArrowFlag m_flags;
-			public ArrowFlag[] m_arrows;
-			public int m_arrowCount;
-			public Dictionary<ArrowFlag, LogicTile> m_linkedTile = new Dictionary<ArrowFlag, LogicTile>(8);
+			m_flags = multiFlags;
+			m_arrows = new ArrowFlag[8];
+			multiFlags.Split(ref m_arrows, ref m_arrowCount);
+			X = x; Y = y;
+		}
 
-			public ArrowCard m_physicCardRef = null;
-
-			public LogicTile(ArrowFlag multiFlags,int x, int y)
+		public HashSet<LogicTile> GetLinkedChain(ref HashSet<LogicTile> chain)
+		{
+			chain.Add(this);
+			for (int i = 0; i < m_arrowCount; ++i)
 			{
-				m_flags = multiFlags;
-				m_arrows = new ArrowFlag[8];
-				multiFlags.Split(ref m_arrows, ref m_arrowCount);
-				X = x; Y = y;
-			}
+				var arrow = m_arrows[i];
+				if (!m_linkedTile.ContainsKey(arrow))
+					continue;
 
-			public HashSet<LogicTile> GetLinkedChain(ref HashSet<LogicTile> chain)
-			{
-				chain.Add(this);
-				for (int i = 0; i < m_arrowCount; ++i)
+				var neighbor = m_linkedTile[arrow];
+				if (!chain.Contains(neighbor))
 				{
-					var arrow = m_arrows[i];
-					if (!m_linkedTile.ContainsKey(arrow))
-						continue;
-
-					var neighbor = m_linkedTile[arrow];
-					if (!chain.Contains(neighbor))
-					{
-						neighbor.GetLinkedChain(ref chain);
-					}
+					neighbor.GetLinkedChain(ref chain);
 				}
-
-				return chain;
 			}
+
+			return chain;
 		}
 	}
 }

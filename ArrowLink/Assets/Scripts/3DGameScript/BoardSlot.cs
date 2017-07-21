@@ -7,19 +7,17 @@ namespace ArrowLink
 	{
 		[SerializeField]
 		SingleTween m_focusTween = null;
-		TweenParameters m_focusParameters;
+		//TweenParameters m_focusParameters;
 		[SerializeField]
 		SingleTween m_unfocusTween = null;
-		TweenParameters m_unfocusParameters;
+		//TweenParameters m_unfocusParameters;
 
-		//[SerializeField]
-		//Material m_veilMaterial = null;
-
+		public int X, Y;
 
 		private void Awake()
 		{
-			m_focusParameters = m_focusTween.m_parameters;
-			m_unfocusParameters = m_unfocusTween.m_parameters;
+			//m_focusParameters = m_focusTween.m_parameters;
+			//m_unfocusParameters = m_unfocusTween.m_parameters;
 		}
 
 		public void OnFocus()

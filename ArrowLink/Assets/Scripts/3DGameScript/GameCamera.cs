@@ -9,9 +9,9 @@ namespace ArrowLink
 	{
 		const float TargetWidth = 15f / 2f;
 		const float HalfBoardSize = 12.5f / 2f;
-		const float BoardPadding = 1.25f;
+		const float BoardPadding = .25f;
 		const float PlayableHalfHeight = 2f;
-		const float PlayablePadding = .5f;
+		const float PlayablePadding = .25f;
 
 
 		[SerializeField]

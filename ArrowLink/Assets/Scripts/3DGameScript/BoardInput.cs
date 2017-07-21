@@ -13,13 +13,17 @@ namespace ArrowLink
 		public void Initialize(GameProcess gp)
 		{
 			m_gameProcess = gp;
+
+			for (int i = 0; i < m_slots.Length; ++i)
+			{
+				m_slots[i].X = i % BoardLogic.c_col;
+				m_slots[i].Y = i / BoardLogic.c_col;
+			}
 		}
 
 		public void OnTilePressed(int tileIndex)
 		{
-			int x = tileIndex % BoardLogic.c_col;
-			int y = tileIndex / BoardLogic.c_col;
-			m_gameProcess.OnTilePressed(m_slots[tileIndex], x, y);
+			m_gameProcess.OnTilePressed(m_slots[tileIndex]);
 		}
 
 		public void OnTileDown(int index)
