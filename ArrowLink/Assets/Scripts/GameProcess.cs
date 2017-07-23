@@ -7,17 +7,22 @@ namespace ArrowLink
 	public class GameProcess : MonoBehaviour
 	{
 		const float c_comboDuration = 5f;
-
+		const int c_comboMin = 4;
 		BoardLogic m_boardLogic;
 
 		[SerializeField]
 		GameObject m_cardPrefab = null;
+		[SerializeField]
+		GameObject m_linkPrefab = null;
 		
 		[SerializeField]
 		BoardInput m_board = null;
 
 		[SerializeField]
 		GameCamera m_gameCamera = null;
+
+		[SerializeField]
+		GUIManager m_guiManager = null;
 
 		[SerializeField]
 		Transform m_playingCardTransform = null;
@@ -33,6 +38,11 @@ namespace ArrowLink
 		BoardSlot m_playedSlot;
 		float m_comboTimer = -1f;
 		HashSet<LogicTile> m_currentCombo = new HashSet<LogicTile>();
+
+		List<TileLink> m_currentLinks = new List<TileLink>(64);
+
+		int m_currentScore = 0;
+
 		private void Start()
 		{
 			m_boardLogic = new BoardLogic();
@@ -51,6 +61,8 @@ namespace ArrowLink
 			DrawNextCard();
 
 			m_comboGauge.SetProgression(0);
+
+			m_currentScore = 0;
 		}
 
 		private void Update()
@@ -135,11 +147,40 @@ namespace ArrowLink
 			m_boardLogic.ComputeTileNeighbor(tile);
 			tile.GetLinkedChain(ref chain);
 
-			if (chain.Count > 3)
+			if (chain.Count >= c_comboMin)
 			{
 				m_comboTimer = c_comboDuration;
 				m_currentCombo.UnionWith(chain);
 			}
+
+			card.m_tileLinks = new List<TileLink>(tile.m_listLinkedTile.Count);
+			foreach (LogicTile neighbor in tile.m_listLinkedTile)
+			{
+				var p1 = tile.m_physicCardRef.transform.position;
+				var p2 = neighbor.m_physicCardRef.transform.position;
+				var link = CreateTileLink(p1, p2);
+				card.m_tileLinks.Add(link);
+			}
+		}
+
+
+		TileLink CreateTileLink(Vector3 p1, Vector3 p2)
+		{
+			var linkObject = Instantiate(m_linkPrefab);
+			var link = linkObject.GetComponent<TileLink>();
+
+			var linkRotation = Quaternion.FromToRotation(Vector3.up, (p2 - p1));
+			link.transform.rotation = linkRotation;
+			var linkPosition = (p1 + p2) / 2;
+			linkPosition.z -= 10;
+
+			link.transform.position = linkPosition;
+			if (p1.x != p2.x && p1.y != p2.y)
+			{
+				link.transform.localScale = link.c_diagonalScale;
+			}
+
+			return link;
 		}
 
 		void UpdateComboMeter()
@@ -152,15 +193,52 @@ namespace ArrowLink
 				if (m_comboTimer <= 0)
 				{
 					Debug.Log("Combo end !");
-					foreach (var tile in m_currentCombo)
-					{
-						m_boardLogic.RemoveTile(tile.X, tile.Y);
-						var card = tile.m_physicCardRef;
-						Destroy(card.gameObject);
-					}
-					m_currentCombo.Clear();
+					EndCombo();
 				}
 			}
+		}
+
+		void EndCombo()
+		{
+			int comboPoints = ComputeComboPoint();
+			m_currentScore += comboPoints;
+			m_guiManager.NotifyScoreChanged(m_currentScore, comboPoints);
+
+			foreach (var tile in m_currentCombo)
+			{
+				m_boardLogic.RemoveTile(tile.X, tile.Y);
+				var card = tile.m_physicCardRef;
+				foreach (var link in card.m_tileLinks)
+				{
+					Destroy(link.gameObject);
+				}
+
+				Destroy(card.gameObject);
+			}
+			m_currentCombo.Clear();
+		}
+
+		const int c_baseComboPoints = 10;
+		const int c_comboCurveStart = 5;
+		HashSet<LogicTile> m_tempSet = new HashSet<LogicTile>();
+
+		int ComputeComboPoint()
+		{
+			int points = 0;
+
+			int count = m_currentCombo.Count;
+
+			points += count * c_baseComboPoints;
+			count -= c_comboCurveStart;
+			while (count > 0)
+			{
+				points += c_baseComboPoints * count;
+				count--;
+			}
+
+
+
+			return points;
 		}
 	}
 }

@@ -30,6 +30,8 @@ namespace ArrowLink
 		ArrowFlag m_arrows = ArrowFlag.NONE;
 		public ArrowFlag MultiFlags { get { return m_arrows; } }
 
+		public List<TileLink> m_tileLinks = null;
+
 		public CardTweenAnimations m_tweens;
 
 		private void Awake()

@@ -54,6 +54,8 @@ namespace ArrowLink{
 						{
 							tile.m_linkedTile[dir] = neighbor;
 							neighbor.m_linkedTile[oposite] = tile;
+
+							tile.m_listLinkedTile.Add(neighbor);
 						}
 					}
 				}
@@ -74,6 +76,7 @@ namespace ArrowLink{
 		public ArrowFlag[] m_arrows;
 		public int m_arrowCount;
 		public Dictionary<ArrowFlag, LogicTile> m_linkedTile = new Dictionary<ArrowFlag, LogicTile>(8);
+		public List<LogicTile> m_listLinkedTile = new List<LogicTile>(8);
 
 		public ArrowCard m_physicCardRef = null;
 
@@ -85,7 +88,7 @@ namespace ArrowLink{
 			X = x; Y = y;
 		}
 
-		public HashSet<LogicTile> GetLinkedChain(ref HashSet<LogicTile> chain)
+		public void GetLinkedChain(ref HashSet<LogicTile> chain)
 		{
 			chain.Add(this);
 			for (int i = 0; i < m_arrowCount; ++i)
@@ -100,8 +103,7 @@ namespace ArrowLink{
 					neighbor.GetLinkedChain(ref chain);
 				}
 			}
-
-			return chain;
+			
 		}
 	}
 }
