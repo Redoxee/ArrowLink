@@ -6,6 +6,9 @@ namespace ArrowLink
 {
 	public class GameProcess : MonoBehaviour
 	{
+		private static GameProcess s_instance = null;
+		public static GameProcess Instance {  get { return s_instance; } }
+
 		const float c_comboDuration = 5f;
 		const int c_comboMin = 4;
 		BoardLogic m_boardLogic;
@@ -25,6 +28,11 @@ namespace ArrowLink
 		GUIManager m_guiManager = null;
 
 		[SerializeField]
+		FlagDistributor m_flagDistributor = null;
+
+		public FlagDistributor FlagDistributor { get { return m_flagDistributor; } }
+
+		[SerializeField]
 		Transform m_playingCardTransform = null;
 		[SerializeField]
 		Transform m_nextPlayingCardTransform = null;
@@ -42,6 +50,17 @@ namespace ArrowLink
 		List<TileLink> m_currentLinks = new List<TileLink>(64);
 
 		int m_currentScore = 0;
+
+		private void Awake()
+		{
+			if (s_instance != null)
+			{
+				Debug.LogError("Several instance of game process created !");
+				Destroy(this);
+				return;
+			}
+			s_instance = this;
+		}
 
 		private void Start()
 		{

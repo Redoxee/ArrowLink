@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ArrowLink
@@ -36,7 +37,8 @@ namespace ArrowLink
 
 		private void Awake()
 		{
-			RandomizeArrow();
+			FlagDistributor distribuor = GameProcess.Instance.FlagDistributor;
+			SetArrows(distribuor.PickRandomFlags());
 		}
 
 		public void SetArrows(ArrowFlag flags)
@@ -51,34 +53,12 @@ namespace ArrowLink
 			m_W.SetActive((flags & ArrowFlag.W) == ArrowFlag.W);
 			m_NW.SetActive((flags & ArrowFlag.NW) == ArrowFlag.NW);
 		}
-		const float c_chancesDecreaseFactor = .75f;
-		public void RandomizeArrow()
+		
+
+
+		public void GoToSlot(BoardSlot slot, Action onArriveToSlot)
 		{
 
-			List<ArrowFlag> available = new List<ArrowFlag> { ArrowFlag.N, ArrowFlag.NE, ArrowFlag.E, ArrowFlag.SE, ArrowFlag.S, ArrowFlag.SW, ArrowFlag.W, ArrowFlag.NW };
-
-			m_arrows = ArrowFlag.NONE;
-			int direction = Random.Range(0, available.Count);
-			m_arrows = m_arrows | available[direction];
-			available.RemoveAt(direction);
-
-			float chances = 1.0f;
-			for (int i = 0; i < 7; ++i)
-			{
-				chances *= c_chancesDecreaseFactor;
-				float pull = Random.Range(0f, 1f);
-				if (pull > chances)
-				{
-					break;
-				}
-
-				direction = Random.Range(0, available.Count);
-				m_arrows = m_arrows | available[direction];
-				available.RemoveAt(direction);
-			}
-
-			SetArrows(m_arrows);
-			//SetArrows(ArrowFlag.NE | ArrowFlag.NW | ArrowFlag.SW | ArrowFlag.SE);
 		}
 
 		public void PrepareIntroductionTween()
@@ -125,6 +105,18 @@ namespace ArrowLink
 			public SingleTween ActivationSlide;
 			public SingleTween ActivationUnveil;
 			public SingleTween PlaySlide;
+		}
+
+		public enum TileState
+		{
+			FadingIn,
+			WaitingForActivation,
+			Activating,
+			Activated,
+			SlidingToPosition,
+			Played,
+			ComboActivated,
+			Destroyed,
 		}
 	}
 
