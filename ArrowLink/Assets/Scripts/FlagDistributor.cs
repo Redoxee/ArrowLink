@@ -24,10 +24,12 @@ namespace ArrowLink
 		KeyValuePair<int, int>[] m_sortedWeight = new KeyValuePair<int, int>[8];
 		int m_totalWeight;
 
+		HashSet<ArrowFlag> m_usedFlags = new HashSet<ArrowFlag>();
+
 		private void Awake()
 		{
 			Initialize();
-			TestRules();
+			//TestRules();
 		}
 
 		private void Initialize()
@@ -39,9 +41,10 @@ namespace ArrowLink
 				m_totalWeight += m_sortedWeight[i].Value;
 			}
 
-
 			Array.Sort(m_sortedWeight,
 				(KeyValuePair<int, int> a, KeyValuePair<int, int> b) => { return a.Value.CompareTo(b.Value) * -1; });
+
+			m_usedFlags.Clear();
 		}
 
 		private int PickNbArrow()
@@ -57,24 +60,46 @@ namespace ArrowLink
 			return -1;
 		}
 
-		public ArrowFlag PickRandomFlags()
+		public ArrowFlag PickRandomFlags(bool checkUsedFlags = true)
 		{
 			ArrowFlag result = ArrowFlag.NONE;
 
-			int nbArrow = PickNbArrow();
-			for (int i = 0; i < nbArrow; ++i)
+			bool isUsed = false;
+
+			do
 			{
-				ArrowFlag flag;
-				do
+				int nbArrow = PickNbArrow();
+				for (int i = 0; i < nbArrow; ++i)
 				{
-					flag = ArrowFlagExtension.AllFlags[Mathf.RoundToInt(UnityEngine.Random.value * 7)];
-				} while (result.DoHave(flag));
-				result = result | flag;
-			}
+					ArrowFlag flag;
+					do
+					{
+						flag = ArrowFlagExtension.AllFlags[Mathf.RoundToInt(UnityEngine.Random.value * 7)];
+					} while (result.DoHave(flag));
+					result = result | flag;
+				}
+
+				if (checkUsedFlags) isUsed = m_usedFlags.Contains(result);
+			} while (isUsed);
 
 			return result;
 		}
 
+		public bool RegisterUsedFlag(ArrowFlag flag)
+		{
+			if (m_usedFlags.Contains(flag))
+				return false;
+			m_usedFlags.Add(flag);
+			return true;
+		}
+
+		public bool UnregisterUsedFlag(ArrowFlag flag)
+		{
+			if (!m_usedFlags.Contains(flag))
+				return false;
+			m_usedFlags.Remove(flag);
+			return false;
+		}
 
 		void TestRules()
 		{

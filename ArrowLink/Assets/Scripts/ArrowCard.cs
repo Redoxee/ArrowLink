@@ -10,6 +10,8 @@ namespace ArrowLink
 		public const int c_secondLevel = -20;
 		public const int c_thirdLevel = -30;
 
+		public TileState m_currentState = TileState.Activated;
+
 		[Header("Arrows")]
 		[SerializeField]
 		GameObject m_N = null;
@@ -33,12 +35,25 @@ namespace ArrowLink
 
 		public List<TileLink> m_tileLinks = null;
 
+		[SerializeField]
+		private ParticleSystem m_combo_Particles = null;
+		
+		public ParticleSystem ComboParticles { get { return m_combo_Particles; } }
+
+
 		public CardTweenAnimations m_tweens;
 
 		private void Awake()
 		{
 			FlagDistributor distribuor = GameProcess.Instance.FlagDistributor;
 			SetArrows(distribuor.PickRandomFlags());
+			distribuor.RegisterUsedFlag(m_arrows);
+		}
+
+		private void OnDestroy()
+		{
+			FlagDistributor distribuor = GameProcess.Instance.FlagDistributor;
+			distribuor.UnregisterUsedFlag(m_arrows);
 		}
 
 		public void SetArrows(ArrowFlag flags)
@@ -56,10 +71,6 @@ namespace ArrowLink
 		
 
 
-		public void GoToSlot(BoardSlot slot, Action onArriveToSlot)
-		{
-
-		}
 
 		public void PrepareIntroductionTween()
 		{
@@ -83,15 +94,30 @@ namespace ArrowLink
 			parameters.PositionEnd = target;
 		}
 
-		public void PreparePlayTween(Vector3 target)
+		private Action m_onGoToSlotEnd = null;
+
+		public void GoToSlot(BoardSlot slot, Action onArriveToSlot)
 		{
+			m_currentState = TileState.SlidingToPosition;
+			m_onGoToSlotEnd = onArriveToSlot;
+
+			Vector3 target = slot.transform.position;
+
 			var parameters = m_tweens.PlaySlide.m_parameters;
 			parameters.PositionStart = transform.position;
 			target.z = transform.position.z;
 			parameters.PositionEnd = target;
+
+			m_tweens.Play.StartTween(OnGoToSlotEnd);
 		}
 
-
+		private void OnGoToSlotEnd()
+		{
+			m_currentState = TileState.Played;
+			if (m_onGoToSlotEnd != null)
+				m_onGoToSlotEnd();
+		}
+		
 		[System.Serializable]
 		public struct CardTweenAnimations
 		{

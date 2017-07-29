@@ -138,15 +138,10 @@ namespace ArrowLink
 			{
 				var logicTile = m_boardLogic.AddTile(m_playedSlot.X, m_playedSlot.Y, m_currentCard.MultiFlags);
 				logicTile.m_physicCardRef = m_currentCard;
-
-				var position = m_playedSlot.transform.position;
-				position.z = ArrowCard.c_thirdLevel;
-
-				m_currentCard.PreparePlayTween(position);
 				
 				Action cardPlayedAction = () => { CardTweenToSlotEnd(logicTile); }; // garbage here
 
-				m_currentCard.m_tweens.Play.StartTween(cardPlayedAction);
+				m_currentCard.GoToSlot(m_playedSlot, cardPlayedAction);
 
 				DrawNextCard();
 			}
@@ -170,15 +165,23 @@ namespace ArrowLink
 			{
 				m_comboTimer = c_comboDuration;
 				m_currentCombo.UnionWith(chain);
+
+				foreach (var comboCard in m_currentCombo)
+				{
+					comboCard.m_physicCardRef.ComboParticles.Play(true);
+				}
 			}
 
 			card.m_tileLinks = new List<TileLink>(tile.m_listLinkedTile.Count);
 			foreach (LogicTile neighbor in tile.m_listLinkedTile)
 			{
-				var p1 = tile.m_physicCardRef.transform.position;
-				var p2 = neighbor.m_physicCardRef.transform.position;
-				var link = CreateTileLink(p1, p2);
-				card.m_tileLinks.Add(link);
+				if (neighbor.m_physicCardRef.m_currentState == ArrowCard.TileState.Played)
+				{
+					var p1 = tile.m_physicCardRef.transform.position;
+					var p2 = neighbor.m_physicCardRef.transform.position;
+					var link = CreateTileLink(p1, p2);
+					card.m_tileLinks.Add(link);
+				}
 			}
 		}
 
