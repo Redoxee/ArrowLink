@@ -173,14 +173,20 @@ namespace ArrowLink
 			}
 
 			card.m_tileLinks = new List<TileLink>(tile.m_listLinkedTile.Count);
-			foreach (LogicTile neighbor in tile.m_listLinkedTile)
+			var p1 = tile.m_physicCardRef.transform.position;
+			if (tile.m_listLinkedTile.Count > 0)
 			{
-				if (neighbor.m_physicCardRef.m_currentState == ArrowCard.TileState.Played)
+				tile.m_physicCardRef.LinkedParticles.Play();
+
+				foreach (LogicTile neighbor in tile.m_listLinkedTile)
 				{
-					var p1 = tile.m_physicCardRef.transform.position;
-					var p2 = neighbor.m_physicCardRef.transform.position;
-					var link = CreateTileLink(p1, p2);
-					card.m_tileLinks.Add(link);
+					if (neighbor.m_physicCardRef.m_currentState == ArrowCard.TileState.Played)
+					{
+						var p2 = neighbor.m_physicCardRef.transform.position;
+						var link = CreateTileLink(p1, p2);
+						card.m_tileLinks.Add(link);
+						neighbor.m_physicCardRef.LinkedParticles.Play();
+					}
 				}
 			}
 		}

@@ -37,8 +37,13 @@ namespace ArrowLink
 
 		[SerializeField]
 		private ParticleSystem m_combo_Particles = null;
-		
+
 		public ParticleSystem ComboParticles { get { return m_combo_Particles; } }
+
+		[SerializeField]
+		private ParticleSystem m_linkedparticles = null;
+
+		public ParticleSystem LinkedParticles { get { return m_linkedparticles; } }
 
 
 		public CardTweenAnimations m_tweens;
