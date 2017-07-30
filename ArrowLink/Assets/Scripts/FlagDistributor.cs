@@ -44,7 +44,43 @@ namespace ArrowLink
 			Array.Sort(m_sortedWeight,
 				(KeyValuePair<int, int> a, KeyValuePair<int, int> b) => { return a.Value.CompareTo(b.Value) * -1; });
 
+			ComputeFallTiles();
+
 			m_usedFlags.Clear();
+		}
+
+
+		private List<int>[] m_allFlagsBynumber = new List<int>[8];
+		private HashSet<int> m_allFlags = new HashSet<int>();
+		private void ComputeFallTiles()
+		{
+			m_allFlags.Clear();
+			for (int i = 0; i < 8; ++i)
+			{
+				m_allFlagsBynumber[i] = new List<int>();
+			}
+			int totalNbTiles = (1 << 8) - 1;
+			for (int i = 0; i < totalNbTiles; ++i)
+			{
+
+				int current = i + 1;
+				m_allFlags.Add(current);
+				int nbFlags = CountFlag(current);
+				m_allFlagsBynumber[nbFlags - 1].Add(current);
+			}
+		}
+
+		private int CountFlag(int bitField)
+		{
+			int nb = 0;
+
+			for (int i = 0; i < 8; ++i)
+			{
+				if ((bitField & 1 << i) != 0)
+					nb += 1;
+			}
+
+			return nb;
 		}
 
 		private int PickNbArrow()
@@ -60,45 +96,39 @@ namespace ArrowLink
 			return -1;
 		}
 
-		public ArrowFlag PickRandomFlags(bool checkUsedFlags = true)
+		public ArrowFlag PickRandomFlags()
 		{
-			ArrowFlag result = ArrowFlag.NONE;
+			if (m_allFlags.Count == 0)
+				throw new Exception("No more flag to dispense !");
 
-			bool isUsed = false;
-
-			do
-			{
-				int nbArrow = PickNbArrow();
-				for (int i = 0; i < nbArrow; ++i)
-				{
-					ArrowFlag flag;
-					do
-					{
-						flag = ArrowFlagExtension.AllFlags[Mathf.RoundToInt(UnityEngine.Random.value * 7)];
-					} while (result.DoHave(flag));
-					result = result | flag;
-				}
-
-				if (checkUsedFlags) isUsed = m_usedFlags.Contains(result);
-			} while (isUsed);
-
-			return result;
+			int nbArrow = PickNbArrow();
+			while(m_allFlagsBynumber[nbArrow - 1].Count == 0)
+				nbArrow = PickNbArrow();
+			var pool = m_allFlagsBynumber[nbArrow - 1];
+			int resultIndex = Mathf.RoundToInt(UnityEngine.Random.value * (pool.Count - 1));
+			return (ArrowFlag)pool[resultIndex];
 		}
 
 		public bool RegisterUsedFlag(ArrowFlag flag)
 		{
-			if (m_usedFlags.Contains(flag))
+			int iFlag = (int)flag;
+			if (!m_allFlags.Contains(iFlag))
 				return false;
-			m_usedFlags.Add(flag);
+			m_allFlags.Remove(iFlag);
+			int nbFlags = CountFlag(iFlag);
+			m_allFlagsBynumber[nbFlags - 1].Remove(iFlag);
 			return true;
 		}
 
 		public bool UnregisterUsedFlag(ArrowFlag flag)
 		{
-			if (!m_usedFlags.Contains(flag))
+			int iFlag = (int)flag;
+			if (m_allFlags.Contains(iFlag))
 				return false;
-			m_usedFlags.Remove(flag);
-			return false;
+			m_allFlags.Add(iFlag);
+			int nbArrow = CountFlag(iFlag);
+			m_allFlagsBynumber[nbArrow - 1].Add(iFlag);
+			return true;
 		}
 
 		void TestRules()
