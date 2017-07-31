@@ -21,4 +21,9 @@ public class GUIManager : MonoBehaviour {
 	{
 		m_scoreText.text = newScore.ToString();
 	}
+
+	public void OnIntroCloseButtonPressed()
+	{
+		Debug.Log("Intro close button pressed");
+	}
 }
