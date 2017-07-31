@@ -33,14 +33,13 @@ public class SequenceUITween : BaseUITween {
 
 			return;
 		}
-		bool isLastTween = currentIndex == m_tweenList.Length - 1;
-		bool isBlocing = m_tweenList[currentIndex].IsBlocking;
+		bool isBlocking = m_tweenList[currentIndex].IsBlocking;
 		Action endStep = null;
-		if (isBlocing || isLastTween)//TODO : theres a bug lying somewhere here (if !IsBlocking && isLast Tween => end is called two time)
+		if (isBlocking)
 			endStep = FireTween;
 		
 		m_tweenList[currentIndex].TweenToPlay.StartTween(endStep);
-		if (!isBlocing)
+		if (!isBlocking)
 			FireTween();
 	}
 
@@ -52,7 +51,7 @@ public class SequenceUITween : BaseUITween {
 	{
 		public bool IsBlocking = true;
 
-		public SingleUITween TweenToPlay = null;
+		public BaseUITween TweenToPlay = null;
 	}
 
 

@@ -47,8 +47,6 @@ namespace ArrowLink
 		float m_comboTimer = -1f;
 		HashSet<LogicTile> m_currentCombo = new HashSet<LogicTile>();
 
-		List<TileLink> m_currentLinks = new List<TileLink>(64);
-
 		int m_currentScore = 0;
 
 		private void Awake()
@@ -220,7 +218,6 @@ namespace ArrowLink
 				m_comboGauge.SetProgression(progression);
 				if (m_comboTimer <= 0)
 				{
-					Debug.Log("Combo end !");
 					EndCombo();
 				}
 			}
@@ -248,7 +245,6 @@ namespace ArrowLink
 
 		const int c_baseComboPoints = 10;
 		const int c_comboCurveStart = 5;
-		HashSet<LogicTile> m_tempSet = new HashSet<LogicTile>();
 
 		int ComputeComboPoint()
 		{

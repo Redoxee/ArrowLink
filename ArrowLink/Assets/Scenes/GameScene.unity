@@ -729,7 +729,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ead166457a73a44a96f35c7a8dd4a03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_popupUI: {fileID: 1559802164}
+  m_introUI: {fileID: 1635209049}
   m_scoreText: {fileID: 837238740}
+  m_gameplayGraphicRayCaster: {fileID: 424376847}
+  m_introFadeOutTween: {fileID: 1635209055}
 --- !u!114 &175105414
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1833,6 +1837,7 @@ GameObject:
   - component: {fileID: 697285537}
   - component: {fileID: 697285539}
   - component: {fileID: 697285538}
+  - component: {fileID: 697285540}
   m_Layer: 5
   m_Name: Version
   m_TagString: Untagged
@@ -1897,6 +1902,17 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 697285536}
+--- !u!114 &697285540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 697285536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99475f6e72496c14ba63b853485d2b3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &700709937
 Prefab:
   m_ObjectHideFlags: 0
@@ -3897,6 +3913,8 @@ GameObject:
   - component: {fileID: 1281887835}
   - component: {fileID: 1281887837}
   - component: {fileID: 1281887836}
+  - component: {fileID: 1281887839}
+  - component: {fileID: 1281887838}
   m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
@@ -3934,7 +3952,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.647}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.6}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -3955,6 +3973,114 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1281887834}
+--- !u!114 &1281887838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1281887834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08afcf35c8b784aba8dd30705fb3d571, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_name: FadeIn
+  m_parameters:
+    Duration: 1
+    isPosition: 0
+    PositionStart: {x: 0, y: 0, z: 0}
+    PositionEnd: {x: 0, y: 0, z: 0}
+    PositionCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    isScale: 0
+    ScaleStart: {x: 0, y: 0}
+    ScaleEnd: {x: 0, y: 0}
+    ScaleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    isAlpha: 1
+    isCanvasGroup: 0
+    AlphaStart: 0
+    AlphaEnd: 0.6
+    AlphaCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.39999998
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+--- !u!114 &1281887839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1281887834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08afcf35c8b784aba8dd30705fb3d571, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_name: FadeOut
+  m_parameters:
+    Duration: 1
+    isPosition: 0
+    PositionStart: {x: 0, y: 0, z: 0}
+    PositionEnd: {x: 0, y: 0, z: 0}
+    PositionCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    isScale: 0
+    ScaleStart: {x: 0, y: 0}
+    ScaleEnd: {x: 0, y: 0}
+    ScaleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    isAlpha: 1
+    isCanvasGroup: 0
+    AlphaStart: 0.6
+    AlphaEnd: 0
+    AlphaCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0.59999996
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
 --- !u!114 &1344599095 stripped
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 114617283164075296, guid: a7f477e4809188d40a1355cbdbba9fed,
@@ -4057,6 +4183,8 @@ GameObject:
   - component: {fileID: 1475106366}
   - component: {fileID: 1475106368}
   - component: {fileID: 1475106367}
+  - component: {fileID: 1475106369}
+  - component: {fileID: 1475106370}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -4077,10 +4205,10 @@ RectTransform:
   m_Father: {fileID: 1559802165}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -120, y: 900}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0.5, y: 0}
+  m_SizeDelta: {x: 630, y: 900}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1475106367
 MonoBehaviour:
@@ -4115,6 +4243,150 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1475106365}
+--- !u!114 &1475106369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1475106365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08afcf35c8b784aba8dd30705fb3d571, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_name: ShrinkDown
+  m_parameters:
+    Duration: 1
+    isPosition: 0
+    PositionStart: {x: 0, y: 0, z: 0}
+    PositionEnd: {x: 0, y: 0, z: 0}
+    PositionCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    isScale: 1
+    ScaleStart: {x: 630, y: 900}
+    ScaleEnd: {x: 40, y: 40}
+    ScaleCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.75
+        value: 0.9999982
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+    isAlpha: 1
+    isCanvasGroup: 0
+    AlphaStart: 1
+    AlphaEnd: 0
+    AlphaCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.7
+        value: -0.00046914816
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+--- !u!114 &1475106370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1475106365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08afcf35c8b784aba8dd30705fb3d571, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_name: ShrinkUp
+  m_parameters:
+    Duration: 1
+    isPosition: 0
+    PositionStart: {x: 0, y: 0, z: 0}
+    PositionEnd: {x: 0, y: 0, z: 0}
+    PositionCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    isScale: 0
+    ScaleStart: {x: 40, y: 40}
+    ScaleEnd: {x: 630, y: 900}
+    ScaleCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0.39999998
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+    isAlpha: 1
+    isCanvasGroup: 0
+    AlphaStart: 0
+    AlphaEnd: 1
+    AlphaCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.39999998
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
 --- !u!1001 &1499069922
 Prefab:
   m_ObjectHideFlags: 0
@@ -4812,6 +5084,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1559802165}
   - component: {fileID: 1559802166}
+  - component: {fileID: 1559802168}
+  - component: {fileID: 1559802167}
   m_Layer: 5
   m_Name: PopupUI
   m_TagString: Untagged
@@ -4859,6 +5133,40 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &1559802167
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1559802164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13cda8490a35b4788936329a2731ddfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_name: FadeIn
+  m_tweenList:
+  - IsBlocking: 0
+    TweenToPlay: {fileID: 1475106370}
+  - IsBlocking: 1
+    TweenToPlay: {fileID: 1281887838}
+--- !u!114 &1559802168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1559802164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13cda8490a35b4788936329a2731ddfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_name: FadeOut
+  m_tweenList:
+  - IsBlocking: 0
+    TweenToPlay: {fileID: 1475106369}
+  - IsBlocking: 1
+    TweenToPlay: {fileID: 1281887839}
 --- !u!114 &1608819725 stripped
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 114617283164075296, guid: a7f477e4809188d40a1355cbdbba9fed,
@@ -5104,6 +5412,8 @@ GameObject:
   - component: {fileID: 1635209051}
   - component: {fileID: 1635209052}
   - component: {fileID: 1635209053}
+  - component: {fileID: 1635209054}
+  - component: {fileID: 1635209055}
   m_Layer: 5
   m_Name: IntroUI
   m_TagString: Untagged
@@ -5189,6 +5499,77 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &1635209054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1635209049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08afcf35c8b784aba8dd30705fb3d571, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_name: FadeOut
+  m_parameters:
+    Duration: 0.5
+    isPosition: 0
+    PositionStart: {x: 0, y: 0, z: 0}
+    PositionEnd: {x: 0, y: 0, z: 0}
+    PositionCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    isScale: 0
+    ScaleStart: {x: 0, y: 0}
+    ScaleEnd: {x: 0, y: 0}
+    ScaleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    isAlpha: 1
+    isCanvasGroup: 1
+    AlphaStart: 1
+    AlphaEnd: 0
+    AlphaCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+--- !u!114 &1635209055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1635209049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13cda8490a35b4788936329a2731ddfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_name: IntroFadeOut
+  m_tweenList:
+  - IsBlocking: 1
+    TweenToPlay: {fileID: 1635209054}
+  - IsBlocking: 1
+    TweenToPlay: {fileID: 1559802168}
 --- !u!224 &1643405566 stripped
 RectTransform:
   m_PrefabParentObject: {fileID: 224043175850480952, guid: 1ada070b04a27f343804f02279416489,
