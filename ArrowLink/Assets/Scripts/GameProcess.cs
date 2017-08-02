@@ -47,7 +47,13 @@ namespace ArrowLink
 		float m_comboTimer = -1f;
 		HashSet<LogicTile> m_currentCombo = new HashSet<LogicTile>();
 
-		int m_currentScore = 0;
+		private int m_currentScore = 0;
+		public int CurrentScore { get { return m_currentScore; } }
+
+		private int m_currentTileScore = 0;
+		public int CurrentTileScore { get { return m_currentTileScore; } }
+
+		int m_nbCardOnTheWay = 0;
 
 		private void Awake()
 		{
@@ -80,6 +86,7 @@ namespace ArrowLink
 			m_comboGauge.SetProgression(0);
 
 			m_currentScore = 0;
+			m_nbCardOnTheWay = 0;
 		}
 
 		private void Update()
@@ -140,7 +147,7 @@ namespace ArrowLink
 				Action cardPlayedAction = () => { CardTweenToSlotEnd(logicTile); }; // garbage here
 
 				m_currentCard.GoToSlot(m_playedSlot, cardPlayedAction);
-
+				m_nbCardOnTheWay += 1;
 				DrawNextCard();
 			}
 			m_playedSlot = null;
@@ -148,6 +155,7 @@ namespace ArrowLink
 
 		void CardTweenToSlotEnd(LogicTile tile)
 		{
+			m_nbCardOnTheWay -= 1;
 
 			var card = tile.m_physicCardRef;
 
@@ -187,6 +195,8 @@ namespace ArrowLink
 					}
 				}
 			}
+
+			CheckEndGame();
 		}
 
 
@@ -227,6 +237,8 @@ namespace ArrowLink
 		{
 			int comboPoints = ComputeComboPoint();
 			m_currentScore += comboPoints;
+			m_currentTileScore += m_currentCombo.Count;
+
 			m_guiManager.NotifyScoreChanged(m_currentScore, comboPoints);
 
 			foreach (var tile in m_currentCombo)
@@ -263,6 +275,18 @@ namespace ArrowLink
 
 
 			return points;
+		}
+
+		private void CheckEndGame()
+		{
+			if(m_boardLogic.IsBoardFull())
+			{
+				if (!(m_comboTimer > 0))
+				{
+					if(m_nbCardOnTheWay == 0)
+						m_guiManager.NotifyEndGame();
+				}
+			}
 		}
 	}
 }

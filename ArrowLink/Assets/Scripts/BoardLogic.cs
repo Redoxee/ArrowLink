@@ -11,9 +11,12 @@ namespace ArrowLink{
 
 		LogicTile[,] m_board;
 
+		private int m_nbTilePlaced = 0;
+
 		public BoardLogic()
 		{
 			m_board = new LogicTile[c_row,c_col];
+			m_nbTilePlaced = 0;
 		}
 
 		public bool IsFilled(int x, int y)
@@ -33,6 +36,7 @@ namespace ArrowLink{
 			LogicTile tile = new LogicTile(flags, x, y);
 			m_board[x, y] = tile;
 
+			m_nbTilePlaced += 1;
 			return tile;
 		}
 
@@ -66,8 +70,14 @@ namespace ArrowLink{
 		{
 			Debug.Assert(m_board[x, y] != null, "trying to remove an empty slot");
 			m_board[x, y] = null;
+			m_nbTilePlaced -= 1;
 		}
 
+
+		public bool IsBoardFull()
+		{
+			return m_nbTilePlaced >= (c_col * c_row);
+		}
 	}
 	public class LogicTile
 	{

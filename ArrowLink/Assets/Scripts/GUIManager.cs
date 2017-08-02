@@ -9,8 +9,11 @@ namespace ArrowLink
 
 		[SerializeField]
 		GameObject m_popupUI = null;
+		public GameObject PopupUI { get { return  m_popupUI; } }
 		[SerializeField]
 		GameObject m_introUI = null;
+		[SerializeField]
+		EndScreen m_endScreen = null;
 
 		[SerializeField]
 		Text m_scoreText = null;
@@ -25,8 +28,15 @@ namespace ArrowLink
 		{
 			m_scoreText.text = "0";
 
+			m_endScreen.Initialize(this);
+
 			InitFMS();
 			SetState(m_introState);
+		}
+
+		public void NotifyEndGame()
+		{
+			SetState(m_endGameState);
 		}
 
 		public void OnPausePressed()
@@ -58,7 +68,8 @@ namespace ArrowLink
 		private void InitFMS()
 		{
 			m_introState = new GUIFSMState(IntroStart, IntroEnd);
-			m_inGameState = new GUIFSMState(InGameStart,null);
+			m_inGameState = new GUIFSMState(_InGameStart, _InGameEnd);
+			m_endGameState = new GUIFSMState(_StartEndGame, null);
 		}
 
 		private void SetState(GUIFSMState state)
@@ -101,9 +112,26 @@ namespace ArrowLink
 
 		#region State InGame
 
-		private void InGameStart()
+		private void _InGameStart()
 		{
 			m_gameplayGraphicRayCaster.enabled = true;
+		}
+
+		private void _InGameEnd()
+		{
+			m_gameplayGraphicRayCaster.enabled = false;
+		}
+
+		#endregion
+
+		#region State EndGame
+
+		GUIFSMState m_endGameState;
+
+		private void _StartEndGame()
+		{
+			GameProcess gp = GameProcess.Instance;
+			m_endScreen.DisplayEndScreen(gp.CurrentScore, gp.CurrentTileScore);
 		}
 
 		#endregion
