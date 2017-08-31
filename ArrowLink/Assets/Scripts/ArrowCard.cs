@@ -15,20 +15,28 @@ namespace ArrowLink
 		[Header("Arrows")]
 		[SerializeField]
 		GameObject m_N = null;
+		ParticleSystem m_particle_N = null;
 		[SerializeField]
 		GameObject m_NE = null;
+		ParticleSystem m_particle_NE = null;
 		[SerializeField]
 		GameObject m_E = null;
+		ParticleSystem m_particle_E = null;
 		[SerializeField]
 		GameObject m_SE = null;
+		ParticleSystem m_particle_SE = null;
 		[SerializeField]
 		GameObject m_S = null;
+		ParticleSystem m_particle_S = null;
 		[SerializeField]
 		GameObject m_SW = null;
+		ParticleSystem m_particle_SW = null;
 		[SerializeField]
 		GameObject m_W = null;
+		ParticleSystem m_particle_W = null;
 		[SerializeField]
 		GameObject m_NW = null;
+		ParticleSystem m_particle_NW = null;
 
 		ArrowFlag m_arrows = ArrowFlag.NONE;
 		public ArrowFlag MultiFlags { get { return m_arrows; } }
@@ -51,6 +59,24 @@ namespace ArrowLink
 		private void Awake()
 		{
 			FlagDistributor distribuor = GameProcess.Instance.FlagDistributor;
+
+			m_particle_N  = m_N .GetComponentInChildren<ParticleSystem>();
+			m_particle_NE = m_NE.GetComponentInChildren<ParticleSystem>();
+			m_particle_E  = m_E .GetComponentInChildren<ParticleSystem>();
+			m_particle_SE = m_SE.GetComponentInChildren<ParticleSystem>();
+			m_particle_S  = m_S .GetComponentInChildren<ParticleSystem>();
+			m_particle_SW = m_SW.GetComponentInChildren<ParticleSystem>();
+			m_particle_W  = m_W .GetComponentInChildren<ParticleSystem>();
+			m_particle_NW = m_NW.GetComponentInChildren<ParticleSystem>();
+			SetLinkParticles(ArrowFlag.N, false);
+			SetLinkParticles(ArrowFlag.NE, false);
+			SetLinkParticles(ArrowFlag.E, false);
+			SetLinkParticles(ArrowFlag.SE, false);
+			SetLinkParticles(ArrowFlag.S, false);
+			SetLinkParticles(ArrowFlag.SW, false);
+			SetLinkParticles(ArrowFlag.W, false);
+			SetLinkParticles(ArrowFlag.NW, false);
+
 			SetArrows(distribuor.PickRandomFlags());
 			distribuor.RegisterUsedFlag(m_arrows);
 		}
@@ -73,8 +99,37 @@ namespace ArrowLink
 			m_W.SetActive((flags & ArrowFlag.W) == ArrowFlag.W);
 			m_NW.SetActive((flags & ArrowFlag.NW) == ArrowFlag.NW);
 		}
-		
 
+		public void SetLinkParticles(ArrowFlag flag, bool enabled)
+		{
+			switch (flag)
+			{
+				case ArrowFlag.N:
+					m_particle_N.gameObject.SetActive(enabled);
+					break;
+				case ArrowFlag.NE:
+					m_particle_NE.gameObject.SetActive(enabled);
+					break;
+				case ArrowFlag.E:
+					m_particle_E.gameObject.SetActive(enabled);
+					break;
+				case ArrowFlag.SE:
+					m_particle_SE.gameObject.SetActive(enabled);
+					break;
+				case ArrowFlag.S:
+					m_particle_S.gameObject.SetActive(enabled);
+					break;
+				case ArrowFlag.SW:
+					m_particle_SW.gameObject.SetActive(enabled);
+					break;
+				case ArrowFlag.W:
+					m_particle_W.gameObject.SetActive(enabled);
+					break;
+				case ArrowFlag.NW:
+					m_particle_NW.gameObject.SetActive(enabled);
+					break;
+			}
+		}
 
 
 		public void PrepareIntroductionTween()
