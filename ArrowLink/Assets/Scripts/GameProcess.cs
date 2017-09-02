@@ -69,6 +69,7 @@ namespace ArrowLink
 		private void Start()
 		{
 			m_boardLogic = new BoardLogic();
+            InitializeStates();
 
 			m_gameCamera.Initialize();
 			m_board.Initialize(this);
@@ -91,7 +92,7 @@ namespace ArrowLink
 
 		private void Update()
 		{
-			ProcessPlayedSlot();
+			m_currentState.ProcessPlayedSlot();
 			UpdateComboMeter();
 		}
 
@@ -137,23 +138,38 @@ namespace ArrowLink
 			m_playedSlot = slot;
 		}
 
-		void ProcessPlayedSlot()
-		{
-			if ((m_playedSlot != null) && !m_boardLogic.IsFilled(m_playedSlot.X, m_playedSlot.Y))
-			{
-				var logicTile = m_boardLogic.AddTile(m_playedSlot.X, m_playedSlot.Y, m_currentCard.MultiFlags);
-				logicTile.m_physicCardRef = m_currentCard;
-				
-				Action cardPlayedAction = () => { CardTweenToSlotEnd(logicTile); }; // garbage here
+        private void DefaultProcessPlayedSlot()
+        {
+            if ((m_playedSlot != null) && !m_boardLogic.IsFilled(m_playedSlot.X, m_playedSlot.Y))
+            {
+                var logicTile = m_boardLogic.AddTile(m_playedSlot.X, m_playedSlot.Y, m_currentCard.MultiFlags);
+                logicTile.m_physicCardRef = m_currentCard;
 
-				m_currentCard.GoToSlot(m_playedSlot, cardPlayedAction);
-				m_nbCardOnTheWay += 1;
-				DrawNextCard();
-			}
-			m_playedSlot = null;
-		}
+                Action cardPlayedAction = () => { CardTweenToSlotEnd(logicTile); }; // garbage here
 
-		void CardTweenToSlotEnd(LogicTile tile)
+                m_currentCard.GoToSlot(m_playedSlot, cardPlayedAction);
+                m_nbCardOnTheWay += 1;
+                DrawNextCard();
+            }
+            m_playedSlot = null;
+        }
+
+        private void TileCrunchProcessSlot()
+        {
+            if (m_playedSlot == null)
+                return;
+            if (m_boardLogic.IsFilled(m_playedSlot.X, m_playedSlot.Y))
+            {
+                LogicTile tile = m_boardLogic.GetTile(m_playedSlot.X, m_playedSlot.Y);
+                m_boardLogic.RemoveTile(m_playedSlot.X, m_playedSlot.Y);
+                Destroy(tile.m_physicCardRef.gameObject);
+                m_currentState = DefaultState;
+            }
+            m_playedSlot = null;
+        }
+
+
+        void CardTweenToSlotEnd(LogicTile tile)
 		{
 			m_nbCardOnTheWay -= 1;
 
@@ -286,19 +302,58 @@ namespace ArrowLink
 			}
 		}
 
-		#region FSM
+        public void RequestTileCrunchToggle()
+        {
+            if (m_currentState == DefaultState)
+            {
+                m_currentState = TileCrunchState;
+            }
+            else if (m_currentState == TileCrunchState)
+            {
+                m_currentState = DefaultState;
+            }
+        }
 
-		struct GameFSM
+        #region FSM
+
+        private GameState m_currentState;
+
+        private GameState DefaultState;
+        private GameState TileCrunchState;
+
+        private struct GameState
 		{
-			public Action OnSlotPressed;
-			public GameFSM(Action onSlotPressed)
-			{
-				OnSlotPressed = onSlotPressed;
-			}
-		}
+			public Action ProcessPlayedSlot;
 
+            public override bool Equals(System.Object other)
+            {
+                if (!(typeof(GameState) == other.GetType()))
+                    return false;
+                return ProcessPlayedSlot == ((GameState)other).ProcessPlayedSlot;
+            }
+            public static bool operator ==(GameState a, GameState b)
+            {
+                return a.Equals(b);
+            }
+            public static bool operator !=(GameState a, GameState b)
+            {
+                return !a.Equals(b);
+            }
+            public override int GetHashCode()
+            {
+                return base.GetHashCode();
+            }
+        }
 
+        private void InitializeStates()
+        {
+            DefaultState = new GameState { ProcessPlayedSlot = DefaultProcessPlayedSlot };
+            TileCrunchState = new GameState { ProcessPlayedSlot = TileCrunchProcessSlot };
 
+            m_currentState = DefaultState;
+        }
+
+    }
 		#endregion
-	}
 }
+

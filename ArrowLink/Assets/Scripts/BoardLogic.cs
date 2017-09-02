@@ -78,6 +78,11 @@ namespace ArrowLink{
 		{
 			return m_nbTilePlaced >= (c_col * c_row);
 		}
+
+        public LogicTile GetTile(int x, int y)
+        {
+            return m_board[x, y];
+        }
 	}
 	public class LogicTile
 	{

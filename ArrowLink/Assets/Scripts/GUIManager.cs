@@ -24,8 +24,12 @@ namespace ArrowLink
 		[SerializeField]
 		SequenceUITween m_introFadeOutTween = null;
 
+        GameProcess m_gameProcess;
+
 		private void Start()
 		{
+            m_gameProcess = GameProcess.Instance;
+
 			m_scoreText.text = "0";
 
 			m_endScreen.Initialize(this);
@@ -59,6 +63,11 @@ namespace ArrowLink
 		{
 			SetState(m_inGameState);
 		}
+
+        public void OnCrunchButtonPressed()
+        {
+            m_gameProcess.RequestTileCrunchToggle();
+        }
 
 		GUIFSMState m_currentState;
 
