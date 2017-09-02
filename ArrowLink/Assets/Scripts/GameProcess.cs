@@ -191,17 +191,6 @@ namespace ArrowLink
 					entry.Value.m_physicCardRef.SetLinkParticles(dir.Reverse(), true);
 					entry.Value.m_physicCardRef.LinkedParticles.Play();
 				}
-
-				//foreach (LogicTile neighbor in tile.m_listLinkedTile)
-				//{
-				//	if (neighbor.m_physicCardRef.m_currentState == ArrowCard.TileState.Played)
-				//	{
-				//		var p2 = neighbor.m_physicCardRef.transform.position;
-				//		var link = CreateTileLink(p1, p2);
-				//		card.m_tileLinks.Add(link);
-				//		neighbor.m_physicCardRef.LinkedParticles.Play();
-				//	}
-				//}
 			}
 
 			CheckEndGame();
@@ -296,5 +285,20 @@ namespace ArrowLink
 				}
 			}
 		}
+
+		#region FSM
+
+		struct GameFSM
+		{
+			public Action OnSlotPressed;
+			public GameFSM(Action onSlotPressed)
+			{
+				OnSlotPressed = onSlotPressed;
+			}
+		}
+
+
+
+		#endregion
 	}
 }
