@@ -60,6 +60,7 @@ namespace ArrowLink{
 							neighbor.m_linkedTile[oposite] = tile;
 
 							tile.m_listLinkedTile.Add(neighbor);
+                            neighbor.m_listLinkedTile.Add(tile);
 						}
 					}
 				}
@@ -69,6 +70,13 @@ namespace ArrowLink{
 		public void RemoveTile(int x, int y)
 		{
 			Debug.Assert(m_board[x, y] != null, "trying to remove an empty slot");
+            var tile = m_board[x, y];
+            foreach (var entry in tile.m_linkedTile)
+            {
+                var direction = entry.Key.Reverse();
+                entry.Value.m_linkedTile.Remove(direction);
+                entry.Value.m_listLinkedTile.Remove(tile);
+            }
 			m_board[x, y] = null;
 			m_nbTilePlaced -= 1;
 		}

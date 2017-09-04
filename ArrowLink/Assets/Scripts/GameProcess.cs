@@ -161,6 +161,15 @@ namespace ArrowLink
             if (m_boardLogic.IsFilled(m_playedSlot.X, m_playedSlot.Y))
             {
                 LogicTile tile = m_boardLogic.GetTile(m_playedSlot.X, m_playedSlot.Y);
+                foreach (var entry in tile.m_linkedTile)
+                {
+                    var direction = entry.Key.Reverse();
+                    entry.Value.m_physicCardRef.SetLinkParticles(direction, false);
+                    if (entry.Value.m_listLinkedTile.Count == 1)
+                    {
+                        entry.Value.m_physicCardRef.LinkedParticles.Stop();
+                    }
+                }
                 m_boardLogic.RemoveTile(m_playedSlot.X, m_playedSlot.Y);
                 Destroy(tile.m_physicCardRef.gameObject);
                 m_currentState = DefaultState;
@@ -284,8 +293,6 @@ namespace ArrowLink
 				points += c_baseComboPoints * count;
 				count--;
 			}
-
-
 
 			return points;
 		}
