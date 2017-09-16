@@ -81,6 +81,10 @@ namespace ArrowLink{
 			m_nbTilePlaced -= 1;
 		}
 
+        public bool IsBoardEmpty()
+        {
+            return m_nbTilePlaced == 0;
+        }
 
 		public bool IsBoardFull()
 		{

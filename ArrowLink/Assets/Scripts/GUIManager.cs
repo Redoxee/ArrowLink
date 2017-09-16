@@ -24,6 +24,9 @@ namespace ArrowLink
 		[SerializeField]
 		SequenceUITween m_introFadeOutTween = null;
 
+        [SerializeField]
+        AnimatedProgressbar m_crunchProgressBar = null;
+
         GameProcess m_gameProcess;
 
 		private void Start()
@@ -31,11 +34,16 @@ namespace ArrowLink
             m_gameProcess = GameProcess.Instance;
 
 			m_scoreText.text = "0";
+            m_crunchProgressBar.SetDisplay(1);
+            m_crunchProgressBar.SetStarget(1);
 
 			m_endScreen.Initialize(this);
 
 			InitFMS();
-			SetState(m_introState);
+            if (m_introUI.activeSelf)
+                SetState(m_introState);
+            else
+                SetState(m_inGameState);
 		}
 
 		public void NotifyEndGame()
@@ -52,6 +60,11 @@ namespace ArrowLink
 		{
 			m_scoreText.text = newScore.ToString();
 		}
+
+        public void NotifyCrunchProgressChanged(float newProgress)
+        {
+            m_crunchProgressBar.SetStarget(newProgress);
+        }
 
 		public void OnIntroCloseButtonPressed()
 		{

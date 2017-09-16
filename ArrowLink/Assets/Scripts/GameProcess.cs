@@ -55,7 +55,11 @@ namespace ArrowLink
 
 		int m_nbCardOnTheWay = 0;
 
-		private void Awake()
+        private const int c_NbMatchToCrunch = 8;
+        private int m_matchBeforeCrunch = 0;
+
+
+        private void Awake()
 		{
 			if (s_instance != null)
 			{
@@ -88,6 +92,8 @@ namespace ArrowLink
 
 			m_currentScore = 0;
 			m_nbCardOnTheWay = 0;
+
+            m_matchBeforeCrunch = c_NbMatchToCrunch;
 		}
 
 		private void Update()
@@ -175,6 +181,8 @@ namespace ArrowLink
                 m_currentState = DefaultState;
             }
             m_playedSlot = null;
+            m_matchBeforeCrunch = c_NbMatchToCrunch;
+            m_guiManager.NotifyCrunchProgressChanged(1);
         }
 
 
@@ -275,6 +283,12 @@ namespace ArrowLink
 				Destroy(card.gameObject);
 			}
 			m_currentCombo.Clear();
+            if (m_matchBeforeCrunch > 0)
+            {
+                m_matchBeforeCrunch -= 1;
+
+                m_guiManager.NotifyCrunchProgressChanged((float)m_matchBeforeCrunch / (float)c_NbMatchToCrunch);
+            }
 		}
 
 		const int c_baseComboPoints = 10;
@@ -313,12 +327,26 @@ namespace ArrowLink
         {
             if (m_currentState == DefaultState)
             {
-                m_currentState = TileCrunchState;
+                if (CheckCrunchAllowance())
+                {
+                    m_currentState = TileCrunchState;
+                }
             }
             else if (m_currentState == TileCrunchState)
             {
                 m_currentState = DefaultState;
             }
+        }
+
+        public bool CheckCrunchAllowance()
+        {
+            if (m_matchBeforeCrunch > 0)
+                return false;
+            if (m_comboTimer > 0)
+                return false;
+            if (m_boardLogic.IsBoardEmpty())
+                return false;
+            return true;
         }
 
         #region FSM
