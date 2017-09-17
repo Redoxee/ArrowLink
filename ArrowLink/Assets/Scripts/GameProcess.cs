@@ -209,6 +209,9 @@ namespace ArrowLink
 				{
 					comboCard.m_physicCardRef.ComboParticles.Play(true);
 				}
+
+                int combo = ComputeComboPoint();
+                m_guiManager.NotifyDeltaScoreChanged(combo);
 			}
 
 			card.m_tileLinks = new List<TileLink>(tile.m_listLinkedTile.Count);

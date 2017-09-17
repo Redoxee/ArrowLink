@@ -16,7 +16,9 @@ namespace ArrowLink
 		EndScreen m_endScreen = null;
 
 		[SerializeField]
-		Text m_scoreText = null;
+		AnimatedTextNumber m_scoreText = null;
+        [SerializeField]
+        AnimatedTextNumber m_scoreDeltaText = null;
 
 		[SerializeField]
 		GraphicRaycaster m_gameplayGraphicRayCaster = null;
@@ -33,7 +35,11 @@ namespace ArrowLink
 		{
             m_gameProcess = GameProcess.Instance;
 
-			m_scoreText.text = "0";
+			m_scoreText.SetDisplay(0);
+            m_scoreDeltaText.SetDisplay(0);
+            m_scoreDeltaText.gameObject.SetActive(false);
+            m_scoreDeltaText.ReachedAction = OnScoreDeltaTextAnimEnded;
+
             m_crunchProgressBar.SetDisplay(1);
             m_crunchProgressBar.SetStarget(1);
 
@@ -56,10 +62,27 @@ namespace ArrowLink
 			UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(0);
 		}
 
+        public void NotifyDeltaScoreChanged(int newDelta)
+        {
+            m_scoreDeltaText.gameObject.SetActive(true);
+            m_scoreDeltaText.SetNumber(newDelta);
+        }
+
 		public void NotifyScoreChanged(int newScore, int scoreDelta)
 		{
-			m_scoreText.text = newScore.ToString();
+			m_scoreText.SetNumber(newScore,.25f);
+            m_scoreDeltaText.gameObject.SetActive(true);
+            m_scoreDeltaText.SetDisplay(scoreDelta);
+            m_scoreDeltaText.SetNumber(0, .25f);
 		}
+
+        private void OnScoreDeltaTextAnimEnded()
+        {
+            if (m_scoreDeltaText.CurrentTarget == 0)
+            {
+                m_scoreDeltaText.gameObject.SetActive(false);
+            }
+        }
 
         public void NotifyCrunchProgressChanged(float newProgress)
         {
