@@ -178,7 +178,7 @@ namespace ArrowLink
                 }
                 m_boardLogic.RemoveTile(m_playedSlot.X, m_playedSlot.Y);
                 Destroy(tile.m_physicCardRef.gameObject);
-                m_currentState = DefaultState;
+                SetState(DefaultState);
             }
             m_playedSlot = null;
             m_matchBeforeCrunch = c_NbMatchToCrunch;
@@ -252,12 +252,13 @@ namespace ArrowLink
 			return link;
 		}
 
+        private const float c_slideDuration = .65f;
 		void UpdateComboMeter()
 		{
 			if (m_comboTimer > 0)
 			{
 				m_comboTimer -= Time.deltaTime;
-				float progression = Mathf.Clamp01(m_comboTimer / c_comboDuration);
+				float progression = Mathf.Clamp01((m_comboTimer - c_slideDuration) / (c_comboDuration - c_slideDuration));
 				m_comboGauge.SetProgression(progression);
 				if (m_comboTimer <= 0)
 				{
@@ -332,12 +333,12 @@ namespace ArrowLink
             {
                 if (CheckCrunchAllowance())
                 {
-                    m_currentState = TileCrunchState;
+                    SetState(TileCrunchState);
                 }
             }
             else if (m_currentState == TileCrunchState)
             {
-                m_currentState = DefaultState;
+                SetState(DefaultState);
             }
         }
 
@@ -355,6 +356,14 @@ namespace ArrowLink
         #region FSM
 
         private GameState m_currentState;
+        private void SetState(GameState nextState)
+        {
+            if (m_currentState.End != null)
+                m_currentState.End();
+            m_currentState = nextState;
+            if (m_currentState.Start != null)
+                m_currentState.Start();
+        }
 
         private GameState DefaultState;
         private GameState TileCrunchState;
@@ -362,6 +371,8 @@ namespace ArrowLink
         private struct GameState
 		{
 			public Action ProcessPlayedSlot;
+            public Action Start;
+            public Action End;
 
             public override bool Equals(System.Object other)
             {
@@ -386,9 +397,25 @@ namespace ArrowLink
         private void InitializeStates()
         {
             DefaultState = new GameState { ProcessPlayedSlot = DefaultProcessPlayedSlot };
-            TileCrunchState = new GameState { ProcessPlayedSlot = TileCrunchProcessSlot };
-
+            TileCrunchState = new GameState { ProcessPlayedSlot = TileCrunchProcessSlot, Start = _TileCrunchStateStart, End = _TileCrunchStateEnd };
             m_currentState = DefaultState;
+        }
+
+        private void _TileCrunchStateStart()
+        {
+            foreach (var tile in m_boardLogic.AllTilePlaced)
+            {
+                tile.m_physicCardRef.IsCrunchableAnimation = true;
+            }
+        }
+
+        private void _TileCrunchStateEnd()
+        {
+
+            foreach (var tile in m_boardLogic.AllTilePlaced)
+            {
+                tile.m_physicCardRef.IsCrunchableAnimation = false;
+            }
         }
 
     }

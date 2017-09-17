@@ -33,7 +33,15 @@ namespace ArrowLink
 		public Vector3 PositionDelta;
 		public AnimationCurve PositionCurve;
 
-		[Header("Scale")]
+        [Header("Rotation")]
+        public bool IsRotation = false;
+        public float AngleStart = 0;
+        public float AngleEnd = 0;
+        [NonSerialized]
+        public float AngleDelta;
+        public AnimationCurve AngleCurve;
+
+        [Header("Scale")]
 		public bool IsScale = false;
 		public Vector3 ScaleStart;
 		public Vector3 ScaleEnd;
@@ -77,6 +85,10 @@ namespace ArrowLink
 				AlphaDelta = AlphaEnd - AlphaStart;
 				BaseColor = SpriteRenderer.color;
 			}
+            if (IsRotation)
+            {
+                AngleDelta = AngleEnd - AngleStart;
+            }
 		}
 	}
 }

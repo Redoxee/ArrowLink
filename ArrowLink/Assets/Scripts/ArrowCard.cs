@@ -53,8 +53,18 @@ namespace ArrowLink
 
 		public ParticleSystem LinkedParticles { get { return m_linkedparticles; } }
 
-
 		public CardTweenAnimations m_tweens;
+
+        private bool m_isCrunchable = false;
+        public bool IsCrunchableAnimation { get { return m_isCrunchable; } set
+            {
+                m_isCrunchable = value;
+                if (m_isCrunchable)
+                {
+                    m_tweens.Crunchable.StartTween(CrunchableAnimationEnd);
+                }
+            }
+        }
 
 		private void Awake()
 		{
@@ -81,7 +91,7 @@ namespace ArrowLink
 			distribuor.RegisterUsedFlag(m_arrows);
 		}
 
-		private void OnDestroy()
+        private void OnDestroy()
 		{
 			FlagDistributor distribuor = GameProcess.Instance.FlagDistributor;
 			distribuor.UnregisterUsedFlag(m_arrows);
@@ -177,8 +187,16 @@ namespace ArrowLink
 			if (m_onGoToSlotEnd != null)
 				m_onGoToSlotEnd();
 		}
-		
-		[System.Serializable]
+
+        private void CrunchableAnimationEnd()
+        {
+            if (m_isCrunchable)
+            {
+                m_tweens.Crunchable.StartTween(CrunchableAnimationEnd);
+            }
+        }
+
+        [System.Serializable]
 		public struct CardTweenAnimations
 		{
 			[Header("Tween To Play")]
@@ -191,6 +209,7 @@ namespace ArrowLink
 			public SingleTween ActivationSlide;
 			public SingleTween ActivationUnveil;
 			public SingleTween PlaySlide;
+            public SingleTween Crunchable;
 		}
 
 		public enum TileState

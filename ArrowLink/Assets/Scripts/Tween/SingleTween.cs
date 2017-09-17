@@ -80,6 +80,12 @@ namespace ArrowLink
 				m_parameters.BaseColor.a = alpha;
 				m_parameters.SpriteRenderer.color = m_parameters.BaseColor;
 			}
+
+            if (m_parameters.IsRotation)
+            {
+                var rotation = m_parameters.AngleStart + m_parameters.AngleCurve.Evaluate(progression) * m_parameters.AngleDelta;
+                m_parameters.Target.localRotation = Quaternion.AngleAxis(rotation, Vector3.forward);
+            }
 		}
 
 		public override void SkipToEnd()

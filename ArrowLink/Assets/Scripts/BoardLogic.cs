@@ -10,12 +10,15 @@ namespace ArrowLink{
 		public const int c_col = 4;
 
 		LogicTile[,] m_board;
+        List<LogicTile> m_allPlacedTile;
+        public List<LogicTile> AllTilePlaced { get { return m_allPlacedTile; } }
 
 		private int m_nbTilePlaced = 0;
 
 		public BoardLogic()
 		{
 			m_board = new LogicTile[c_row,c_col];
+            m_allPlacedTile = new List<LogicTile>(c_row * c_col);
 			m_nbTilePlaced = 0;
 		}
 
@@ -37,6 +40,7 @@ namespace ArrowLink{
 			m_board[x, y] = tile;
 
 			m_nbTilePlaced += 1;
+            m_allPlacedTile.Add(tile);
 			return tile;
 		}
 
@@ -79,6 +83,7 @@ namespace ArrowLink{
             }
 			m_board[x, y] = null;
 			m_nbTilePlaced -= 1;
+            m_allPlacedTile.Remove(tile);
 		}
 
         public bool IsBoardEmpty()
@@ -96,6 +101,7 @@ namespace ArrowLink{
             return m_board[x, y];
         }
 	}
+
 	public class LogicTile
 	{
 		public int X, Y;

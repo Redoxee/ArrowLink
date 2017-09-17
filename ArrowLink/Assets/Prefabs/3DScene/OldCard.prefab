@@ -247,7 +247,7 @@ GameObject:
   - component: {fileID: 114538629992474566}
   - component: {fileID: 114380009997077196}
   m_Layer: 0
-  m_Name: Card
+  m_Name: OldCard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -692,6 +692,15 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 0
+    IsRotation: 0
+    AngleStart: 0
+    AngleEnd: 0
+    AngleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
     IsScale: 0
     ScaleStart: {x: 0, y: 0, z: 0}
     ScaleEnd: {x: 0, y: 0, z: 0}
@@ -747,6 +756,15 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 0
+    IsRotation: 0
+    AngleStart: 0
+    AngleEnd: 0
+    AngleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
     IsScale: 0
     ScaleStart: {x: 0, y: 0, z: 0}
     ScaleEnd: {x: 0, y: 0, z: 0}
@@ -776,6 +794,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 875cf21b446dc4034bdfd742213f1b7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_currentState: 3
   m_N: {fileID: 1923364984184180}
   m_NE: {fileID: 1013395801140238}
   m_E: {fileID: 1281095326186346}
@@ -785,6 +804,8 @@ MonoBehaviour:
   m_W: {fileID: 1967005816211920}
   m_NW: {fileID: 1232260009659288}
   m_tileLinks: []
+  m_combo_Particles: {fileID: 0}
+  m_linkedparticles: {fileID: 0}
   m_tweens:
     Introduction: {fileID: 114903420484053702}
     Activation: {fileID: 114024272839487518}
@@ -793,6 +814,7 @@ MonoBehaviour:
     ActivationSlide: {fileID: 114158896523718870}
     ActivationUnveil: {fileID: 114757962449476692}
     PlaySlide: {fileID: 114380009997077196}
+    Crunchable: {fileID: 0}
 --- !u!114 &114380009997077196
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -830,6 +852,15 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 0
+    IsRotation: 0
+    AngleStart: 0
+    AngleEnd: 0
+    AngleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
     IsScale: 0
     ScaleStart: {x: 0, y: 0, z: 0}
     ScaleEnd: {x: 0, y: 0, z: 0}
@@ -885,6 +916,15 @@ MonoBehaviour:
     PositionStart: {x: 0, y: 0, z: 0}
     PositionEnd: {x: 0, y: 0, z: 0}
     PositionCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsRotation: 0
+    AngleStart: 0
+    AngleEnd: 0
+    AngleCurve:
       serializedVersion: 2
       m_Curve: []
       m_PreInfinity: 2
@@ -969,6 +1009,15 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 0
+    IsRotation: 0
+    AngleStart: 0
+    AngleEnd: 0
+    AngleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
     IsScale: 0
     ScaleStart: {x: 0, y: 0, z: 0}
     ScaleEnd: {x: 0, y: 0, z: 0}

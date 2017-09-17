@@ -184,6 +184,7 @@ GameObject:
   - component: {fileID: 114985332169553100}
   - component: {fileID: 114162172122211558}
   - component: {fileID: 114668919989750144}
+  - component: {fileID: 114455092617224254}
   m_Layer: 0
   m_Name: TrailCard
   m_TagString: Untagged
@@ -1016,6 +1017,15 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 0
+    IsRotation: 0
+    AngleStart: 0
+    AngleEnd: 0
+    AngleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
     IsScale: 0
     ScaleStart: {x: 0, y: 0, z: 0}
     ScaleEnd: {x: 0, y: 0, z: 0}
@@ -1094,6 +1104,79 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 0
+    IsRotation: 0
+    AngleStart: 0
+    AngleEnd: 0
+    AngleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsScale: 0
+    ScaleStart: {x: 0, y: 0, z: 0}
+    ScaleEnd: {x: 0, y: 0, z: 0}
+    ScaleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsAlpha: 0
+    AlphaStart: 0
+    AlphaEnd: 0
+    AlphaCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+--- !u!114 &114455092617224254
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1419058054250480}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1ae0636430f9a247bf91d1d0fac7356, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_name: Crunchable
+  m_parameters:
+    m_optionalTarget: {fileID: 0}
+    Duration: 0.1
+    IsPosition: 0
+    IsLocalPosition: 0
+    PositionStart: {x: 0, y: 0, z: 0}
+    PositionEnd: {x: 0, y: 0, z: 0}
+    PositionCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsRotation: 1
+    AngleStart: 0
+    AngleEnd: 360
+    AngleCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0.0000059519953
+        inSlope: 0.1657429
+        outSlope: 0.1657429
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1
+        value: 0.000025667658
+        inSlope: 0.16517735
+        outSlope: 0.16517735
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
     IsScale: 0
     ScaleStart: {x: 0, y: 0, z: 0}
     ScaleEnd: {x: 0, y: 0, z: 0}
@@ -1166,6 +1249,15 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 0
+    IsRotation: 0
+    AngleStart: 0
+    AngleEnd: 0
+    AngleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
     IsScale: 0
     ScaleStart: {x: 0, y: 0, z: 0}
     ScaleEnd: {x: 0, y: 0, z: 0}
@@ -1204,6 +1296,15 @@ MonoBehaviour:
     PositionStart: {x: 0, y: 0, z: 0}
     PositionEnd: {x: 0, y: 0, z: 0}
     PositionCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsRotation: 0
+    AngleStart: 0
+    AngleEnd: 0
+    AngleCurve:
       serializedVersion: 2
       m_Curve: []
       m_PreInfinity: 2
@@ -1270,6 +1371,7 @@ MonoBehaviour:
     ActivationSlide: {fileID: 114985332169553100}
     ActivationUnveil: {fileID: 114926988784431676}
     PlaySlide: {fileID: 114668919989750144}
+    Crunchable: {fileID: 114455092617224254}
 --- !u!114 &114985332169553100
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1307,6 +1409,15 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 0
+    IsRotation: 0
+    AngleStart: 0
+    AngleEnd: 0
+    AngleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
     IsScale: 0
     ScaleStart: {x: 0, y: 0, z: 0}
     ScaleEnd: {x: 0, y: 0, z: 0}
