@@ -34,10 +34,10 @@ namespace ArrowLink
 			boardPos.y = -halfHeight + HalfBoardSize + BoardPadding;
 			m_boardRef.transform.position = boardPos;
 
-			var playable = m_palyableTileAnchor.transform.position;
-			playable.x = transform.position.y;
-			playable.y = halfHeight - PlayableHalfHeight - PlayablePadding;
-			m_palyableTileAnchor.transform.position = playable;
+			//var playable = m_palyableTileAnchor.transform.position;
+			//playable.x = transform.position.y;
+			//playable.y = halfHeight - PlayableHalfHeight - PlayablePadding;
+			//m_palyableTileAnchor.transform.position = playable;
 		}
 	}
 }

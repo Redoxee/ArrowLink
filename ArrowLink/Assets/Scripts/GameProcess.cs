@@ -58,6 +58,25 @@ namespace ArrowLink
         private const int c_NbMatchToCrunch = 8;
         private int m_matchBeforeCrunch = 0;
 
+        public const int c_startingAvailableTile = 24;
+        public const int c_maxAvailableTile = 32;
+        public const int c_minComboToGainTiles = 5;
+
+
+        private int m_nbCurrentAvailableTile = c_startingAvailableTile;
+        private int NbAvailableTile
+        {
+            get { return m_nbCurrentAvailableTile; }
+            set
+            {
+                m_nbCurrentAvailableTile = value;
+                if (m_nbCurrentAvailableTile > c_maxAvailableTile)
+                    m_nbCurrentAvailableTile = c_maxAvailableTile;
+                m_guiManager.NotifyAvailableTileCountChanged(m_nbCurrentAvailableTile);
+            }
+        }
+
+
 
         private void Awake()
 		{
@@ -94,6 +113,7 @@ namespace ArrowLink
 			m_nbCardOnTheWay = 0;
 
             m_matchBeforeCrunch = c_NbMatchToCrunch;
+            NbAvailableTile = c_startingAvailableTile;
 		}
 
 		private void Update()
@@ -104,49 +124,69 @@ namespace ArrowLink
 
 		void DrawNextCard()
 		{
+            if (m_nextCard != null)
+            {
+                m_currentCard = m_nextCard;
 
-			GameObject nextCardObject = Instantiate(m_cardPrefab);
-			GameObject currentCardObject;
-			
-			BaseTween currentCardTween = null;
+                m_currentCard.PrepareActivationTween(m_playingCardTransform.position);
+                var currentCardTween = m_currentCard.m_tweens.Activation;
+                var unveilTween = m_currentCard.m_tweens.ActivationUnveil;
+                currentCardTween.StartTween(null);
+                unveilTween.StartTween();
+                m_nextCard = null;
+            }
 
-			if (m_nextCard == null) {
-				currentCardObject = Instantiate (m_cardPrefab);
-				m_currentCard = currentCardObject.GetComponent<ArrowCard> ();
-				m_currentCard.transform.position = m_playingCardTransform.position;
-				m_currentCard.PrepareIntroductionTween();
-				currentCardTween = m_currentCard.m_tweens.Introduction;
+            if (m_nbCurrentAvailableTile < 1)
+                return;
 
-				var unveil = m_currentCard.m_tweens.ActivationUnveil;
-				unveil.StartTween(null);
+            if (m_currentCard == null)
+            {
+                ShootNewCurrentCard();
+                if (NbAvailableTile > 0)
+                    NbAvailableTile = NbAvailableTile - 1;
+            }
 
-			} else {
-				m_currentCard = m_nextCard;
-				currentCardObject = m_currentCard.gameObject;
+            if (m_nbCurrentAvailableTile < 1)
+                return;
 
-				currentCardTween = m_currentCard.m_tweens.Activation;
-				m_currentCard.PrepareActivationTween(m_playingCardTransform.position);
-			}
-
-			m_nextCard = nextCardObject.GetComponent<ArrowCard> ();
-			m_nextCard.transform.position = m_nextPlayingCardTransform.position ;
-
-			BaseTween nextCardTween = m_nextCard.m_tweens.Introduction;
-			m_nextCard.PrepareIntroductionTween();
-
-
-			currentCardTween.StartTween(null);
-			nextCardTween.StartTween(null);
+            if (m_nextCard == null)
+            {
+                ShootNewNextCard();
+                if (NbAvailableTile > 0)
+                    NbAvailableTile = NbAvailableTile - 1;
+            }
 		}
 
-		public void OnTilePressed(BoardSlot slot)
+        private void ShootNewCurrentCard()
+        {
+            GameObject currentCardObject = Instantiate (m_cardPrefab);
+            m_currentCard = currentCardObject.GetComponent<ArrowCard>();
+            m_currentCard.transform.position = m_playingCardTransform.position;
+            m_currentCard.PrepareIntroductionTween();
+            var introTween = m_currentCard.m_tweens.Introduction;
+            var unveilTween = m_currentCard.m_tweens.ActivationUnveil;
+            introTween.StartTween();
+            unveilTween.StartTween();
+        }
+
+        private void ShootNewNextCard()
+        {
+            GameObject nextCardObject = Instantiate(m_cardPrefab);
+            m_nextCard = nextCardObject.GetComponent<ArrowCard>();
+            m_nextCard.transform.position = m_nextPlayingCardTransform.position;
+            m_nextCard.PrepareIntroductionTween();
+            var introTween = m_nextCard.m_tweens.Introduction;
+            introTween.StartTween();
+        }
+
+        public void OnTilePressed(BoardSlot slot)
 		{
 			m_playedSlot = slot;
 		}
 
         private void DefaultProcessPlayedSlot()
         {
-            if ((m_playedSlot != null) && !m_boardLogic.IsFilled(m_playedSlot.X, m_playedSlot.Y))
+            if ((m_playedSlot != null) && !m_boardLogic.IsFilled(m_playedSlot.X, m_playedSlot.Y) && m_currentCard != null)
             {
                 var logicTile = m_boardLogic.AddTile(m_playedSlot.X, m_playedSlot.Y, m_currentCard.MultiFlags);
                 logicTile.m_physicCardRef = m_currentCard;
@@ -155,6 +195,7 @@ namespace ArrowLink
 
                 m_currentCard.GoToSlot(m_playedSlot, cardPlayedAction);
                 m_nbCardOnTheWay += 1;
+                m_currentCard = null;
                 DrawNextCard();
             }
             m_playedSlot = null;
@@ -270,6 +311,8 @@ namespace ArrowLink
 		void EndCombo()
 		{
 			int comboPoints = ComputeComboPoint();
+            int nbTileMatched = m_currentCombo.Count;
+
 			m_currentScore += comboPoints;
 			m_currentTileScore += m_currentCombo.Count;
 
@@ -293,7 +336,19 @@ namespace ArrowLink
 
                 m_guiManager.NotifyCrunchProgressChanged((float)m_matchBeforeCrunch / (float)c_NbMatchToCrunch);
             }
-		}
+
+            if (nbTileMatched >= c_minComboToGainTiles)
+            {
+                NbAvailableTile += nbTileMatched + 1;
+            }
+
+            if (m_currentCard == null)
+            {
+                DrawNextCard();
+            }
+            CheckEndGame();
+
+        }
 
 		const int c_baseComboPoints = 10;
 		const int c_comboCurveStart = 5;
@@ -315,16 +370,33 @@ namespace ArrowLink
 			return points;
 		}
 
+
+
 		private void CheckEndGame()
 		{
-			if(m_boardLogic.IsBoardFull())
-			{
-				if (!(m_comboTimer > 0))
-				{
-					if(m_nbCardOnTheWay == 0)
-						m_guiManager.NotifyEndGame();
-				}
-			}
+
+            if (m_comboTimer > 0)
+                return;
+            if (m_nbCardOnTheWay > 0)
+                return;
+
+            if (m_boardLogic.IsBoardFull())
+            {
+                if (m_matchBeforeCrunch > 0)
+                {
+                    m_guiManager.NotifyEndGame();
+                }
+                return;
+            }
+            if (m_nbCurrentAvailableTile < 1)
+            {
+                if (m_currentCard != null || m_nextCard != null)
+                {
+                    return;
+                }
+                m_guiManager.NotifyEndGame();
+            }
+
 		}
 
         public void RequestTileCrunchToggle()

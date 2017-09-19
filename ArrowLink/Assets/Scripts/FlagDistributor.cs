@@ -106,6 +106,7 @@ namespace ArrowLink
 				nbArrow = PickNbArrow();
 			var pool = m_allFlagsBynumber[nbArrow - 1];
 			int resultIndex = Mathf.RoundToInt(UnityEngine.Random.value * (pool.Count - 1));
+            //return ArrowFlag.N | ArrowFlag.S | ArrowFlag.E | ArrowFlag.W;
 			return (ArrowFlag)pool[resultIndex];
 		}
 

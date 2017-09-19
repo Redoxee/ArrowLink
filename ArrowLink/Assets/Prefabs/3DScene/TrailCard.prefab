@@ -1072,7 +1072,7 @@ MonoBehaviour:
     Duration: 0.75
     IsPosition: 1
     IsLocalPosition: 0
-    PositionStart: {x: 0, y: 4, z: 0}
+    PositionStart: {x: -3, y: 0, z: 0}
     PositionEnd: {x: 0, y: 0, z: 0}
     PositionCurve:
       serializedVersion: 2

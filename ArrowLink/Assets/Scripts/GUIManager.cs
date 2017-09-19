@@ -29,6 +29,9 @@ namespace ArrowLink
         [SerializeField]
         AnimatedProgressbar m_crunchProgressBar = null;
 
+        [SerializeField]
+        Text m_AvailableTile = null;
+
         GameProcess m_gameProcess;
 
 		private void Start()
@@ -87,6 +90,11 @@ namespace ArrowLink
         public void NotifyCrunchProgressChanged(float newProgress)
         {
             m_crunchProgressBar.SetStarget(newProgress);
+        }
+
+        public void NotifyAvailableTileCountChanged(int availableTiles)
+        {
+            m_AvailableTile.text = availableTiles.ToString();
         }
 
 		public void OnIntroCloseButtonPressed()
