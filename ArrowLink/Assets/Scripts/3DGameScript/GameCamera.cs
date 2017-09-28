@@ -7,7 +7,7 @@ namespace ArrowLink
 	[RequireComponent(typeof(Camera))]
 	public class GameCamera : MonoBehaviour
 	{
-		const float TargetWidth = 15f / 2f;
+		const float TargetWidth = 16f / 2f;
 		const float HalfBoardSize = 12.5f / 2f;
 		const float BoardPadding = .25f;
 		const float PlayableHalfHeight = 2f;
@@ -28,16 +28,13 @@ namespace ArrowLink
 			var ratio = (float)Screen.height / (float)Screen.width;
 			var halfHeight = (TargetWidth) * ratio;
 			camera.orthographicSize = halfHeight;
-
-			var boardPos = m_boardRef.transform.position;
-			boardPos.x = transform.position.x;
-			boardPos.y = -halfHeight + HalfBoardSize + BoardPadding;
-			m_boardRef.transform.position = boardPos;
-
-			//var playable = m_palyableTileAnchor.transform.position;
-			//playable.x = transform.position.y;
-			//playable.y = halfHeight - PlayableHalfHeight - PlayablePadding;
-			//m_palyableTileAnchor.transform.position = playable;
+            var camPos = camera.transform.position;
+            camera.transform.position = new Vector3(camPos.x, halfHeight, camPos.z);
+			//var boardPos = m_boardRef.transform.position;
+			//boardPos.x = transform.position.x;
+			//boardPos.y = -halfHeight + HalfBoardSize + BoardPadding;
+			//m_boardRef.transform.position = boardPos;
+            
 		}
 	}
 }

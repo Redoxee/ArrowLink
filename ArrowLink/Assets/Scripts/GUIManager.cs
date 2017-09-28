@@ -31,6 +31,9 @@ namespace ArrowLink
 
         [SerializeField]
         Text m_AvailableTile = null;
+        [SerializeField]
+        BaseTween m_dispenserAnimation = null;
+        bool m_isDispenserWigling = false;
 
         GameProcess m_gameProcess;
 
@@ -65,6 +68,11 @@ namespace ArrowLink
 			UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(0);
 		}
 
+        public void OnBankPressed()
+        {
+            m_gameProcess.RequestBank();
+        }
+
         public void NotifyDeltaScoreChanged(int newDelta)
         {
             m_scoreDeltaText.gameObject.SetActive(true);
@@ -95,6 +103,11 @@ namespace ArrowLink
         public void NotifyAvailableTileCountChanged(int availableTiles)
         {
             m_AvailableTile.text = availableTiles.ToString();
+            m_isDispenserWigling = availableTiles < 1;
+            if (m_isDispenserWigling)
+            {
+                m_dispenserAnimation.StartTween(OnDispenserWiggleEnd);
+            }
         }
 
 		public void OnIntroCloseButtonPressed()
@@ -185,11 +198,20 @@ namespace ArrowLink
 		{
 			GameProcess gp = GameProcess.Instance;
 			m_endScreen.DisplayEndScreen(gp.CurrentScore, gp.CurrentTileScore);
+            m_isDispenserWigling = false;
 		}
 
-		#endregion
+        #endregion
 
-		#endregion
+        #endregion
 
+
+        private void OnDispenserWiggleEnd()
+        {
+            if (m_isDispenserWigling)
+            {
+                m_dispenserAnimation.StartTween(OnDispenserWiggleEnd);
+            }
+        }
 	}
 }

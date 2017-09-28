@@ -9,7 +9,7 @@ namespace ArrowLink
 		private static GameProcess s_instance = null;
 		public static GameProcess Instance {  get { return s_instance; } }
 
-		const float c_comboDuration = 5f;
+		//const float c_comboDuration = 5f;
 		const int c_comboMin = 4;
 		BoardLogic m_boardLogic;
 
@@ -44,7 +44,7 @@ namespace ArrowLink
 		ArrowCard m_nextCard = null;
 
 		BoardSlot m_playedSlot;
-		float m_comboTimer = -1f;
+		//float m_comboTimer = -1f;
 		HashSet<LogicTile> m_currentCombo = new HashSet<LogicTile>();
 
 		private int m_currentScore = 0;
@@ -107,19 +107,19 @@ namespace ArrowLink
 
 			DrawNextCard();
 
-			m_comboGauge.SetProgression(0);
+			//m_comboGauge.SetProgression(0);
 
 			m_currentScore = 0;
 			m_nbCardOnTheWay = 0;
 
-            m_matchBeforeCrunch = c_NbMatchToCrunch;
+            m_matchBeforeCrunch = 0;
             NbAvailableTile = c_startingAvailableTile;
 		}
 
 		private void Update()
 		{
 			m_currentState.ProcessPlayedSlot();
-			UpdateComboMeter();
+			//UpdateComboMeter();
 		}
 
 		void DrawNextCard()
@@ -243,7 +243,7 @@ namespace ArrowLink
 
 			if (chain.Count >= c_comboMin)
 			{
-				m_comboTimer = c_comboDuration;
+				//m_comboTimer = c_comboDuration;
 				m_currentCombo.UnionWith(chain);
 
 				foreach (var comboCard in m_currentCombo)
@@ -293,20 +293,20 @@ namespace ArrowLink
 			return link;
 		}
 
-        private const float c_slideDuration = .65f;
-		void UpdateComboMeter()
-		{
-			if (m_comboTimer > 0)
-			{
-				m_comboTimer -= Time.deltaTime;
-				float progression = Mathf.Clamp01((m_comboTimer - c_slideDuration) / (c_comboDuration - c_slideDuration));
-				m_comboGauge.SetProgression(progression);
-				if (m_comboTimer <= 0)
-				{
-					EndCombo();
-				}
-			}
-		}
+  //      private const float c_slideDuration = .65f;
+		//void UpdateComboMeter()
+		//{
+		//	if (m_comboTimer > 0)
+		//	{
+		//		m_comboTimer -= Time.deltaTime;
+		//		float progression = Mathf.Clamp01((m_comboTimer - c_slideDuration) / (c_comboDuration - c_slideDuration));
+		//		m_comboGauge.SetProgression(progression);
+		//		if (m_comboTimer <= 0)
+		//		{
+		//			EndCombo();
+		//		}
+		//	}
+		//}
 
 		void EndCombo()
 		{
@@ -374,9 +374,9 @@ namespace ArrowLink
 
 		private void CheckEndGame()
 		{
-
-            if (m_comboTimer > 0)
-                return;
+            
+            //if (m_comboTimer > 0)
+            //    return;
             if (m_nbCardOnTheWay > 0)
                 return;
 
@@ -399,6 +399,14 @@ namespace ArrowLink
 
 		}
 
+        public void RequestBank()
+        {
+            if (m_currentCombo.Count >= c_comboMin)
+            {
+                EndCombo();
+            }
+        }
+
         public void RequestTileCrunchToggle()
         {
             if (m_currentState == DefaultState)
@@ -418,8 +426,8 @@ namespace ArrowLink
         {
             if (m_matchBeforeCrunch > 0)
                 return false;
-            if (m_comboTimer > 0)
-                return false;
+            //if (m_comboTimer > 0)
+            //    return false;
             if (m_boardLogic.IsBoardEmpty())
                 return false;
             return true;
