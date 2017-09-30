@@ -113,6 +113,7 @@ namespace ArrowLink
 			m_nbCardOnTheWay = 0;
 
             m_matchBeforeCrunch = 0;
+            m_guiManager.NotifyCrunchProgressChanged(0);
             NbAvailableTile = c_startingAvailableTile;
 		}
 
@@ -374,9 +375,11 @@ namespace ArrowLink
 
 		private void CheckEndGame()
 		{
-            
+
             //if (m_comboTimer > 0)
             //    return;
+            if (m_currentCombo.Count > c_comboMin)
+                return;
             if (m_nbCardOnTheWay > 0)
                 return;
 
