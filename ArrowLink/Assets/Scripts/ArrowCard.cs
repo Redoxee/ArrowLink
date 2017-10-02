@@ -7,8 +7,8 @@ namespace ArrowLink
 	public class ArrowCard : MonoBehaviour
 	{
 		public const int c_firstLevel = -10;
-		public const int c_secondLevel = -20;
-		public const int c_thirdLevel = -30;
+		public const int c_secondLevel = -30;
+		public const int c_thirdLevel = -60;
 
 		public TileState m_currentState = TileState.Activated;
 
@@ -45,6 +45,9 @@ namespace ArrowLink
 
 		[SerializeField]
 		private ParticleSystem m_combo_Particles = null;
+
+        [SerializeField]
+        private ParticleSystem m_flash_particles = null;
 
 		public ParticleSystem ComboParticles { get { return m_combo_Particles; } }
 
@@ -156,7 +159,6 @@ namespace ArrowLink
 		public void PrepareActivationTween(Vector3 target)
 		{
 			var parameters = m_tweens.ActivationSlide.m_parameters;
-
 			var currentPos = transform.position;
 			currentPos.z = target.z;
 
@@ -173,9 +175,13 @@ namespace ArrowLink
 
 			Vector3 target = slot.transform.position;
 
+            var currentPos = transform.position;
+            currentPos.z = c_thirdLevel;
+            transform.position = currentPos;
+
 			var parameters = m_tweens.PlaySlide.m_parameters;
 			parameters.PositionStart = transform.position;
-			target.z = transform.position.z;
+			target.z = c_thirdLevel;
 			parameters.PositionEnd = target;
 
 			m_tweens.Play.StartTween(OnGoToSlotEnd);
@@ -184,6 +190,10 @@ namespace ArrowLink
 		private void OnGoToSlotEnd()
 		{
 			m_currentState = TileState.Played;
+            var pos = transform.position;
+            pos.z = c_firstLevel;
+            transform.position = pos;
+
 			if (m_onGoToSlotEnd != null)
 				m_onGoToSlotEnd();
 		}
@@ -194,6 +204,12 @@ namespace ArrowLink
             {
                 m_tweens.Crunchable.StartTween(CrunchableAnimationEnd);
             }
+        }
+
+        public System.Collections.IEnumerator FlashWithDelay(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            m_flash_particles.Play();
         }
 
         [System.Serializable]

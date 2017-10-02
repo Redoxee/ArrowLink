@@ -107,8 +107,6 @@ namespace ArrowLink
 
 			DrawNextCard();
 
-			//m_comboGauge.SetProgression(0);
-
 			m_currentScore = 0;
 			m_nbCardOnTheWay = 0;
 
@@ -120,7 +118,6 @@ namespace ArrowLink
 		private void Update()
 		{
 			m_currentState.ProcessPlayedSlot();
-			//UpdateComboMeter();
 		}
 
 		void DrawNextCard()
@@ -227,6 +224,7 @@ namespace ArrowLink
             m_guiManager.NotifyCrunchProgressChanged(1);
         }
 
+        public const float c_flashDelay = .1f;
 
         void CardTweenToSlotEnd(LogicTile tile)
 		{
@@ -240,21 +238,27 @@ namespace ArrowLink
 
 			HashSet<LogicTile> chain = new HashSet<LogicTile>();
 			m_boardLogic.ComputeTileNeighbor(tile);
-			tile.GetLinkedChain(ref chain);
+			List<LogicTile> chainList = tile.GetLinkedChain(ref chain);
+            int chainCount = chainList.Count;
 
-			if (chain.Count >= c_comboMin)
+			if (chainCount >= c_comboMin)
 			{
-				//m_comboTimer = c_comboDuration;
 				m_currentCombo.UnionWith(chain);
 
-				foreach (var comboCard in m_currentCombo)
-				{
-					comboCard.m_physicCardRef.ComboParticles.Play(true);
-				}
+                foreach (var comboCard in m_currentCombo)
+                {
+                    comboCard.m_physicCardRef.ComboParticles.Play(true);
+                }
 
                 int combo = ComputeComboPoint();
                 m_guiManager.NotifyDeltaScoreChanged(combo);
-			}
+
+                for (int i = 0; i < chainCount; ++i)
+                {
+                    StartCoroutine(chainList[i].m_physicCardRef.FlashWithDelay(i * c_flashDelay));
+                }
+
+            }
 
 			card.m_tileLinks = new List<TileLink>(tile.m_listLinkedTile.Count);
 			var p1 = tile.m_physicCardRef.transform.position;

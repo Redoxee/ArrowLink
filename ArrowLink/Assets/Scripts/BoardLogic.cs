@@ -121,9 +121,12 @@ namespace ArrowLink{
 			X = x; Y = y;
 		}
 
-		public void GetLinkedChain(ref HashSet<LogicTile> chain)
+		public List<LogicTile> GetLinkedChain(ref HashSet<LogicTile> chain)
 		{
+            List<LogicTile> resultList = new List<LogicTile>();
 			chain.Add(this);
+            resultList.Add(this);
+
 			for (int i = 0; i < m_arrowCount; ++i)
 			{
 				var arrow = m_arrows[i];
@@ -133,10 +136,12 @@ namespace ArrowLink{
 				var neighbor = m_linkedTile[arrow];
 				if (!chain.Contains(neighbor))
 				{
-					neighbor.GetLinkedChain(ref chain);
-				}
+
+                    resultList.AddRange(neighbor.GetLinkedChain(ref chain));
+                }
 			}
-			
+            
+            return resultList;
 		}
 	}
 }
