@@ -41,7 +41,7 @@ namespace ArrowLink
             if ((direction > 0 && nextValue >= m_targetValue) ||
                (direction < 0 && nextValue <= m_targetValue))
             {
-                m_currentValue = nextValue;
+                m_currentValue = m_targetValue;
                 enabled = false;
             }
             else

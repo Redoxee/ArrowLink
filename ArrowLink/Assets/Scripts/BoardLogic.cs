@@ -71,6 +71,24 @@ namespace ArrowLink{
 			}
 		}
 
+        public List<List<LogicTile>> GetAllChains()
+        {
+            List<List<LogicTile>> chains = new List<List<LogicTile>>();
+            List<LogicTile> processed = new List<LogicTile>(c_col * c_row);
+            HashSet<LogicTile> temp = new HashSet<LogicTile>();
+            foreach (var tile in m_allPlacedTile)
+            {
+                if (processed.Contains(tile))
+                    continue;
+
+                var chain = tile.GetLinkedChain(ref temp);
+                processed.AddRange(chain);
+                chains.Add(chain);
+            }
+
+            return chains;
+        }
+
 		public void RemoveTile(int x, int y)
 		{
 			Debug.Assert(m_board[x, y] != null, "trying to remove an empty slot");

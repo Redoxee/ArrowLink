@@ -27,6 +27,12 @@ namespace ArrowLink
 		SequenceUITween m_introFadeOutTween = null;
 
         [SerializeField]
+        AnimatedProgressbar m_bankProgressbar = null;
+
+        [SerializeField]
+        ParticleSystem m_bankParticles = null;
+
+        [SerializeField]
         AnimatedProgressbar m_crunchProgressBar = null;
 
         [SerializeField]
@@ -100,6 +106,19 @@ namespace ArrowLink
             m_crunchProgressBar.SetStarget(newProgress);
         }
 
+        public void NotifyBankVeilChanged(float newProgress)
+        {
+            m_bankProgressbar.SetStarget(newProgress);
+            if (newProgress == 0)
+            {
+                m_bankParticles.Play();
+            }
+            else
+            {
+                m_bankParticles.Stop();
+            }
+        }
+
         public void NotifyAvailableTileCountChanged(int availableTiles)
         {
             m_AvailableTile.text = availableTiles.ToString();
@@ -110,7 +129,7 @@ namespace ArrowLink
             }
         }
 
-		public void OnIntroCloseButtonPressed()
+        public void OnIntroCloseButtonPressed()
 		{
 			Debug.Log("Intro close button pressed");
 			m_introFadeOutTween.StartTween(_OnIntroFadedOut);

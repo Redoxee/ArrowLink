@@ -62,7 +62,6 @@ namespace ArrowLink
         public const int c_maxAvailableTile = 32;
         public const int c_minComboToGainTiles = 5;
 
-
         private int m_nbCurrentAvailableTile = c_startingAvailableTile;
         private int NbAvailableTile
         {
@@ -112,6 +111,7 @@ namespace ArrowLink
 
             m_matchBeforeCrunch = 0;
             m_guiManager.NotifyCrunchProgressChanged(0);
+            UpdateBankUI();
             NbAvailableTile = c_startingAvailableTile;
 		}
 
@@ -209,10 +209,10 @@ namespace ArrowLink
                 foreach (var entry in tile.m_linkedTile)
                 {
                     var direction = entry.Key.Reverse();
-                    entry.Value.m_physicCardRef.SetLinkParticles(direction, false);
+                    entry.Value.m_physicCardRef.SwitchArrow(direction,false);
                     if (entry.Value.m_listLinkedTile.Count == 1)
                     {
-                        entry.Value.m_physicCardRef.LinkedParticles.Stop();
+                        entry.Value.m_physicCardRef.SwitchCenter(false);
                     }
                 }
                 m_boardLogic.RemoveTile(m_playedSlot.X, m_playedSlot.Y);
@@ -245,11 +245,6 @@ namespace ArrowLink
 			{
 				m_currentCombo.UnionWith(chain);
 
-                foreach (var comboCard in m_currentCombo)
-                {
-                    comboCard.m_physicCardRef.ComboParticles.Play(true);
-                }
-
                 int combo = ComputeComboPoint();
                 m_guiManager.NotifyDeltaScoreChanged(combo);
 
@@ -262,21 +257,28 @@ namespace ArrowLink
 
 			card.m_tileLinks = new List<TileLink>(tile.m_listLinkedTile.Count);
 			var p1 = tile.m_physicCardRef.transform.position;
+
 			if (tile.m_listLinkedTile.Count > 0)
 			{
 				tile.m_physicCardRef.LinkedParticles.Play();
 
-				foreach (var entry in tile.m_linkedTile)
-				{
-					ArrowFlag dir = entry.Key;
-					tile.m_physicCardRef.SetLinkParticles(dir, true);
-					entry.Value.m_physicCardRef.SetLinkParticles(dir.Reverse(), true);
-					entry.Value.m_physicCardRef.LinkedParticles.Play();
-				}
+                tile.m_physicCardRef.LigthArrows(tile.m_linkedTile.Keys);
+                tile.m_physicCardRef.SwitchCenter(true);
+
+                foreach (var entry in tile.m_linkedTile)
+                {
+                    var neighbor = entry.Value;
+                    var dir = entry.Key.Reverse();
+                    neighbor.m_physicCardRef.SwitchArrow(dir,true);
+                    neighbor.m_physicCardRef.SwitchCenter(true);
+                }
+                
 			}
 
 			CheckEndGame();
-		}
+            UpdateBankUI();
+
+        }
 
 
 		TileLink CreateTileLink(Vector3 p1, Vector3 p2)
@@ -297,21 +299,6 @@ namespace ArrowLink
 
 			return link;
 		}
-
-  //      private const float c_slideDuration = .65f;
-		//void UpdateComboMeter()
-		//{
-		//	if (m_comboTimer > 0)
-		//	{
-		//		m_comboTimer -= Time.deltaTime;
-		//		float progression = Mathf.Clamp01((m_comboTimer - c_slideDuration) / (c_comboDuration - c_slideDuration));
-		//		m_comboGauge.SetProgression(progression);
-		//		if (m_comboTimer <= 0)
-		//		{
-		//			EndCombo();
-		//		}
-		//	}
-		//}
 
 		void EndCombo()
 		{
@@ -351,6 +338,8 @@ namespace ArrowLink
             {
                 DrawNextCard();
             }
+
+            UpdateBankUI();
             CheckEndGame();
 
         }
@@ -438,6 +427,22 @@ namespace ArrowLink
             if (m_boardLogic.IsBoardEmpty())
                 return false;
             return true;
+        }
+
+        private void UpdateBankUI()
+        {
+            var chains = m_boardLogic.GetAllChains();
+            int maxChainCount = 0;
+            foreach (var chain in chains)
+            {
+                if (chain.Count > maxChainCount)
+                    maxChainCount = chain.Count;
+            }
+
+
+            var currentProgress = (float)(double)maxChainCount / c_comboMin;
+            currentProgress = Mathf.Clamp01(1 - currentProgress);
+            m_guiManager.NotifyBankVeilChanged(currentProgress);
         }
 
         #region FSM
