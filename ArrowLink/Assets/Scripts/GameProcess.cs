@@ -237,10 +237,14 @@ namespace ArrowLink
 			card.transform.position = pos;
 
 			HashSet<LogicTile> chain = new HashSet<LogicTile>();
-			m_boardLogic.ComputeTileNeighbor(tile);
-			List<LogicTile> chainList = tile.GetLinkedChain(ref chain);
-            int chainCount = chainList.Count;
+            List<LogicTile> chainAsList = new List<LogicTile>();
+            List<float> depthList = new List<float>();
 
+			m_boardLogic.ComputeTileNeighbor(tile);
+            tile.ComputeLinkedChain(ref chain, ref chainAsList, ref depthList);
+            int chainCount = chain.Count;
+            string s = ""; foreach (var d in depthList) s += d.ToString() + ",";
+            Debug.Log(s);
 			if (chainCount >= c_comboMin)
 			{
 				m_currentCombo.UnionWith(chain);
@@ -250,7 +254,7 @@ namespace ArrowLink
 
                 for (int i = 0; i < chainCount; ++i)
                 {
-                    StartCoroutine(chainList[i].m_physicCardRef.FlashWithDelay(i * c_flashDelay));
+                    StartCoroutine(chainAsList[i].m_physicCardRef.FlashWithDelay(depthList[i] * c_flashDelay));
                 }
 
             }

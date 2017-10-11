@@ -235,7 +235,7 @@ namespace ArrowLink
         {
             yield return new WaitForSeconds(delay);
             m_flash_particles.Play();
-            StartCoroutine(SwitchToSuperMode(.25f));
+            StartCoroutine(SwitchToSuperMode(.15f));
         }
 
         private System.Collections.IEnumerator SwitchToSuperMode(float delay)

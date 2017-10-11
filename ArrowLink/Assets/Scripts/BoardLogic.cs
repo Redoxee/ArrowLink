@@ -76,12 +76,15 @@ namespace ArrowLink{
             List<List<LogicTile>> chains = new List<List<LogicTile>>();
             List<LogicTile> processed = new List<LogicTile>(c_col * c_row);
             HashSet<LogicTile> temp = new HashSet<LogicTile>();
+            List<float> trash = new List<float>();
+
             foreach (var tile in m_allPlacedTile)
             {
                 if (processed.Contains(tile))
                     continue;
+                List<LogicTile> chain = new List<LogicTile>();
 
-                var chain = tile.GetLinkedChain(ref temp);
+                tile.ComputeLinkedChain(ref temp,ref chain, ref trash);
                 processed.AddRange(chain);
                 chains.Add(chain);
             }
@@ -120,46 +123,87 @@ namespace ArrowLink{
         }
 	}
 
-	public class LogicTile
-	{
-		public int X, Y;
-		public ArrowFlag m_flags;
-		public ArrowFlag[] m_arrows;
-		public int m_arrowCount;
-		public Dictionary<ArrowFlag, LogicTile> m_linkedTile = new Dictionary<ArrowFlag, LogicTile>(8);
-		public List<LogicTile> m_listLinkedTile = new List<LogicTile>(8);
+    public class LogicTile
+    {
+        public int X, Y;
+        public ArrowFlag m_flags;
+        public ArrowFlag[] m_arrows;
+        public int m_arrowCount;
+        public Dictionary<ArrowFlag, LogicTile> m_linkedTile = new Dictionary<ArrowFlag, LogicTile>(8);
+        public List<LogicTile> m_listLinkedTile = new List<LogicTile>(8);
 
-		public ArrowCard m_physicCardRef = null;
+        public ArrowCard m_physicCardRef = null;
 
-		public LogicTile(ArrowFlag multiFlags, int x, int y)
-		{
-			m_flags = multiFlags;
-			m_arrows = new ArrowFlag[8];
-			multiFlags.Split(ref m_arrows, ref m_arrowCount);
-			X = x; Y = y;
-		}
+        public LogicTile(ArrowFlag multiFlags, int x, int y)
+        {
+            m_flags = multiFlags;
+            m_arrows = new ArrowFlag[8];
+            multiFlags.Split(ref m_arrows, ref m_arrowCount);
+            X = x; Y = y;
+        }
 
-		public List<LogicTile> GetLinkedChain(ref HashSet<LogicTile> chain)
-		{
-            List<LogicTile> resultList = new List<LogicTile>();
-			chain.Add(this);
-            resultList.Add(this);
+        //public List<LogicTile> GetLinkedChain(ref HashSet<LogicTile> chain)
+        //{
+        //    List<LogicTile> resultList = new List<LogicTile>();
+        //    chain.Add(this);
+        //    resultList.Add(this);
 
-			for (int i = 0; i < m_arrowCount; ++i)
-			{
-				var arrow = m_arrows[i];
-				if (!m_linkedTile.ContainsKey(arrow))
-					continue;
+        //    for (int i = 0; i < m_arrowCount; ++i)
+        //    {
+        //        var arrow = m_arrows[i];
+        //        if (!m_linkedTile.ContainsKey(arrow))
+        //            continue;
 
-				var neighbor = m_linkedTile[arrow];
-				if (!chain.Contains(neighbor))
-				{
+        //        var neighbor = m_linkedTile[arrow];
+        //        if (!chain.Contains(neighbor))
+        //        {
 
-                    resultList.AddRange(neighbor.GetLinkedChain(ref chain));
+        //            resultList.AddRange(neighbor.GetLinkedChain(ref chain));
+        //        }
+        //    }
+
+        //    return resultList;
+        //}
+
+        public void ComputeLinkedChain(ref HashSet<LogicTile> chain, ref List<LogicTile> chainList, ref List<float> depthList)
+        {
+            float currentDepth = 0f;
+            chainList.Clear();
+            chainList.Add(this);
+            depthList.Clear();
+            depthList.Add(currentDepth);
+            chain.Clear();
+            chain.Add(this);
+
+            List<LogicTile> neighbors = new List<LogicTile>();
+            neighbors.Add(this);
+            int nCount = 1;
+
+            while (nCount > 0)
+            {
+                LogicTile current = neighbors[0];
+                neighbors.RemoveAt(0);
+                nCount -= 1;
+                currentDepth += 1f;
+
+                for (int i = 0; i < current.m_arrowCount; ++i)
+                {
+                    var currentArrow = current.m_arrows[i];
+                    if (current.m_linkedTile.ContainsKey(currentArrow))
+                    {
+                        var neighbor = current.m_linkedTile[currentArrow];
+                        if (!chain.Contains(neighbor))
+                        {
+                            chain.Add(neighbor);
+                            neighbors.Add(neighbor);
+                            nCount += 1;
+
+                            chainList.Add(neighbor);
+                            depthList.Add(currentDepth);
+                        }
+                    }
                 }
-			}
-            
-            return resultList;
-		}
-	}
+            }
+        }
+    }
 }
