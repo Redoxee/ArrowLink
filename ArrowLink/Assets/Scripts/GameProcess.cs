@@ -243,8 +243,11 @@ namespace ArrowLink
 			m_boardLogic.ComputeTileNeighbor(tile);
             tile.ComputeLinkedChain(ref chain, ref chainAsList, ref depthList);
             int chainCount = chain.Count;
-            string s = ""; foreach (var d in depthList) s += d.ToString() + ",";
-            Debug.Log(s);
+            
+            //string s = ""; foreach (var d in depthList) s += d.ToString() + ",";
+            //Debug.Log(s);
+            
+
 			if (chainCount >= c_comboMin)
 			{
 				m_currentCombo.UnionWith(chain);
@@ -252,9 +255,10 @@ namespace ArrowLink
                 int combo = ComputeComboPoint();
                 m_guiManager.NotifyDeltaScoreChanged(combo);
 
-                for (int i = 0; i < chainCount; ++i)
+                foreach(LogicTile ct in m_currentCombo)
                 {
-                    StartCoroutine(chainAsList[i].m_physicCardRef.FlashWithDelay(depthList[i] * c_flashDelay));
+                    int manhatanDistance = Mathf.Abs(tile.X - ct.X) + Mathf.Abs(tile.Y - ct.Y);
+                    StartCoroutine(ct.m_physicCardRef.FlashWithDelay(manhatanDistance * c_flashDelay));
                 }
 
             }
@@ -264,7 +268,7 @@ namespace ArrowLink
 
 			if (tile.m_listLinkedTile.Count > 0)
 			{
-				tile.m_physicCardRef.LinkedParticles.Play();
+				//tile.m_physicCardRef.InComboparticles.Play();
 
                 tile.m_physicCardRef.LigthArrows(tile.m_linkedTile.Keys);
                 tile.m_physicCardRef.SwitchCenter(true);
@@ -375,7 +379,7 @@ namespace ArrowLink
 
             //if (m_comboTimer > 0)
             //    return;
-            if (m_currentCombo.Count > c_comboMin)
+            if (m_currentCombo.Count >= c_comboMin)
                 return;
             if (m_nbCardOnTheWay > 0)
                 return;

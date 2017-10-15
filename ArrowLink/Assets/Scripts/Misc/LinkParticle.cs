@@ -10,11 +10,6 @@ namespace ArrowLink
         ParticleSystem particle;
         private void Start()
         {
-            particle = transform.GetComponent<ParticleSystem>();
-            var mainParameters = particle.main;
-            mainParameters.startRotationZ = Mathf.Deg2Rad * 45;
-            mainParameters.startSizeY = 2;
-            var colors = particle.colorOverLifetime;
         }
     }
 }
