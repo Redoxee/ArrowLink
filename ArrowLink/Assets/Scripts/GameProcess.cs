@@ -257,7 +257,7 @@ namespace ArrowLink
 
                 foreach(LogicTile ct in m_currentCombo)
                 {
-                    int manhatanDistance = Mathf.Abs(tile.X - ct.X) + Mathf.Abs(tile.Y - ct.Y);
+                    int manhatanDistance = Mathf.Max(Mathf.Abs(tile.X - ct.X)  ,Mathf.Abs(tile.Y - ct.Y));
                     StartCoroutine(ct.m_physicCardRef.FlashWithDelay(manhatanDistance * c_flashDelay));
                 }
 

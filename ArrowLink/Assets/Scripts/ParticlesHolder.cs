@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ArrowLink
 {
-    public class ParticlesHolder: MonoBehaviour
+    public class ParticlesHolder: MonoBehaviour, ColorGrabber.ICustomColorGrabber
     {
         int NbParticlesOn;
 
@@ -136,6 +136,18 @@ namespace ArrowLink
             colorModul.color = color;
             colorModul = Center.colorOverLifetime;
             colorModul.color = color;
+        }
+
+        public void GrabColor(Color col)
+        {
+            col.a = 1;
+            var cot = Model.colorOverLifetime;
+            var c = cot.color;
+            GradientColorKey[] cks = new GradientColorKey[1];
+            cks[0] = new GradientColorKey(col, 0);
+            c.gradient.SetKeys(cks, c.gradient.alphaKeys);
+            cot.color = c;
+            ApplyModel();
         }
     }
 }
