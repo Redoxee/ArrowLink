@@ -11,8 +11,8 @@ namespace ArrowLink
 
         List<ColorGrabber> m_listeners = new List<ColorGrabber>();
         [SerializeField]
-        private ColorColection m_collection;
-        public ColorColection ColorCollection {  get { return m_collection; } }
+        private ColorCollection m_collection;
+        public ColorCollection ColorCollection {  get { return m_collection; } }
 
 
         private void Awake()

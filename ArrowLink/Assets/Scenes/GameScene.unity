@@ -4642,7 +4642,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_mode: 1
-  m_colorToGrab: 8
+  m_colorToGrab: 9
   m_customGrabber: {fileID: 0}
 --- !u!1 &787005821
 GameObject:
@@ -10268,7 +10268,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: -50815400
+  randomSeed: -720260890
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -13654,7 +13654,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_mode: 5
-  m_colorToGrab: 8
+  m_colorToGrab: 5
   m_customGrabber: {fileID: 0}
 --- !u!1001 &1616688203
 Prefab:

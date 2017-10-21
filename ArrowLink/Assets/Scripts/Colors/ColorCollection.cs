@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu]
-public class ColorColection : ScriptableObject {
+public class ColorCollection : ScriptableObject {
 
     public Color Back;
 

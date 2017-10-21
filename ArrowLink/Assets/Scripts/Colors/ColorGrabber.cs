@@ -11,7 +11,7 @@ namespace ArrowLink
         private GrabMode m_mode = GrabMode.Sprite;
 
         [SerializeField]
-        private ColorColection.GrabbableColor m_colorToGrab = ColorColection.GrabbableColor.Back;
+        private ColorCollection.GrabbableColor m_colorToGrab = ColorCollection.GrabbableColor.Back;
         
         public interface ICustomColorGrabber{ void GrabColor(Color col); }
         [SerializeField]
@@ -47,7 +47,12 @@ namespace ArrowLink
 
         void GrabColor()
         {
-            Color col = ColorManager.Instance.ColorCollection.GetColor(m_colorToGrab);
+            ApplyColor(ColorManager.Instance.ColorCollection);
+        }
+
+        public void ApplyColor(ColorCollection colorCollection)
+        {
+            Color col = colorCollection.GetColor(m_colorToGrab);
             switch (m_mode)
             {
                 case GrabMode.Sprite:
