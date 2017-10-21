@@ -12,7 +12,15 @@ namespace ArrowLink
         List<ColorGrabber> m_listeners = new List<ColorGrabber>();
         [SerializeField]
         private ColorCollection m_collection;
-        public ColorCollection ColorCollection {  get { return m_collection; } }
+        public ColorCollection ColorCollection {  get { return m_collection; }
+        set {
+                if (m_collection != value)
+                {
+                    m_collection = value;
+                    ApplyCollection();
+                }
+            }
+        }
 
 
         private void Awake()
@@ -40,6 +48,15 @@ namespace ArrowLink
             if (!m_listeners.Contains(listener))
                 return;
             m_listeners.Remove(listener);
+        }
+
+        private void ApplyCollection()
+        {
+            int listenerCount = m_listeners.Count;
+            for (int i = 0; i < listenerCount; ++i)
+            {
+                m_listeners[i].ApplyColor(m_collection);
+            }
         }
     }
 }

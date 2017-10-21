@@ -5,26 +5,26 @@ using UnityEngine.UI;
 
 namespace ArrowLink
 {
-	public class GUIManager : MonoBehaviour {
+    public class GUIManager : MonoBehaviour {
 
-		[SerializeField]
-		GameObject m_popupUI = null;
-		public GameObject PopupUI { get { return  m_popupUI; } }
-		[SerializeField]
-		GameObject m_introUI = null;
-		[SerializeField]
-		EndScreen m_endScreen = null;
+        [SerializeField]
+        GameObject m_popupUI = null;
+        public GameObject PopupUI { get { return m_popupUI; } }
+        [SerializeField]
+        GameObject m_introUI = null;
+        [SerializeField]
+        EndScreen m_endScreen = null;
 
-		[SerializeField]
-		AnimatedTextNumber m_scoreText = null;
+        [SerializeField]
+        AnimatedTextNumber m_scoreText = null;
         [SerializeField]
         AnimatedTextNumber m_scoreDeltaText = null;
 
-		[SerializeField]
-		GraphicRaycaster m_gameplayGraphicRayCaster = null;
+        [SerializeField]
+        GraphicRaycaster m_gameplayGraphicRayCaster = null;
 
-		[SerializeField]
-		SequenceUITween m_introFadeOutTween = null;
+        [SerializeField]
+        SequenceUITween m_introFadeOutTween = null;
 
         [SerializeField]
         AnimatedProgressbar m_bankProgressbar = null;
@@ -41,13 +41,16 @@ namespace ArrowLink
         BaseTween m_dispenserAnimation = null;
         bool m_isDispenserWigling = false;
 
+        [SerializeField]
+        private DayNightModule m_dayNightModule;
+
         GameProcess m_gameProcess;
 
-		private void Start()
-		{
+        private void Start()
+        {
             m_gameProcess = GameProcess.Instance;
 
-			m_scoreText.SetDisplay(0);
+            m_scoreText.SetDisplay(0);
             m_scoreDeltaText.SetDisplay(0);
             m_scoreDeltaText.gameObject.SetActive(false);
             m_scoreDeltaText.ReachedAction = OnScoreDeltaTextAnimEnded;
@@ -55,24 +58,26 @@ namespace ArrowLink
             m_crunchProgressBar.SetDisplay(1);
             m_crunchProgressBar.SetStarget(1);
 
-			m_endScreen.Initialize(this);
+            m_endScreen.Initialize(this);
 
-			InitFMS();
+            m_dayNightModule.ManagerRef = ColorManager.Instance;
+
+            InitFMS();
             if (m_introUI.activeSelf)
                 SetState(m_introState);
             else
                 SetState(m_inGameState);
-		}
+        }
 
-		public void NotifyEndGame()
-		{
-			SetState(m_endGameState);
-		}
+        public void NotifyEndGame()
+        {
+            SetState(m_endGameState);
+        }
 
-		public void OnPausePressed()
-		{
-			UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(0);
-		}
+        public void OnPausePressed()
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(0);
+        }
 
         public void OnBankPressed()
         {
@@ -85,13 +90,13 @@ namespace ArrowLink
             m_scoreDeltaText.SetNumber(newDelta);
         }
 
-		public void NotifyScoreChanged(int newScore, int scoreDelta)
-		{
-			m_scoreText.SetNumber(newScore,.25f);
+        public void NotifyScoreChanged(int newScore, int scoreDelta)
+        {
+            m_scoreText.SetNumber(newScore, .25f);
             m_scoreDeltaText.gameObject.SetActive(true);
             m_scoreDeltaText.SetDisplay(scoreDelta);
             m_scoreDeltaText.SetNumber(0, .25f);
-		}
+        }
 
         private void OnScoreDeltaTextAnimEnded()
         {
@@ -130,22 +135,27 @@ namespace ArrowLink
         }
 
         public void OnIntroCloseButtonPressed()
-		{
-			Debug.Log("Intro close button pressed");
-			m_introFadeOutTween.StartTween(_OnIntroFadedOut);
-		}
+        {
+            Debug.Log("Intro close button pressed");
+            m_introFadeOutTween.StartTween(_OnIntroFadedOut);
+        }
 
-		private void _OnIntroFadedOut()
-		{
-			SetState(m_inGameState);
-		}
+        private void _OnIntroFadedOut()
+        {
+            SetState(m_inGameState);
+        }
 
         public void OnCrunchButtonPressed()
         {
             m_gameProcess.RequestTileCrunchToggle();
         }
 
-		GUIFSMState m_currentState;
+        GUIFSMState m_currentState;
+
+        public void OnDayNightButtonPressed()
+        {
+            m_dayNightModule.ToggleColors();
+        }
 
 		#region FSM
 		GUIFSMState m_inGameState; 
@@ -230,6 +240,34 @@ namespace ArrowLink
             if (m_isDispenserWigling)
             {
                 m_dispenserAnimation.StartTween(OnDispenserWiggleEnd);
+            }
+        }
+
+        [Serializable]
+        struct DayNightModule
+        {
+            public ColorCollection NightCollection;
+            public ColorCollection DayCollection;
+            [NonSerialized]
+            public ColorManager ManagerRef;
+            private ColorCollection m_currentCollection;
+
+            public Image CurrentStateIcon;
+            public Sprite NightIcon;
+            public Sprite DayIcon;
+
+            public void ToggleColors()
+            {
+                if (ManagerRef.ColorCollection != DayCollection)
+                {
+                    ManagerRef.ColorCollection = DayCollection;
+                    CurrentStateIcon.sprite = NightIcon;
+                }
+                else
+                {
+                    ManagerRef.ColorCollection = NightCollection;
+                    CurrentStateIcon.sprite = DayIcon;
+                }
             }
         }
 	}
