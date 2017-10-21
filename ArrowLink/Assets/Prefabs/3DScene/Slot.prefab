@@ -23,6 +23,7 @@ GameObject:
   - component: {fileID: 114953842111744066}
   - component: {fileID: 114443083486040572}
   - component: {fileID: 114617283164075296}
+  - component: {fileID: 114907162879143640}
   m_Layer: 0
   m_Name: Slot
   m_TagString: Untagged
@@ -39,6 +40,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4414572915845226}
   - component: {fileID: 212218715173197132}
+  - component: {fileID: 114344302157062712}
   m_Layer: 0
   m_Name: Inner
   m_TagString: Untagged
@@ -55,6 +57,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4259554929969732}
   - component: {fileID: 212134796479730978}
+  - component: {fileID: 114862219284395232}
   m_Layer: 0
   m_Name: Veil
   m_TagString: Untagged
@@ -103,6 +106,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114344302157062712
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1498976403526888}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3214b5b90c4ccf347a64178bbac5994d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_colorToGrab: 6
+  m_mode: 0
+  m_customGrabber: {fileID: 0}
 --- !u!114 &114443083486040572
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -182,6 +199,34 @@ MonoBehaviour:
   m_unfocusTween: {fileID: 114443083486040572}
   X: 0
   Y: 0
+--- !u!114 &114862219284395232
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1665727108108870}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3214b5b90c4ccf347a64178bbac5994d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_colorToGrab: 0
+  m_mode: 0
+  m_customGrabber: {fileID: 0}
+--- !u!114 &114907162879143640
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1065674328535258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3214b5b90c4ccf347a64178bbac5994d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_colorToGrab: 7
+  m_mode: 0
+  m_customGrabber: {fileID: 0}
 --- !u!114 &114953842111744066
 MonoBehaviour:
   m_ObjectHideFlags: 1

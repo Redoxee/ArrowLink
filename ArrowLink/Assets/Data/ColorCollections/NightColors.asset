@@ -11,15 +11,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045f916e8ccbe2e4aab92c57d19c85e8, type: 3}
   m_Name: NightColors
   m_EditorClassIdentifier: 
-  Back: {r: 0, g: 0, b: 0, a: 0}
-  Tile: {r: 0, g: 0, b: 0, a: 0}
-  TileShadow: {r: 0, g: 0, b: 0, a: 0}
-  LinkBase: {r: 0.08628891, g: 0.1537046, b: 0.83823526, a: 0}
-  LinkOn: {r: 0.94482756, g: 1, b: 0, a: 0}
-  LinkSuper: {r: 1, g: 1, b: 1, a: 0}
-  Slot: {r: 0, g: 0, b: 0, a: 0}
-  SlotShadow: {r: 0, g: 0, b: 0, a: 0}
+  Back: {r: 0.13333334, g: 0.15294118, b: 0.18039216, a: 1}
+  Tile: {r: 0, g: 0, b: 0, a: 1}
+  TileShadow: {r: 0, g: 0, b: 0, a: 1}
+  LinkBase: {r: 0.08628891, g: 0.1537046, b: 0.83823526, a: 1}
+  LinkOn: {r: 0.94482756, g: 1, b: 0, a: 1}
+  LinkSuper: {r: 1, g: 1, b: 1, a: 1}
+  Slot: {r: 0.21568629, g: 0.25490198, b: 0.3137255, a: 1}
+  SlotShadow: {r: 0.23529413, g: 0.2784314, b: 0.34117648, a: 1}
   ButtonLight: {r: 0.94482756, g: 1, b: 0, a: 1}
-  ButtonDark: {r: 0, g: 0, b: 0, a: 0}
-  TextLight: {r: 0, g: 0, b: 0, a: 0}
-  TextDark: {r: 0, g: 0, b: 0, a: 0}
+  ButtonDark: {r: 0.75294125, g: 0.1254902, b: 0.5019608, a: 1}
+  TextLight: {r: 1, g: 0, b: 0, a: 1}
+  TextDark: {r: 0.13333334, g: 0.14901961, b: 0.17254902, a: 1}

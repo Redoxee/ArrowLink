@@ -8,11 +8,11 @@ namespace ArrowLink
     public class ColorGrabber : MonoBehaviour
     {
         [SerializeField]
-        private ColorColection.GrabbableColor m_colorToGrab = ColorColection.GrabbableColor.Back;
-
-        [SerializeField]
         private GrabMode m_mode = GrabMode.Sprite;
 
+        [SerializeField]
+        private ColorColection.GrabbableColor m_colorToGrab = ColorColection.GrabbableColor.Back;
+        
         public interface ICustomColorGrabber{ void GrabColor(Color col); }
         [SerializeField]
         private MonoBehaviour m_customGrabber = null;
@@ -40,7 +40,9 @@ namespace ArrowLink
             Sprite,
             Image,
             Text,
+            Camera,
             Custom,
+            Particles,
         }
 
         void GrabColor()
@@ -60,6 +62,12 @@ namespace ArrowLink
                 case GrabMode.Custom:
                     GrabCustom(col);
                     break;
+                case GrabMode.Camera:
+                    GrabCamera(col);
+                    break;
+                case GrabMode.Particles:
+                    GrabParticles(col);
+                    break;
                 default:
                     throw new System.NotSupportedException();
             }
@@ -68,24 +76,45 @@ namespace ArrowLink
         void GrabSprite(Color col)
         {
             var s = GetComponent<SpriteRenderer>();
-            s.material.color = col;
+            col.a = s.color.a;
+            s.color = col;
         }
 
         void GrabImage(Color col)
         {
             var image = GetComponent<UnityEngine.UI.Image>();
+            col.a = image.color.a;
             image.color = col;
         }
         
         void GrabText(Color col)
         {
             var t = GetComponent<UnityEngine.UI.Text>();
+            col.a = t.color.a;
             t.color = col;
+        }
+
+        void GrabCamera(Color col)
+        {
+            var c = GetComponent<Camera>();
+            c.backgroundColor = col;
         }
 
         void GrabCustom(Color col)
         {
             ((ICustomColorGrabber)m_customGrabber).GrabColor(col);
+        }
+
+        void GrabParticles(Color col)
+        {
+            var parts = GetComponent<ParticleSystem>();
+            col.a = 1;
+            var colt = parts.colorOverLifetime;
+            var c = colt.color;
+            GradientColorKey[] gck = new GradientColorKey[1];
+            gck[0] = new GradientColorKey(col, 0);
+            c.gradient.SetKeys(gck, c.gradient.alphaKeys);
+            colt.color = c;
         }
     }
 }
