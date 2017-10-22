@@ -126,8 +126,10 @@ namespace ArrowLink
 			int iFlag = (int)flag;
 			if (m_allFlags.Contains(iFlag))
 				return false;
-			m_allFlags.Add(iFlag);
 			int nbArrow = CountFlag(iFlag);
+            if (nbArrow == 0)
+                return false;
+			m_allFlags.Add(iFlag);
 			m_allFlagsBynumber[nbArrow - 1].Add(iFlag);
 			return true;
 		}

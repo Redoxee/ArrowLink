@@ -57,17 +57,17 @@ namespace ArrowLink
         private void _OnTileDrag(int index , PointerEventData data)
         {
 
-            Vector2 dragVector = data.position - data.pressPosition;
-            Vector2 direction = dragVector.normalized;
-            float fangle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg ;
-            int iangle = (int)fangle + 180;
-            iangle += 90;
-            iangle += 45;
-            iangle %= 360;
-            int quadrant = iangle / 45;
-            Debug.LogFormat("angle {0}", quadrant);
-            Camera main = Camera.main;
-            Debug.DrawLine(main.ScreenToWorldPoint(data.pressPosition), main.ScreenToWorldPoint(data.position));
+            //Vector2 dragVector = data.position - data.pressPosition;
+            //Vector2 direction = dragVector.normalized;
+            //float fangle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg ;
+            //int iangle = (int)fangle + 180;
+            //iangle += 90;
+            //iangle += 45;
+            //iangle %= 360;
+            //int quadrant = iangle / 45;
+            //Debug.LogFormat("angle {0}", quadrant);
+            //Camera main = Camera.main;
+            //Debug.DrawLine(main.ScreenToWorldPoint(data.pressPosition), main.ScreenToWorldPoint(data.position));
         }
 
 		public void OnTilePressed(int tileIndex)

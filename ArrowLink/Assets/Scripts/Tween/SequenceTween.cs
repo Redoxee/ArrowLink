@@ -21,10 +21,13 @@ namespace ArrowLink
 			return !(m_currentIndex < 0) && m_currentIndex < m_tweenSequence.Length;
 		}
 
-		public override void StartTween(Action endAction)
+		public override void StartTween(Action endAction, bool reUseAction = false)
 		{
-			m_endAction = endAction;
-			m_currentIndex = -1;
+            if (!reUseAction)
+            {
+                m_endAction = endAction;
+            }
+            m_currentIndex = -1;
 			FireNextTween();
 		}
 

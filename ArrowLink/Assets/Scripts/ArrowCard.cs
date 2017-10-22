@@ -29,6 +29,7 @@ namespace ArrowLink
 		GameObject m_W = null;
 		[SerializeField]
 		GameObject m_NW = null;
+        
 
         [SerializeField]
         ParticlesHolder m_basicParticles = null;
@@ -74,10 +75,17 @@ namespace ArrowLink
             }
         }
 
+        public void SetLinkNudge(ArrowFlag direction, bool isNudging = true)
+        {
+            m_tweens.LinkTweens[direction].IsNudging = isNudging;
+        }
+        
         private void Awake()
         {
 
             FlagDistributor distribuor = GameProcess.Instance.FlagDistributor;
+
+            GrabLinkTweens();
 
 			SetupArrows(distribuor.PickRandomFlags());
 			distribuor.RegisterUsedFlag(m_arrows);
@@ -187,7 +195,7 @@ namespace ArrowLink
         {
             if (m_isCrunchable)
             {
-                m_tweens.Crunchable.StartTween(CrunchableAnimationEnd);
+                m_tweens.Crunchable.StartTween(null,true);
             }
         }
 
@@ -204,6 +212,18 @@ namespace ArrowLink
             IsSuperMode = true;
         }
 
+        public void RemoveArrow(ArrowFlag direction)
+        {
+            m_tweens.LinkTweens[direction].Shrink.StartTween();
+
+            FlagDistributor distribuor = GameProcess.Instance.FlagDistributor;
+
+            distribuor.UnregisterUsedFlag(m_arrows);
+            m_arrows = (ArrowFlag)((int)m_arrows - (int)direction);
+            distribuor.RegisterUsedFlag(m_arrows);
+
+        }
+
         [System.Serializable]
 		public struct CardTweenAnimations
 		{
@@ -218,6 +238,8 @@ namespace ArrowLink
 			public SingleTween ActivationUnveil;
 			public SingleTween PlaySlide;
             public SingleTween Crunchable;
+            
+            public Dictionary<ArrowFlag, LinkTweens> LinkTweens;
 		}
 
 		public enum TileState
@@ -232,6 +254,59 @@ namespace ArrowLink
 			Destroyed,
 		}
 
+
+        void GrabLinkTweens()
+        {
+            m_tweens.LinkTweens = new Dictionary<ArrowFlag, LinkTweens>(8);
+            m_tweens.LinkTweens[ArrowFlag.N] = new LinkTweens(m_N);
+            m_tweens.LinkTweens[ArrowFlag.NE] = new LinkTweens(m_NE);
+            m_tweens.LinkTweens[ArrowFlag.E] = new LinkTweens(m_E);
+            m_tweens.LinkTweens[ArrowFlag.SE] = new LinkTweens(m_SE);
+            m_tweens.LinkTweens[ArrowFlag.S] = new LinkTweens(m_S);
+            m_tweens.LinkTweens[ArrowFlag.SW] = new LinkTweens(m_SW);
+            m_tweens.LinkTweens[ArrowFlag.W] = new LinkTweens(m_W);
+            m_tweens.LinkTweens[ArrowFlag.NW] = new LinkTweens(m_NW);
+            
+        }
+
+
+
+        [Serializable]
+        public class LinkTweens
+        {
+            public BaseTween Shrink;
+            public BaseTween Nudge;
+
+            bool m_isNudging = false;
+            public bool IsNudging
+            { get { return m_isNudging; }
+            set {
+                    if (m_isNudging == value)
+                        return;
+                    m_isNudging = value;
+                    if (value)
+                        Nudge.StartTween(_OnNudgeEnd);
+                }
+            }
+
+            public LinkTweens(GameObject source)
+            {
+                GrabTweens(source);
+            }
+
+            public void GrabTweens(GameObject source)
+            {
+                var tweens = source.GetComponents<BaseTween>();
+                Shrink = tweens[0];
+                Nudge = tweens[1];
+            }
+
+            void _OnNudgeEnd()
+            {
+                if (m_isNudging)
+                    Nudge.StartTween(null, true);
+            }
+        }
     }
 
 }

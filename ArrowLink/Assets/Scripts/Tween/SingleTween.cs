@@ -49,9 +49,12 @@ namespace ArrowLink
 			return !(m_timer < 0);
 		}
 
-		public override void StartTween(Action endAction = null)
+		public override void StartTween(Action endAction = null, bool reuseAction = false)
 		{
-			m_endAction = endAction;
+            if (!reuseAction)
+            {
+                m_endAction = endAction;
+            }
 			m_parameters.ComputeDeltas();
 			m_timer = 0;
 			enabled = true;

@@ -92,6 +92,23 @@ namespace ArrowLink{
             return chains;
         }
 
+        public void GetFreeLinkFromChain(List<LogicTile> chain,ref List<LogicLinkStandalone> linkList)
+        {
+            linkList.Clear();
+            foreach (var tile in chain)
+            {
+                for (int i = 0; i < tile.m_arrowCount; ++i)
+                {
+                    if(!tile.m_linkedTile.ContainsKey(tile.m_arrows[i]))
+                    {
+                        var logic = new LogicLinkStandalone(tile,tile.m_arrows[i]);
+                        linkList.Add(logic);
+
+                    }
+                }
+            }
+        }
+
 		public void RemoveTile(int x, int y)
 		{
 			Debug.Assert(m_board[x, y] != null, "trying to remove an empty slot");
@@ -142,29 +159,6 @@ namespace ArrowLink{
             X = x; Y = y;
         }
 
-        //public List<LogicTile> GetLinkedChain(ref HashSet<LogicTile> chain)
-        //{
-        //    List<LogicTile> resultList = new List<LogicTile>();
-        //    chain.Add(this);
-        //    resultList.Add(this);
-
-        //    for (int i = 0; i < m_arrowCount; ++i)
-        //    {
-        //        var arrow = m_arrows[i];
-        //        if (!m_linkedTile.ContainsKey(arrow))
-        //            continue;
-
-        //        var neighbor = m_linkedTile[arrow];
-        //        if (!chain.Contains(neighbor))
-        //        {
-
-        //            resultList.AddRange(neighbor.GetLinkedChain(ref chain));
-        //        }
-        //    }
-
-        //    return resultList;
-        //}
-
         public void ComputeLinkedChain(ref HashSet<LogicTile> chain, ref List<LogicTile> chainList, ref List<float> depthList)
         {
             float currentDepth = 0f;
@@ -204,6 +198,51 @@ namespace ArrowLink{
                     }
                 }
             }
+        }
+
+
+        public void RemoveFlag(ArrowFlag flag)
+        {
+            Debug.Assert((m_flags & flag) != ArrowFlag.NONE, "Trying to remove an unexisting flag !");
+            Debug.Assert(!m_linkedTile.ContainsKey(flag), "Removing an linked flag not supported !");
+            m_flags = (ArrowFlag)((int)m_flags - (int)flag);
+            bool isShifting = false;
+            for (int i = 0; i < m_arrowCount - 1; ++i)
+            {
+                if (m_arrows[i] == flag)
+                    isShifting = true;
+                if (isShifting)
+                    m_arrows[i] = m_arrows[i + 1];
+            }
+            m_arrowCount -= 1;
+            m_physicCardRef.RemoveArrow(flag);
+        }
+    }
+
+    public struct LogicLinkStandalone
+    {
+        public LogicTile Tile;
+        public ArrowFlag Direction;
+
+        public LogicLinkStandalone(LogicTile tile, ArrowFlag direction)
+        {
+            Tile = tile;
+            Direction = direction;
+        }
+
+        public override int GetHashCode()
+        {
+            return Tile.GetHashCode() << 16 | Direction.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+            if (typeof(LogicLinkStandalone) != obj.GetType())
+                return false;
+            var o = (LogicLinkStandalone)obj;
+            return o.Direction == Direction && Tile == o.Tile;
         }
     }
 }

@@ -158,6 +158,7 @@ namespace ArrowLink
         private void ShootNewCurrentCard()
         {
             GameObject currentCardObject = Instantiate (m_cardPrefab);
+            currentCardObject.SetActive(true);
             m_currentCard = currentCardObject.GetComponent<ArrowCard>();
             m_currentCard.transform.position = m_playingCardTransform.position;
             m_currentCard.PrepareIntroductionTween();
@@ -170,6 +171,7 @@ namespace ArrowLink
         private void ShootNewNextCard()
         {
             GameObject nextCardObject = Instantiate(m_cardPrefab);
+            nextCardObject.SetActive(true);
             m_nextCard = nextCardObject.GetComponent<ArrowCard>();
             m_nextCard.transform.position = m_nextPlayingCardTransform.position;
             m_nextCard.PrepareIntroductionTween();
@@ -447,6 +449,18 @@ namespace ArrowLink
                     maxChainCount = chain.Count;
             }
 
+            //Debug
+            if (chains.Count > 0)
+            {
+                var c = chains[0];
+                List<LogicLinkStandalone> linkList = new List<LogicLinkStandalone>();
+                m_boardLogic.GetFreeLinkFromChain(c, ref linkList);
+                Debug.Log("Free links : " + linkList.Count);
+                if (linkList.Count > 0)
+                {
+                    linkList[0].Tile.m_physicCardRef.SetLinkNudge(linkList[0].Direction);
+                }
+            }
 
             var currentProgress = (float)(double)maxChainCount / c_comboMin;
             currentProgress = Mathf.Clamp01(1 - currentProgress);

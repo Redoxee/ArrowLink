@@ -7,7 +7,7 @@ namespace ArrowLink
 {
 	public abstract class BaseTween: MonoBehaviour
 	{
-		public abstract void StartTween(Action endAction = null);
+		public abstract void StartTween(Action endAction = null, bool reuseAction = false);
 		public abstract bool IsTweening();
 		public abstract void StopTween();
 		public abstract void SkipToEnd();
