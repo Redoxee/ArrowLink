@@ -71,12 +71,14 @@ namespace ArrowLink{
 			}
 		}
 
-        public List<List<LogicTile>> GetAllChains()
+        public List<List<LogicTile>> GetAllChains(ref List<LogicLinkStandalone> freeLinks)
         {
             List<List<LogicTile>> chains = new List<List<LogicTile>>();
             List<LogicTile> processed = new List<LogicTile>(c_col * c_row);
             HashSet<LogicTile> temp = new HashSet<LogicTile>();
             List<float> trash = new List<float>();
+
+            freeLinks.Clear();
 
             foreach (var tile in m_allPlacedTile)
             {
@@ -84,7 +86,7 @@ namespace ArrowLink{
                     continue;
                 List<LogicTile> chain = new List<LogicTile>();
 
-                tile.ComputeLinkedChain(ref temp,ref chain, ref trash);
+                tile.ComputeLinkedChain(ref temp,ref chain, ref trash, ref freeLinks);
                 processed.AddRange(chain);
                 chains.Add(chain);
             }
@@ -159,7 +161,7 @@ namespace ArrowLink{
             X = x; Y = y;
         }
 
-        public void ComputeLinkedChain(ref HashSet<LogicTile> chain, ref List<LogicTile> chainList, ref List<float> depthList)
+        public void ComputeLinkedChain(ref HashSet<LogicTile> chain, ref List<LogicTile> chainList, ref List<float> depthList, ref List<LogicLinkStandalone> freeLinks)
         {
             float currentDepth = 0f;
             chainList.Clear();
@@ -195,6 +197,10 @@ namespace ArrowLink{
                             chainList.Add(neighbor);
                             depthList.Add(currentDepth);
                         }
+                    }
+                    else
+                    {
+                        freeLinks.Add(new LogicLinkStandalone(current, currentArrow));
                     }
                 }
             }

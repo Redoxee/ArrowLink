@@ -241,9 +241,9 @@ namespace ArrowLink
 			HashSet<LogicTile> chain = new HashSet<LogicTile>();
             List<LogicTile> chainAsList = new List<LogicTile>();
             List<float> depthList = new List<float>();
-
+            List<LogicLinkStandalone> freeLinks = new List<LogicLinkStandalone>();
 			m_boardLogic.ComputeTileNeighbor(tile);
-            tile.ComputeLinkedChain(ref chain, ref chainAsList, ref depthList);
+            tile.ComputeLinkedChain(ref chain, ref chainAsList, ref depthList, ref freeLinks);
             int chainCount = chain.Count;
             
             //string s = ""; foreach (var d in depthList) s += d.ToString() + ",";
@@ -441,7 +441,8 @@ namespace ArrowLink
 
         private void UpdateBankUI()
         {
-            var chains = m_boardLogic.GetAllChains();
+            List<LogicLinkStandalone> freeLinks = new List<LogicLinkStandalone>();
+            var chains = m_boardLogic.GetAllChains(ref freeLinks);
             int maxChainCount = 0;
             foreach (var chain in chains)
             {
@@ -449,18 +450,7 @@ namespace ArrowLink
                     maxChainCount = chain.Count;
             }
 
-            //Debug
-            if (chains.Count > 0)
-            {
-                var c = chains[0];
-                List<LogicLinkStandalone> linkList = new List<LogicLinkStandalone>();
-                m_boardLogic.GetFreeLinkFromChain(c, ref linkList);
-                Debug.Log("Free links : " + linkList.Count);
-                if (linkList.Count > 0)
-                {
-                    linkList[0].Tile.m_physicCardRef.SetLinkNudge(linkList[0].Direction);
-                }
-            }
+            Debug.Log("Free links : " + freeLinks.Count);
 
             var currentProgress = (float)(double)maxChainCount / c_comboMin;
             currentProgress = Mathf.Clamp01(1 - currentProgress);
