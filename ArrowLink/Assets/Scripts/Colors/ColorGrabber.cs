@@ -43,6 +43,7 @@ namespace ArrowLink
             Camera,
             Custom,
             Particles,
+            LineRenderer,
         }
 
         void GrabColor()
@@ -72,6 +73,9 @@ namespace ArrowLink
                     break;
                 case GrabMode.Particles:
                     GrabParticles(col);
+                    break;
+                case GrabMode.LineRenderer:
+                    GrabLineRenderer(col);
                     break;
                 default:
                     throw new System.NotSupportedException();
@@ -120,6 +124,14 @@ namespace ArrowLink
             gck[0] = new GradientColorKey(col, 0);
             c.gradient.SetKeys(gck, c.gradient.alphaKeys);
             colt.color = c;
+        }
+
+        void GrabLineRenderer(Color col)
+        {
+            var lr = GetComponent<LineRenderer>();
+            col.a = 1;
+            lr.startColor = col;
+            lr.endColor = col;
         }
     }
 }

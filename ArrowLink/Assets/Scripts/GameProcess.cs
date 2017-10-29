@@ -40,6 +40,11 @@ namespace ArrowLink
 		[SerializeField]
 		ComboGauge m_comboGauge = null;
 
+        [SerializeField]
+        AnimatedLinePool m_animatedLinePool = null;
+        [SerializeField]
+        Transform m_scoreTransform = null;
+
 		ArrowCard m_currentCard = null;
 		ArrowCard m_nextCard = null;
 
@@ -320,6 +325,8 @@ namespace ArrowLink
 
 			m_guiManager.NotifyScoreChanged(m_currentScore, comboPoints);
 
+            int i = 0;
+            float lineGap = .25f;
 			foreach (var tile in m_currentCombo)
 			{
 				m_boardLogic.RemoveTile(tile.X, tile.Y);
@@ -328,6 +335,12 @@ namespace ArrowLink
 				{
 					Destroy(link.gameObject);
 				}
+                GameObject lineObject;
+                RoundedLineAnimation lineAnimation;
+                m_animatedLinePool.GetInstance(out lineObject, out lineAnimation);
+                float decalRandom = UnityEngine.Random.Range(-1f, 1f);
+                lineAnimation.SetUpLine(card.transform, m_scoreTransform, decalRandom, () => { m_animatedLinePool.FreeInstance(lineObject); });
+                StartCoroutine(lineAnimation.StartAnimationDelayed(i++ * lineGap));
 
 				Destroy(card.gameObject);
 			}
@@ -450,7 +463,7 @@ namespace ArrowLink
                     maxChainCount = chain.Count;
             }
 
-            Debug.Log("Free links : " + freeLinks.Count);
+//            Debug.Log("Free links : " + freeLinks.Count);
 
             var currentProgress = (float)(double)maxChainCount / c_comboMin;
             currentProgress = Mathf.Clamp01(1 - currentProgress);

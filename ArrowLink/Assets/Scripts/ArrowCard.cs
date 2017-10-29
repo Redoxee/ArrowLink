@@ -6,9 +6,9 @@ namespace ArrowLink
 {
 	public class ArrowCard : MonoBehaviour
 	{
-		public const int c_firstLevel = -10;
-		public const int c_secondLevel = -30;
-		public const int c_thirdLevel = -60;
+		public const int c_firstLevel = 0;
+		public const int c_secondLevel = -10;
+		public const int c_thirdLevel = -20;
 
 		public TileState m_currentState = TileState.Activated;
 
