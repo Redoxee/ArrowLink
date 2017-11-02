@@ -42,6 +42,9 @@ namespace ArrowLink
 		public List<TileLink> m_tileLinks = null;
 
         [SerializeField]
+        GameObject m_centerRef = null;
+
+        [SerializeField]
         private ParticleSystem m_flash_particles = null;
 
 		[SerializeField]
@@ -224,6 +227,27 @@ namespace ArrowLink
 
         }
 
+        public void FadeOutNonLink()
+        {
+            m_tweens.BackFadeOut.StartTween();
+            m_tweens.CenterFadeOut.StartTween();
+            var allFlags = ArrowFlagExtension.AllFlags;
+            foreach (var arrow in allFlags)
+            {
+                if ((arrow & m_arrows) != ArrowFlag.NONE)
+                {
+                    m_tweens.LinkTweens[arrow].FadeOut.StartTween();
+                }
+            }
+
+        }
+
+        public void SoftStopParticles()
+        {
+            m_basicParticles.CancelParticlesLoop();
+            m_superParticles.CancelParticlesLoop();
+        }
+
         [System.Serializable]
 		public struct CardTweenAnimations
 		{
@@ -240,6 +264,9 @@ namespace ArrowLink
             public SingleTween Crunchable;
             
             public Dictionary<ArrowFlag, LinkTweens> LinkTweens;
+
+            public BaseTween BackFadeOut;
+            public BaseTween CenterFadeOut;
 		}
 
 		public enum TileState
@@ -275,7 +302,8 @@ namespace ArrowLink
         public class LinkTweens
         {
             public BaseTween Shrink;
-            public BaseTween Nudge;
+            public SingleTween Nudge;
+            public BaseTween FadeOut;
 
             bool m_isNudging = false;
             public bool IsNudging
@@ -298,7 +326,8 @@ namespace ArrowLink
             {
                 var tweens = source.GetComponents<BaseTween>();
                 Shrink = tweens[0];
-                Nudge = tweens[1];
+                Nudge = (SingleTween)tweens[1];
+                FadeOut = tweens[2];
             }
 
             void _OnNudgeEnd()

@@ -20,75 +20,65 @@ namespace ArrowLink
 
         public ParticleSystem Model;
 
+        private Dictionary<ArrowFlag, ParticleSystem> m_particlesDictionnary = new Dictionary<ArrowFlag, ParticleSystem>(8);
+        private List<ParticleSystem> m_particlesAsList = new List<ParticleSystem>(8);
         private void Awake()
         {
+            Initialize();
+        }
+        private bool m_isInitialized = false;
+        private void Initialize()
+        {
+            if (m_isInitialized)
+                return;
             Model.gameObject.SetActive(false);
+            m_particlesDictionnary[ArrowFlag.N] = N;
+            m_particlesAsList.Add(N);
+            m_particlesDictionnary[ArrowFlag.NE] = NE;
+            m_particlesAsList.Add(NE);
+            m_particlesDictionnary[ArrowFlag.E] = E;
+            m_particlesAsList.Add(E);
+            m_particlesDictionnary[ArrowFlag.SE] = SE;
+            m_particlesAsList.Add(SE);
+            m_particlesDictionnary[ArrowFlag.S] = S;
+            m_particlesAsList.Add(S);
+            m_particlesDictionnary[ArrowFlag.SW] = SW;
+            m_particlesAsList.Add(SW);
+            m_particlesDictionnary[ArrowFlag.W] = W;
+            m_particlesAsList.Add(W);
+            m_particlesDictionnary[ArrowFlag.NW] = NW;
+            m_particlesAsList.Add(NW);
+            m_isInitialized = true;
         }
 
+        ArrowFlag[] m_flagsArray = new ArrowFlag[8];
         public void SetArrows(ArrowFlag flags)
         {
+            Initialize();
+            foreach (var particles in m_particlesAsList)
+            {
+                particles.gameObject.SetActive(false);
+            }
+
             NbParticlesOn = 0;
+            flags.Split(ref m_flagsArray, ref NbParticlesOn);
 
-            N.gameObject.SetActive((flags & ArrowFlag.N) != ArrowFlag.NONE);
-            NbParticlesOn += ((flags & ArrowFlag.N) != ArrowFlag.NONE) ? 1 : 0;
-
-            NE.gameObject.SetActive((flags & ArrowFlag.NE) != ArrowFlag.NONE);
-            NbParticlesOn += ((flags & ArrowFlag.NE) != ArrowFlag.NONE) ? 1 : 0;
-
-            E.gameObject.SetActive((flags & ArrowFlag.E) != ArrowFlag.NONE);
-            NbParticlesOn += ((flags & ArrowFlag.E) != ArrowFlag.NONE) ? 1 : 0;
-
-            SE.gameObject.SetActive((flags & ArrowFlag.SE) != ArrowFlag.NONE);
-            NbParticlesOn += ((flags & ArrowFlag.SE) != ArrowFlag.NONE) ? 1 : 0;
-
-            S.gameObject.SetActive((flags & ArrowFlag.S) != ArrowFlag.NONE);
-            NbParticlesOn += ((flags & ArrowFlag.S) != ArrowFlag.NONE) ? 1 : 0;
-
-            SW.gameObject.SetActive((flags & ArrowFlag.SW) != ArrowFlag.NONE);
-            NbParticlesOn += ((flags & ArrowFlag.SW) != ArrowFlag.NONE) ? 1 : 0;
-
-            W.gameObject.SetActive((flags & ArrowFlag.W) != ArrowFlag.NONE);
-            NbParticlesOn += ((flags & ArrowFlag.W) != ArrowFlag.NONE) ? 1 : 0;
-
-            NW.gameObject.SetActive((flags & ArrowFlag.NW) != ArrowFlag.NONE);
-            NbParticlesOn += ((flags & ArrowFlag.NW) != ArrowFlag.NONE) ? 1 : 0;
+            for (int i = 0; i < NbParticlesOn; ++i)
+            {
+                var particles = m_particlesDictionnary[m_flagsArray[i]];
+                particles.gameObject.SetActive(true);
+            }
             SetCenter(NbParticlesOn > 0);
         }
 
         public void SetLinkParticles(ArrowFlag flag, bool enabled)
         {
-            switch (flag)
-            {
-                case ArrowFlag.N:
-                    _SetParticles(N.gameObject, enabled);
-                    break;
-                case ArrowFlag.NE:
-                    _SetParticles(NE.gameObject, enabled);
-                    break;
-                case ArrowFlag.E:
-                    _SetParticles(E.gameObject, enabled);
-                    break;
-                case ArrowFlag.SE:
-                    _SetParticles(SE.gameObject, enabled);
-                    break;
-                case ArrowFlag.S:
-                    _SetParticles(S.gameObject, enabled);
-                    break;
-                case ArrowFlag.SW:
-                    _SetParticles(SW.gameObject, enabled);
-                    break;
-                case ArrowFlag.W:
-                    _SetParticles(W.gameObject, enabled);
-                    break;
-                case ArrowFlag.NW:
-                    _SetParticles(NW.gameObject, enabled);
-                    break;
-            }
-
+            _SetParticles(flag, enabled);
         }
 
-        private void _SetParticles(GameObject go, bool enabled)
+        private void _SetParticles(ArrowFlag direction, bool enabled)
         {
+            GameObject go = m_particlesDictionnary[direction].gameObject;
             bool prev = go.activeSelf;
             go.SetActive(enabled);
             if (prev != enabled)
@@ -102,14 +92,15 @@ namespace ArrowLink
 
         public void SwapParticles(ParticlesHolder other)
         {
-            _SetParticles(N.gameObject, other.N.gameObject.activeSelf);
-            _SetParticles(NE.gameObject, other.NE.gameObject.activeSelf);
-            _SetParticles(E.gameObject, other.E.gameObject.activeSelf);
-            _SetParticles(SE.gameObject, other.SE.gameObject.activeSelf);
-            _SetParticles(S.gameObject, other.S.gameObject.activeSelf);
-            _SetParticles(SW.gameObject, other.SW.gameObject.activeSelf);
-            _SetParticles(W.gameObject, other.W.gameObject.activeSelf);
-            _SetParticles(NW.gameObject, other.NW.gameObject.activeSelf);
+
+            _SetParticles(ArrowFlag.N, other.N.gameObject.activeSelf);
+            _SetParticles(ArrowFlag.NE, other.NE.gameObject.activeSelf);
+            _SetParticles(ArrowFlag.E, other.E.gameObject.activeSelf);
+            _SetParticles(ArrowFlag.SE, other.SE.gameObject.activeSelf);
+            _SetParticles(ArrowFlag.S, other.S.gameObject.activeSelf);
+            _SetParticles(ArrowFlag.SW, other.SW.gameObject.activeSelf);
+            _SetParticles(ArrowFlag.W, other.W.gameObject.activeSelf);
+            _SetParticles(ArrowFlag.NW, other.NW.gameObject.activeSelf);
             other.SetArrows(ArrowFlag.NONE);
             other.SetCenter(false);
             SetCenter(NbParticlesOn > 0);
@@ -136,6 +127,17 @@ namespace ArrowLink
             colorModul.color = color;
             colorModul = Center.colorOverLifetime;
             colorModul.color = color;
+        }
+
+        public void CancelParticlesLoop()
+        {
+            var mainModule = Center.main;
+            mainModule.loop = false;
+            foreach (var particles in m_particlesAsList)
+            {
+                mainModule = particles.main;
+                mainModule.loop = false;
+            }
         }
 
         public void GrabColor(Color col)

@@ -250,10 +250,9 @@ namespace ArrowLink
 			m_boardLogic.ComputeTileNeighbor(tile);
             tile.ComputeLinkedChain(ref chain, ref chainAsList, ref depthList, ref freeLinks);
             int chainCount = chain.Count;
-            
+
             //string s = ""; foreach (var d in depthList) s += d.ToString() + ",";
             //Debug.Log(s);
-            
 
 			if (chainCount >= c_comboMin)
 			{
@@ -326,7 +325,7 @@ namespace ArrowLink
 			m_guiManager.NotifyScoreChanged(m_currentScore, comboPoints);
 
             int i = 0;
-            float lineGap = .25f;
+            float lineGap = 0f;
 			foreach (var tile in m_currentCombo)
 			{
 				m_boardLogic.RemoveTile(tile.X, tile.Y);

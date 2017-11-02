@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4445947266049814}
   - component: {fileID: 114281043410130400}
   - component: {fileID: 114960483883459746}
+  - component: {fileID: 114228743280757812}
   m_Layer: 0
   m_Name: W
   m_TagString: Untagged
@@ -38,6 +39,7 @@ GameObject:
   - component: {fileID: 4562361777908602}
   - component: {fileID: 114599925374457296}
   - component: {fileID: 114446040099811664}
+  - component: {fileID: 114360714420696186}
   m_Layer: 0
   m_Name: NE
   m_TagString: Untagged
@@ -123,6 +125,7 @@ GameObject:
   - component: {fileID: 4551213984650164}
   - component: {fileID: 114821922224553338}
   - component: {fileID: 114702559701204702}
+  - component: {fileID: 114240464342251084}
   m_Layer: 0
   m_Name: SE
   m_TagString: Untagged
@@ -208,6 +211,7 @@ GameObject:
   - component: {fileID: 4891039476173034}
   - component: {fileID: 114883294678208644}
   - component: {fileID: 114437349794441924}
+  - component: {fileID: 114573916288821758}
   m_Layer: 0
   m_Name: S
   m_TagString: Untagged
@@ -225,6 +229,7 @@ GameObject:
   - component: {fileID: 4213742919717336}
   - component: {fileID: 114978220301699146}
   - component: {fileID: 114729315456753370}
+  - component: {fileID: 114112197437268274}
   m_Layer: 0
   m_Name: N
   m_TagString: Untagged
@@ -321,7 +326,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1465103823328968
 GameObject:
   m_ObjectHideFlags: 1
@@ -587,6 +592,7 @@ GameObject:
   - component: {fileID: 4745550457175124}
   - component: {fileID: 114734396037849136}
   - component: {fileID: 114480214063777684}
+  - component: {fileID: 114944751694110538}
   m_Layer: 0
   m_Name: E
   m_TagString: Untagged
@@ -621,6 +627,7 @@ GameObject:
   - component: {fileID: 4593319975000008}
   - component: {fileID: 114897826590597246}
   - component: {fileID: 114662138937322158}
+  - component: {fileID: 114223764446516918}
   m_Layer: 0
   m_Name: NW
   m_TagString: Untagged
@@ -673,6 +680,7 @@ GameObject:
   - component: {fileID: 212585300665731286}
   - component: {fileID: 114255374458490944}
   - component: {fileID: 114575070579196230}
+  - component: {fileID: 114683447272821664}
   m_Layer: 0
   m_Name: Inner
   m_TagString: Untagged
@@ -741,6 +749,7 @@ GameObject:
   - component: {fileID: 4009619040956670}
   - component: {fileID: 114332839234417716}
   - component: {fileID: 114188551799425332}
+  - component: {fileID: 114671421226899932}
   m_Layer: 0
   m_Name: SW
   m_TagString: Untagged
@@ -775,6 +784,7 @@ GameObject:
   - component: {fileID: 4320061751320382}
   - component: {fileID: 212027300288995122}
   - component: {fileID: 114109769659861822}
+  - component: {fileID: 114939212628687424}
   m_Layer: 0
   m_Name: Center
   m_TagString: Untagged
@@ -1439,6 +1449,70 @@ MonoBehaviour:
   m_mode: 0
   m_colorToGrab: 3
   m_customGrabber: {fileID: 0}
+--- !u!114 &114112197437268274
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1327622958499482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1ae0636430f9a247bf91d1d0fac7356, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_name: FadeOut
+  m_parameters:
+    m_optionalTarget: {fileID: 1623553010461472}
+    Duration: 0.5
+    IsPosition: 0
+    IsLocalPosition: 0
+    PositionStart: {x: 0, y: 0, z: 0}
+    PositionEnd: {x: 0, y: 0, z: 0}
+    PositionCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsRotation: 0
+    AngleStart: 0
+    AngleEnd: 0
+    AngleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsScale: 0
+    ScaleStart: {x: 0, y: 0, z: 0}
+    ScaleEnd: {x: 0, y: 0, z: 0}
+    ScaleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsAlpha: 1
+    AlphaStart: 1
+    AlphaEnd: 0
+    AlphaCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0
+        inSlope: 1
+        outSlope: 1
+        tangentMode: 34
+      - serializedVersion: 2
+        time: 1
+        value: 1
+        inSlope: 1
+        outSlope: 1
+        tangentMode: 34
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
 --- !u!114 &114162172122211558
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1541,6 +1615,198 @@ MonoBehaviour:
   W: {fileID: 198546261050360340}
   NW: {fileID: 198948908309151756}
   Model: {fileID: 198335102570144416}
+--- !u!114 &114223764446516918
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1854003655577258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1ae0636430f9a247bf91d1d0fac7356, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_name: FadeOut
+  m_parameters:
+    m_optionalTarget: {fileID: 1971348939441314}
+    Duration: 0.5
+    IsPosition: 0
+    IsLocalPosition: 0
+    PositionStart: {x: 0, y: 0, z: 0}
+    PositionEnd: {x: 0, y: 0, z: 0}
+    PositionCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsRotation: 0
+    AngleStart: 0
+    AngleEnd: 0
+    AngleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsScale: 0
+    ScaleStart: {x: 0, y: 0, z: 0}
+    ScaleEnd: {x: 0, y: 0, z: 0}
+    ScaleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsAlpha: 1
+    AlphaStart: 1
+    AlphaEnd: 0
+    AlphaCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0
+        inSlope: 1
+        outSlope: 1
+        tangentMode: 34
+      - serializedVersion: 2
+        time: 1
+        value: 1
+        inSlope: 1
+        outSlope: 1
+        tangentMode: 34
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+--- !u!114 &114228743280757812
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1008922167571606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1ae0636430f9a247bf91d1d0fac7356, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_name: FadeOut
+  m_parameters:
+    m_optionalTarget: {fileID: 1639600381991830}
+    Duration: 0.5
+    IsPosition: 0
+    IsLocalPosition: 0
+    PositionStart: {x: 0, y: 0, z: 0}
+    PositionEnd: {x: 0, y: 0, z: 0}
+    PositionCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsRotation: 0
+    AngleStart: 0
+    AngleEnd: 0
+    AngleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsScale: 0
+    ScaleStart: {x: 0, y: 0, z: 0}
+    ScaleEnd: {x: 0, y: 0, z: 0}
+    ScaleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsAlpha: 1
+    AlphaStart: 1
+    AlphaEnd: 0
+    AlphaCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0
+        inSlope: 1
+        outSlope: 1
+        tangentMode: 34
+      - serializedVersion: 2
+        time: 1
+        value: 1
+        inSlope: 1
+        outSlope: 1
+        tangentMode: 34
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+--- !u!114 &114240464342251084
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1118312085393726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1ae0636430f9a247bf91d1d0fac7356, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_name: FadeOut
+  m_parameters:
+    m_optionalTarget: {fileID: 1720740260347574}
+    Duration: 0.5
+    IsPosition: 0
+    IsLocalPosition: 0
+    PositionStart: {x: 0, y: 0, z: 0}
+    PositionEnd: {x: 0, y: 0, z: 0}
+    PositionCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsRotation: 0
+    AngleStart: 0
+    AngleEnd: 0
+    AngleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsScale: 0
+    ScaleStart: {x: 0, y: 0, z: 0}
+    ScaleEnd: {x: 0, y: 0, z: 0}
+    ScaleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsAlpha: 1
+    AlphaStart: 1
+    AlphaEnd: 0
+    AlphaCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0
+        inSlope: 1
+        outSlope: 1
+        tangentMode: 34
+      - serializedVersion: 2
+        time: 1
+        value: 1
+        inSlope: 1
+        outSlope: 1
+        tangentMode: 34
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
 --- !u!114 &114255374458490944
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1761,6 +2027,70 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
+--- !u!114 &114360714420696186
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1015587888498056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1ae0636430f9a247bf91d1d0fac7356, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_name: FadeOut
+  m_parameters:
+    m_optionalTarget: {fileID: 1699916422956770}
+    Duration: 0.5
+    IsPosition: 0
+    IsLocalPosition: 0
+    PositionStart: {x: 0, y: 0, z: 0}
+    PositionEnd: {x: 0, y: 0, z: 0}
+    PositionCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsRotation: 0
+    AngleStart: 0
+    AngleEnd: 0
+    AngleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsScale: 0
+    ScaleStart: {x: 0, y: 0, z: 0}
+    ScaleEnd: {x: 0, y: 0, z: 0}
+    ScaleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsAlpha: 1
+    AlphaStart: 1
+    AlphaEnd: 0
+    AlphaCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0
+        inSlope: 1
+        outSlope: 1
+        tangentMode: 34
+      - serializedVersion: 2
+        time: 1
+        value: 1
+        inSlope: 1
+        outSlope: 1
+        tangentMode: 34
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
 --- !u!114 &114412306567903622
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2138,6 +2468,70 @@ MonoBehaviour:
   m_mode: 0
   m_colorToGrab: 3
   m_customGrabber: {fileID: 0}
+--- !u!114 &114573916288821758
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1312347342837454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1ae0636430f9a247bf91d1d0fac7356, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_name: FadeOut
+  m_parameters:
+    m_optionalTarget: {fileID: 1040619301309010}
+    Duration: 0.5
+    IsPosition: 0
+    IsLocalPosition: 0
+    PositionStart: {x: 0, y: 0, z: 0}
+    PositionEnd: {x: 0, y: 0, z: 0}
+    PositionCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsRotation: 0
+    AngleStart: 0
+    AngleEnd: 0
+    AngleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsScale: 0
+    ScaleStart: {x: 0, y: 0, z: 0}
+    ScaleEnd: {x: 0, y: 0, z: 0}
+    ScaleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsAlpha: 1
+    AlphaStart: 1
+    AlphaEnd: 0
+    AlphaCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0
+        inSlope: 1
+        outSlope: 1
+        tangentMode: 34
+      - serializedVersion: 2
+        time: 1
+        value: 1
+        inSlope: 1
+        outSlope: 1
+        tangentMode: 34
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
 --- !u!114 &114575070579196230
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2372,6 +2766,134 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
+--- !u!114 &114671421226899932
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1986943299650610}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1ae0636430f9a247bf91d1d0fac7356, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_name: FadeOut
+  m_parameters:
+    m_optionalTarget: {fileID: 1942134082903890}
+    Duration: 0.5
+    IsPosition: 0
+    IsLocalPosition: 0
+    PositionStart: {x: 0, y: 0, z: 0}
+    PositionEnd: {x: 0, y: 0, z: 0}
+    PositionCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsRotation: 0
+    AngleStart: 0
+    AngleEnd: 0
+    AngleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsScale: 0
+    ScaleStart: {x: 0, y: 0, z: 0}
+    ScaleEnd: {x: 0, y: 0, z: 0}
+    ScaleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsAlpha: 1
+    AlphaStart: 1
+    AlphaEnd: 0
+    AlphaCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0
+        inSlope: 1
+        outSlope: 1
+        tangentMode: 34
+      - serializedVersion: 2
+        time: 1
+        value: 1
+        inSlope: 1
+        outSlope: 1
+        tangentMode: 34
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+--- !u!114 &114683447272821664
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1944564030643938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1ae0636430f9a247bf91d1d0fac7356, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_name: FadeOut
+  m_parameters:
+    m_optionalTarget: {fileID: 0}
+    Duration: 0.5
+    IsPosition: 0
+    IsLocalPosition: 0
+    PositionStart: {x: 0, y: 0, z: 0}
+    PositionEnd: {x: 0, y: 0, z: 0}
+    PositionCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsRotation: 0
+    AngleStart: 0
+    AngleEnd: 0
+    AngleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsScale: 0
+    ScaleStart: {x: 0, y: 0, z: 0}
+    ScaleEnd: {x: 0, y: 0, z: 0}
+    ScaleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsAlpha: 1
+    AlphaStart: 1
+    AlphaEnd: 0
+    AlphaCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0
+        inSlope: 1
+        outSlope: 1
+        tangentMode: 34
+      - serializedVersion: 2
+        time: 1
+        value: 1
+        inSlope: 1
+        outSlope: 1
+        tangentMode: 34
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
 --- !u!114 &114695624984112512
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2897,6 +3419,134 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 0
+--- !u!114 &114939212628687424
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1992437330757662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1ae0636430f9a247bf91d1d0fac7356, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_name: FadeOut
+  m_parameters:
+    m_optionalTarget: {fileID: 0}
+    Duration: 0.5
+    IsPosition: 0
+    IsLocalPosition: 0
+    PositionStart: {x: 0, y: 0, z: 0}
+    PositionEnd: {x: 0, y: 0, z: 0}
+    PositionCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsRotation: 0
+    AngleStart: 0
+    AngleEnd: 0
+    AngleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsScale: 0
+    ScaleStart: {x: 0, y: 0, z: 0}
+    ScaleEnd: {x: 0, y: 0, z: 0}
+    ScaleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsAlpha: 1
+    AlphaStart: 1
+    AlphaEnd: 0
+    AlphaCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0
+        inSlope: 1
+        outSlope: 1
+        tangentMode: 34
+      - serializedVersion: 2
+        time: 1
+        value: 1
+        inSlope: 1
+        outSlope: 1
+        tangentMode: 34
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+--- !u!114 &114944751694110538
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1760607649255122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1ae0636430f9a247bf91d1d0fac7356, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_name: FadeOut
+  m_parameters:
+    m_optionalTarget: {fileID: 1214040367559136}
+    Duration: 0.5
+    IsPosition: 0
+    IsLocalPosition: 0
+    PositionStart: {x: 0, y: 0, z: 0}
+    PositionEnd: {x: 0, y: 0, z: 0}
+    PositionCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsRotation: 0
+    AngleStart: 0
+    AngleEnd: 0
+    AngleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsScale: 0
+    ScaleStart: {x: 0, y: 0, z: 0}
+    ScaleEnd: {x: 0, y: 0, z: 0}
+    ScaleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsAlpha: 1
+    AlphaStart: 1
+    AlphaEnd: 0
+    AlphaCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0
+        inSlope: 1
+        outSlope: 1
+        tangentMode: 34
+      - serializedVersion: 2
+        time: 1
+        value: 1
+        inSlope: 1
+        outSlope: 1
+        tangentMode: 34
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
 --- !u!114 &114960483883459746
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2984,6 +3634,7 @@ MonoBehaviour:
   m_basicParticles: {fileID: 114874346648104780}
   m_superParticles: {fileID: 114199082152823744}
   m_tileLinks: []
+  m_centerRef: {fileID: 1992437330757662}
   m_flash_particles: {fileID: 198825293427227366}
   m_inComboparticles: {fileID: 0}
   m_tweens:
@@ -2995,23 +3646,8 @@ MonoBehaviour:
     ActivationUnveil: {fileID: 114926988784431676}
     PlaySlide: {fileID: 114668919989750144}
     Crunchable: {fileID: 114455092617224254}
-    LinkTweens:
-      N_shrink: {fileID: 0}
-      N_nudge: {fileID: 0}
-      NE_shrink: {fileID: 0}
-      NE_nudge: {fileID: 0}
-      E_shrink: {fileID: 0}
-      E_nudge: {fileID: 0}
-      SE_shrink: {fileID: 0}
-      SE_nudge: {fileID: 0}
-      S_shrink: {fileID: 0}
-      S_nudge: {fileID: 0}
-      SW_shrink: {fileID: 0}
-      SW_nudge: {fileID: 0}
-      W_shrink: {fileID: 0}
-      W_nudge: {fileID: 0}
-      NW_shrink: {fileID: 0}
-      NW_nudge: {fileID: 0}
+    BackFadeOut: {fileID: 114683447272821664}
+    CenterFadeOut: {fileID: 114939212628687424}
 --- !u!114 &114978220301699146
 MonoBehaviour:
   m_ObjectHideFlags: 1
