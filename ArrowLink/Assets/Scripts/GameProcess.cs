@@ -49,6 +49,7 @@ namespace ArrowLink
 		ArrowCard m_nextCard = null;
 
 		BoardSlot m_playedSlot;
+        ArrowCard m_pressedCard = null;
 		//float m_comboTimer = -1f;
 		HashSet<LogicTile> m_currentCombo = new HashSet<LogicTile>();
 
@@ -122,6 +123,8 @@ namespace ArrowLink
 
 		private void Update()
 		{
+            ProcessPressedCard();
+
 			m_currentState.ProcessPlayedSlot();
 		}
 
@@ -188,6 +191,11 @@ namespace ArrowLink
 		{
 			m_playedSlot = slot;
 		}
+
+        public void OnArrowCardPressed(ArrowCard pressedCard)
+        {
+            m_pressedCard = pressedCard;
+        }
 
         private void DefaultProcessPlayedSlot()
         {
@@ -294,6 +302,24 @@ namespace ArrowLink
 
         }
 
+        private void ProcessPressedCard()
+        {
+            if (m_pressedCard != null)
+            {
+                if (m_pressedCard == m_nextCard)
+                {
+                    m_nextCard.MoveToPosition(m_playingCardTransform.position);
+                    m_currentCard.MoveToPosition(m_nextPlayingCardTransform.position);
+                    m_nextCard.m_tweens.ActivationUnveil.StartTween();
+                    m_currentCard.m_tweens.ActivationVeil.StartTween();
+                    var temp = m_nextCard;
+                    m_nextCard = m_currentCard;
+                    m_currentCard = temp;
+                }
+
+                m_pressedCard = null;
+            }
+        }
 
 		TileLink CreateTileLink(Vector3 p1, Vector3 p2)
 		{

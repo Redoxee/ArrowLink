@@ -320,6 +320,8 @@ GameObject:
   - component: {fileID: 114162172122211558}
   - component: {fileID: 114668919989750144}
   - component: {fileID: 114455092617224254}
+  - component: {fileID: 61387652015072934}
+  - component: {fileID: 114647080622308924}
   m_Layer: 0
   m_Name: TrailCard
   m_TagString: Untagged
@@ -389,6 +391,7 @@ GameObject:
   - component: {fileID: 212665850013549774}
   - component: {fileID: 114926988784431676}
   - component: {fileID: 114586991329558442}
+  - component: {fileID: 114506950842373854}
   m_Layer: 0
   m_Name: Veil
   m_TagString: Untagged
@@ -1421,6 +1424,31 @@ Transform:
   m_Father: {fileID: 4562361777908602}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &61387652015072934
+BoxCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1419058054250480}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 3, y: 3}
+  m_EdgeRadius: 0
 --- !u!114 &114090563939413700
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2454,6 +2482,70 @@ MonoBehaviour:
   m_mode: 0
   m_colorToGrab: 3
   m_customGrabber: {fileID: 0}
+--- !u!114 &114506950842373854
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1513083123167174}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1ae0636430f9a247bf91d1d0fac7356, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_name: Veil
+  m_parameters:
+    m_optionalTarget: {fileID: 0}
+    Duration: 0.5
+    IsPosition: 0
+    IsLocalPosition: 0
+    PositionStart: {x: 0, y: 0, z: 0}
+    PositionEnd: {x: 0, y: 0, z: 0}
+    PositionCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsRotation: 0
+    AngleStart: 0
+    AngleEnd: 0
+    AngleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsScale: 0
+    ScaleStart: {x: 0, y: 0, z: 0}
+    ScaleEnd: {x: 0, y: 0, z: 0}
+    ScaleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsAlpha: 1
+    AlphaStart: 0
+    AlphaEnd: 0.75
+    AlphaCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0
+        inSlope: 2
+        outSlope: 2
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
 --- !u!114 &114568621113149416
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2629,6 +2721,70 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 0
+    IsAlpha: 0
+    AlphaStart: 0
+    AlphaEnd: 0
+    AlphaCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+--- !u!114 &114647080622308924
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1419058054250480}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1ae0636430f9a247bf91d1d0fac7356, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_name: MoveTween
+  m_parameters:
+    m_optionalTarget: {fileID: 0}
+    Duration: 0.5
+    IsPosition: 1
+    IsLocalPosition: 0
+    PositionStart: {x: 0, y: 0, z: 0}
+    PositionEnd: {x: 0, y: 0, z: 0}
+    PositionCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0
+        inSlope: 0.566953
+        outSlope: 0.566953
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+    IsRotation: 0
+    AngleStart: 0
+    AngleEnd: 0
+    AngleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsScale: 0
+    ScaleStart: {x: 0, y: 0, z: 0}
+    ScaleEnd: {x: 0, y: 0, z: 0}
+    ScaleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
     IsAlpha: 0
     AlphaStart: 0
     AlphaEnd: 0
@@ -3641,9 +3797,11 @@ MonoBehaviour:
     Introduction: {fileID: 114412306567903622}
     Activation: {fileID: 114496812469782356}
     Play: {fileID: 114162172122211558}
+    MoveTween: {fileID: 114647080622308924}
     IntroductionSlide: {fileID: 114412306567903622}
     ActivationSlide: {fileID: 114985332169553100}
     ActivationUnveil: {fileID: 114926988784431676}
+    ActivationVeil: {fileID: 114506950842373854}
     PlaySlide: {fileID: 114668919989750144}
     Crunchable: {fileID: 114455092617224254}
     BackFadeOut: {fileID: 114683447272821664}

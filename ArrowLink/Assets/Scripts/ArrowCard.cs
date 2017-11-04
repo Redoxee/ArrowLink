@@ -248,6 +248,19 @@ namespace ArrowLink
             m_superParticles.CancelParticlesLoop();
         }
 
+        public void MoveToPosition(Vector3 target,Action onMoved = null)
+        {
+            var currentPos = transform.position;
+            currentPos.z = target.z;
+            transform.position = currentPos;
+
+            var tween = m_tweens.MoveTween;
+            tween.StopTween();
+            tween.m_parameters.PositionStart = currentPos;
+            tween.m_parameters.PositionEnd = target;
+            tween.StartTween(onMoved);
+        }
+
         [System.Serializable]
 		public struct CardTweenAnimations
 		{
@@ -255,11 +268,13 @@ namespace ArrowLink
 			public BaseTween Introduction;
 			public BaseTween Activation;
 			public BaseTween Play;
+            public SingleTween MoveTween;
 
 			[Header("Details")]
 			public SingleTween IntroductionSlide;
 			public SingleTween ActivationSlide;
 			public SingleTween ActivationUnveil;
+            public SingleTween ActivationVeil;
 			public SingleTween PlaySlide;
             public SingleTween Crunchable;
             
@@ -296,7 +311,10 @@ namespace ArrowLink
             
         }
 
-
+        private void OnMouseUpAsButton()
+        {
+            GameProcess.Instance.OnArrowCardPressed(this);
+        }
 
         [Serializable]
         public class LinkTweens
