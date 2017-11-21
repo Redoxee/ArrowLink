@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -29,7 +30,8 @@ namespace ArrowLink
 		GameObject m_W = null;
 		[SerializeField]
 		GameObject m_NW = null;
-        
+
+        private Dictionary<ArrowFlag, GameObject> m_branchDictionary = new Dictionary<ArrowFlag, GameObject>(8);
 
         [SerializeField]
         ParticlesHolder m_basicParticles = null;
@@ -53,6 +55,9 @@ namespace ArrowLink
 		public ParticleSystem InComboparticles { get { return m_inComboparticles; } }
 
 		public CardTweenAnimations m_tweens;
+
+        [SerializeField]
+        private BoxCollider2D m_trigger = null;
 
         private bool m_isCrunchable = false;
         public bool IsCrunchableAnimation { get { return m_isCrunchable; } set
@@ -169,6 +174,8 @@ namespace ArrowLink
 			m_currentState = TileState.SlidingToPosition;
 			m_onGoToSlotEnd = onArriveToSlot;
 
+            m_trigger.enabled = false;
+
 			Vector3 target = slot.transform.position;
 
             var currentPos = transform.position;
@@ -209,10 +216,18 @@ namespace ArrowLink
             StartCoroutine(SwitchToSuperMode(.15f));
         }
 
+        public void FlashIntoSuperMode()
+        {
+            m_flash_particles.Play();
+            StartCoroutine(SwitchToSuperMode(.2f));
+        }
+
         private System.Collections.IEnumerator SwitchToSuperMode(float delay)
         {
             yield return new WaitForSeconds(delay);
             IsSuperMode = true;
+
+            GameProcess gp = GameProcess.Instance;
         }
 
         public void RemoveArrow(ArrowFlag direction)
@@ -248,6 +263,27 @@ namespace ArrowLink
             m_superParticles.CancelParticlesLoop();
         }
 
+        private float m_linkedRemanance = .5f;
+        private float m_timeBeforeDeath = 5f;
+        public void SoftDestroy()
+        {
+            FadeOutNonLink();
+            StartCoroutine(SoftStopParticleDelayed(m_linkedRemanance));
+            StartCoroutine(DelayedDestroy(m_timeBeforeDeath));
+        }
+
+        private IEnumerator SoftStopParticleDelayed(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            SoftStopParticles();
+        }
+
+        private IEnumerator DelayedDestroy(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            Destroy(gameObject);
+        }
+
         public void MoveToPosition(Vector3 target,Action onMoved = null)
         {
             var currentPos = transform.position;
@@ -259,6 +295,11 @@ namespace ArrowLink
             tween.m_parameters.PositionStart = currentPos;
             tween.m_parameters.PositionEnd = target;
             tween.StartTween(onMoved);
+        }
+
+        public GameObject GetArrowObject(ArrowFlag direction)
+        {
+            return m_branchDictionary[direction];
         }
 
         [System.Serializable]
@@ -299,6 +340,15 @@ namespace ArrowLink
 
         void GrabLinkTweens()
         {
+            m_branchDictionary[ArrowFlag.N] = m_N;
+            m_branchDictionary[ArrowFlag.NE] = m_NE;
+            m_branchDictionary[ArrowFlag.E] = m_E;
+            m_branchDictionary[ArrowFlag.SE] = m_SE;
+            m_branchDictionary[ArrowFlag.S] = m_S;
+            m_branchDictionary[ArrowFlag.SW] = m_SW;
+            m_branchDictionary[ArrowFlag.W] = m_W;
+            m_branchDictionary[ArrowFlag.NW] = m_NW;
+
             m_tweens.LinkTweens = new Dictionary<ArrowFlag, LinkTweens>(8);
             m_tweens.LinkTweens[ArrowFlag.N] = new LinkTweens(m_N);
             m_tweens.LinkTweens[ArrowFlag.NE] = new LinkTweens(m_NE);

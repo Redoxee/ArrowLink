@@ -21,9 +21,6 @@ namespace ArrowLink
         AnimatedTextNumber m_scoreDeltaText = null;
 
         [SerializeField]
-        GraphicRaycaster m_gameplayGraphicRayCaster = null;
-
-        [SerializeField]
         SequenceUITween m_introFadeOutTween = null;
 
         [SerializeField]
@@ -54,10 +51,7 @@ namespace ArrowLink
             m_scoreDeltaText.SetDisplay(0);
             m_scoreDeltaText.gameObject.SetActive(false);
             m_scoreDeltaText.ReachedAction = OnScoreDeltaTextAnimEnded;
-
-            m_crunchProgressBar.SetDisplay(1);
-            m_crunchProgressBar.SetStarget(1);
-
+            
             m_endScreen.Initialize(this);
 
             m_dayNightModule.ManagerRef = ColorManager.Instance;
@@ -105,24 +99,8 @@ namespace ArrowLink
                 m_scoreDeltaText.gameObject.SetActive(false);
             }
         }
-
-        public void NotifyCrunchProgressChanged(float newProgress)
-        {
-            m_crunchProgressBar.SetStarget(newProgress);
-        }
-
-        public void NotifyBankVeilChanged(float newProgress)
-        {
-            m_bankProgressbar.SetStarget(newProgress);
-            if (newProgress == 0)
-            {
-                m_bankParticles.Play();
-            }
-            else
-            {
-                m_bankParticles.Stop();
-            }
-        }
+        
+        
 
         public void NotifyAvailableTileCountChanged(int availableTiles)
         {
@@ -194,7 +172,7 @@ namespace ArrowLink
 
 		private void IntroStart()
 		{
-			m_gameplayGraphicRayCaster.enabled = false;
+
 		}
 
 		private void IntroEnd()
@@ -209,12 +187,12 @@ namespace ArrowLink
 
 		private void _InGameStart()
 		{
-			m_gameplayGraphicRayCaster.enabled = true;
+
 		}
 
 		private void _InGameEnd()
 		{
-			m_gameplayGraphicRayCaster.enabled = false;
+
 		}
 
 		#endregion

@@ -3806,6 +3806,7 @@ MonoBehaviour:
     Crunchable: {fileID: 114455092617224254}
     BackFadeOut: {fileID: 114683447272821664}
     CenterFadeOut: {fileID: 114939212628687424}
+  m_trigger: {fileID: 61387652015072934}
 --- !u!114 &114978220301699146
 MonoBehaviour:
   m_ObjectHideFlags: 1

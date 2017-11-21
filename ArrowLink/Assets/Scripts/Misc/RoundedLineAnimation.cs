@@ -44,7 +44,7 @@ public class RoundedLineAnimation : MonoBehaviour {
     GameObject m_endSprite = null;
     [NonSerialized]
     Transform m_endSpriteTransform;
-    
+
     [NonSerialized]
     Vector3[] m_fullLinePoints;
 
@@ -69,26 +69,36 @@ public class RoundedLineAnimation : MonoBehaviour {
         UpdateLine();
     }
 
-    public void SetUpLine(Transform start, Transform end, float decalFactor = 1f,Action endAction = null, bool imediateCompute = true)
+    public void SetUpLine(Transform start, Transform end, float decalFactor = 1f, Action endAction = null, bool imediateCompute = true)
     {
         m_startPoint = start;
         m_endPoint = end;
         m_decalFactor = decalFactor;
         if (imediateCompute)
-            ComputePoints();
+            ComputePoints(start.position, end.position, decalFactor);
+        m_endAction = endAction;
+    }
+
+    public void SetUpLine(Vector3 start, Vector3 end, float decalFactor = 1f, Action endAction = null, bool imediateCompute = true)
+    {
+        if (imediateCompute)
+            ComputePoints(start, end, decalFactor);
         m_endAction = endAction;
     }
 
     public void ComputePoints()
     {
-        Vector3 end = m_endPoint.position;
-        Vector3 start = m_startPoint.position;
+        ComputePoints(m_startPoint.position, m_endPoint.position, m_decalFactor);
+    }
+
+    public void ComputePoints(Vector3 start, Vector3 end, float decalFactor)
+    {
         end.z = m_depth;
         start.z = end.z;
         Vector3 decal = end - start;
         Vector3 direction = decal.normalized;
         Vector3 normal = Quaternion.AngleAxis(90, Vector3.forward) * direction;
-        float decalLength = decal.magnitude * m_decalFactor;
+        float decalLength = decal.magnitude * decalFactor;
 
         m_fullLinePoints = new Vector3[c_totalLinePoints];
         m_fullLinePoints[0] = start;

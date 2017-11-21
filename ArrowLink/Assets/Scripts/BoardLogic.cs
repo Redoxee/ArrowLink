@@ -55,7 +55,7 @@ namespace ArrowLink{
 				if (IsInside(nx, ny))
 				{
 					var neighbor = m_board[nx, ny];
-					if (neighbor != null)
+					if (neighbor != null && neighbor.IsPlaced)
 					{
 						var oposite = dir.Reverse();
 						if (neighbor.m_flags.DoHave(oposite))
@@ -151,7 +151,8 @@ namespace ArrowLink{
         public Dictionary<ArrowFlag, LogicTile> m_linkedTile = new Dictionary<ArrowFlag, LogicTile>(8);
         public List<LogicTile> m_listLinkedTile = new List<LogicTile>(8);
 
-        public ArrowCard m_physicCardRef = null;
+        public ArrowCard PhysicalCard = null;
+        public bool IsPlaced = false;
 
         public LogicTile(ArrowFlag multiFlags, int x, int y)
         {
@@ -221,7 +222,7 @@ namespace ArrowLink{
                     m_arrows[i] = m_arrows[i + 1];
             }
             m_arrowCount -= 1;
-            m_physicCardRef.RemoveArrow(flag);
+            PhysicalCard.RemoveArrow(flag);
         }
     }
 

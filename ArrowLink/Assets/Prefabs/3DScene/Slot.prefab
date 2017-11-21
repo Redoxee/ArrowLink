@@ -24,6 +24,7 @@ GameObject:
   - component: {fileID: 114443083486040572}
   - component: {fileID: 114617283164075296}
   - component: {fileID: 114907162879143640}
+  - component: {fileID: 61907310152283678}
   m_Layer: 0
   m_Name: Slot
   m_TagString: Untagged
@@ -106,6 +107,31 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &61907310152283678
+BoxCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1065674328535258}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0.31, y: 0.31, z: 0.31, w: 0.31}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.64, y: 0.64}
+    newSize: {x: 3, y: 3}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 1
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 3, y: 3}
+  m_EdgeRadius: 0
 --- !u!114 &114344302157062712
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -117,8 +143,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3214b5b90c4ccf347a64178bbac5994d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_colorToGrab: 6
   m_mode: 0
+  m_colorToGrab: 6
   m_customGrabber: {fileID: 0}
 --- !u!114 &114443083486040572
 MonoBehaviour:
@@ -210,8 +236,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3214b5b90c4ccf347a64178bbac5994d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_colorToGrab: 0
   m_mode: 0
+  m_colorToGrab: 0
   m_customGrabber: {fileID: 0}
 --- !u!114 &114907162879143640
 MonoBehaviour:
@@ -224,8 +250,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3214b5b90c4ccf347a64178bbac5994d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_colorToGrab: 7
   m_mode: 0
+  m_colorToGrab: 7
   m_customGrabber: {fileID: 0}
 --- !u!114 &114953842111744066
 MonoBehaviour:
