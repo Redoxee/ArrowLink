@@ -37,9 +37,6 @@ namespace ArrowLink
         Transform m_nextPlayingCardTransform = null;
 
         [SerializeField]
-        ComboGauge m_comboGauge = null;
-
-        [SerializeField]
         AnimatedLinePool m_animatedLinePool = null;
         public AnimatedLinePool AnimatedLinePool { get { return m_animatedLinePool; } }
 
@@ -64,10 +61,6 @@ namespace ArrowLink
         private const int c_crunchTarget = 4;
         private int m_crunchPoints = 0;
 
-        public const int c_startingAvailableTile = 24;
-        public const int c_maxAvailableTile = 32;
-        public const int c_minComboToGainTiles = 5;
-
         private int m_bankPointTarget = 4;
         private int m_bankPoints = 0;
         public const int c_maxLinkPoints = 20;
@@ -76,22 +69,7 @@ namespace ArrowLink
         private DotCollection m_bankDots = null;
         [SerializeField]
         private DotCollection m_crunchDots = null;
-
-
-        private int m_nbCurrentAvailableTile = c_startingAvailableTile;
-        private int NbAvailableTile
-        {
-            get { return m_nbCurrentAvailableTile; }
-            set
-            {
-                m_nbCurrentAvailableTile = value;
-                if (m_nbCurrentAvailableTile > c_maxAvailableTile)
-                    m_nbCurrentAvailableTile = c_maxAvailableTile;
-                m_guiManager.NotifyAvailableTileCountChanged(m_nbCurrentAvailableTile);
-            }
-        }
-
-
+        
 
         private void Awake()
         {
@@ -127,10 +105,11 @@ namespace ArrowLink
 
             m_crunchPoints = 0;
 
-            NbAvailableTile = c_startingAvailableTile;
-
             m_bankDots.SetNumberOfDots(m_bankPointTarget);
             m_crunchDots.SetNumberOfDots(c_crunchTarget);
+
+            m_guiManager.SetBankable(false);
+            m_guiManager.SetCrunchable(false);
         }
 
         private void Update()
@@ -154,24 +133,13 @@ namespace ArrowLink
                 m_nextCard = null;
             }
 
-            if (m_nbCurrentAvailableTile < 1)
-                return;
-
             if (m_currentCard == null)
             {
                 ShootNewCurrentCard();
-                if (NbAvailableTile > 0)
-                    NbAvailableTile = NbAvailableTile - 1;
             }
-
-            if (m_nbCurrentAvailableTile < 1)
-                return;
-
             if (m_nextCard == null)
             {
                 ShootNewNextCard();
-                if (NbAvailableTile > 0)
-                    NbAvailableTile = NbAvailableTile - 1;
             }
         }
 
@@ -250,6 +218,7 @@ namespace ArrowLink
             m_playedSlot = null;
             m_crunchPoints = 0;
             m_crunchDots.StopAllDots();
+            m_guiManager.SetCrunchable(false);
 
         }
 
@@ -301,6 +270,10 @@ namespace ArrowLink
                         ));
                 }
                 m_bankPoints += pointToBank;
+                if (m_bankPoints >= m_bankPointTarget)
+                {
+                    m_guiManager.SetBankable(true);
+                }
 
                 int pointToCrunch = chainCount - pointToBank;
 
@@ -320,6 +293,10 @@ namespace ArrowLink
                         ));
                 }
                 m_crunchPoints += pointToCrunch;
+                if (m_crunchPoints >= c_crunchTarget)
+                {
+                    m_guiManager.SetCrunchable(true);
+                }
             }
 
 
@@ -457,11 +434,6 @@ namespace ArrowLink
             m_currentTileScore += tileLinked;
 
             m_guiManager.NotifyScoreChanged(m_currentScore, comboPoints);
-            
-            if (tileLinked >= c_minComboToGainTiles)
-            {
-                NbAvailableTile += tileLinked + 1;
-            }
 
             if (m_currentCard == null)
             {
@@ -473,6 +445,7 @@ namespace ArrowLink
             m_bankPointTarget += 1;
             m_bankPointTarget = Mathf.Min(m_bankPointTarget, c_maxLinkPoints);
             m_bankDots.SetNumberOfDots(m_bankPointTarget);
+            m_guiManager.SetBankable(false);
 
             CheckEndGame();
 
@@ -515,15 +488,6 @@ namespace ArrowLink
                 }
                 return;
             }
-            if (m_nbCurrentAvailableTile < 1)
-            {
-                if (m_currentCard != null || m_nextCard != null)
-                {
-                    return;
-                }
-                m_guiManager.NotifyEndGame();
-            }
-
         }
 
         public void RequestBank()

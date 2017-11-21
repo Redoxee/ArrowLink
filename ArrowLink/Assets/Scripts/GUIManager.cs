@@ -24,22 +24,15 @@ namespace ArrowLink
         SequenceUITween m_introFadeOutTween = null;
 
         [SerializeField]
-        AnimatedProgressbar m_bankProgressbar = null;
-
+        private VeilSprite m_bankVeil;
+        [SerializeField]
+        private VeilSprite m_crunchVeil;
         [SerializeField]
         ParticleSystem m_bankParticles = null;
 
         [SerializeField]
-        AnimatedProgressbar m_crunchProgressBar = null;
-
-        [SerializeField]
-        Text m_AvailableTile = null;
-        [SerializeField]
-        BaseTween m_dispenserAnimation = null;
-        bool m_isDispenserWigling = false;
-
-        [SerializeField]
         private DayNightModule m_dayNightModule;
+
 
         GameProcess m_gameProcess;
 
@@ -100,18 +93,6 @@ namespace ArrowLink
             }
         }
         
-        
-
-        public void NotifyAvailableTileCountChanged(int availableTiles)
-        {
-            m_AvailableTile.text = availableTiles.ToString();
-            m_isDispenserWigling = availableTiles < 1;
-            if (m_isDispenserWigling)
-            {
-                m_dispenserAnimation.StartTween(OnDispenserWiggleEnd);
-            }
-        }
-
         public void OnIntroCloseButtonPressed()
         {
             Debug.Log("Intro close button pressed");
@@ -126,6 +107,21 @@ namespace ArrowLink
         public void OnCrunchButtonPressed()
         {
             m_gameProcess.RequestTileCrunchToggle();
+            
+        }
+
+        public void SetBankable(bool isBankable)
+        {
+            m_bankVeil.SetVeilState(!isBankable);
+            if (isBankable)
+                m_bankParticles.Play();
+            else
+                m_bankParticles.Stop();
+        }
+
+        public void SetCrunchable(bool isCrunchable)
+        {
+            m_crunchVeil.SetVeilState(!isCrunchable);
         }
 
         GUIFSMState m_currentState;
@@ -205,21 +201,11 @@ namespace ArrowLink
 		{
 			GameProcess gp = GameProcess.Instance;
 			m_endScreen.DisplayEndScreen(gp.CurrentScore, gp.CurrentTileScore);
-            m_isDispenserWigling = false;
 		}
 
         #endregion
 
         #endregion
-
-
-        private void OnDispenserWiggleEnd()
-        {
-            if (m_isDispenserWigling)
-            {
-                m_dispenserAnimation.StartTween(OnDispenserWiggleEnd);
-            }
-        }
 
         [Serializable]
         struct DayNightModule

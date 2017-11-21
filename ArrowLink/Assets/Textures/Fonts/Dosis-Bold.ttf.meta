@@ -3,8 +3,9 @@ guid: 9042a76c5a08cc44da55f53c0e876b99
 timeCreated: 1500738085
 licenseType: Free
 TrueTypeFontImporter:
+  externalObjects: {}
   serializedVersion: 4
-  fontSize: 16
+  fontSize: 32
   forceTextureCase: -2
   characterSpacing: 0
   characterPadding: 1
