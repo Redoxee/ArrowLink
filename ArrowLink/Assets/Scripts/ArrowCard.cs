@@ -59,11 +59,11 @@ namespace ArrowLink
         [SerializeField]
         private BoxCollider2D m_trigger = null;
 
-        private bool m_isCrunchable = false;
-        public bool IsCrunchableAnimation { get { return m_isCrunchable; } set
+        private bool m_isWiggling = false;
+        public bool IsWigglingAnimation { get { return m_isWiggling; } set
             {
-                m_isCrunchable = value;
-                if (m_isCrunchable)
+                m_isWiggling = value;
+                if (m_isWiggling)
                 {
                     m_tweens.Crunchable.StartTween(CrunchableAnimationEnd);
                 }
@@ -203,7 +203,7 @@ namespace ArrowLink
 
         private void CrunchableAnimationEnd()
         {
-            if (m_isCrunchable)
+            if (m_isWiggling)
             {
                 m_tweens.Crunchable.StartTween(null,true);
             }

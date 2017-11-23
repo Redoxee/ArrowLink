@@ -32,9 +32,16 @@ namespace ArrowLink
         public FlagDistributor FlagDistributor { get { return m_flagDistributor; } }
 
         [SerializeField]
+        Transform m_popingCardTransform = null;
+        [SerializeField]
         Transform m_playingCardTransform = null;
         [SerializeField]
         Transform m_nextPlayingCardTransform = null;
+
+        [SerializeField]
+        Transform m_holdingCardTransform = null;
+
+        private ArrowCard m_holdedCard = null;
 
         [SerializeField]
         AnimatedLinePool m_animatedLinePool = null;
@@ -121,26 +128,26 @@ namespace ArrowLink
 
         void DrawNextCard()
         {
-            if (m_nextCard != null)
-            {
-                m_currentCard = m_nextCard;
+            //if (m_nextCard != null)
+            //{
+            //    m_currentCard = m_nextCard;
 
-                m_currentCard.PrepareActivationTween(m_playingCardTransform.position);
-                var currentCardTween = m_currentCard.m_tweens.Activation;
-                var unveilTween = m_currentCard.m_tweens.ActivationUnveil;
-                currentCardTween.StartTween(null);
-                unveilTween.StartTween();
-                m_nextCard = null;
-            }
+            //    m_currentCard.PrepareActivationTween(m_playingCardTransform.position);
+            //    var currentCardTween = m_currentCard.m_tweens.Activation;
+            //    var unveilTween = m_currentCard.m_tweens.ActivationUnveil;
+            //    currentCardTween.StartTween(null);
+            //    unveilTween.StartTween();
+            //    m_nextCard = null;
+            //}
 
-            if (m_currentCard == null)
-            {
+            //if (m_currentCard == null)
+            //{
                 ShootNewCurrentCard();
-            }
-            if (m_nextCard == null)
-            {
-                ShootNewNextCard();
-            }
+            //}
+            //if (m_nextCard == null)
+            //{
+            //    ShootNewNextCard();
+            //}
         }
 
         private void ShootNewCurrentCard()
@@ -148,11 +155,11 @@ namespace ArrowLink
             GameObject currentCardObject = Instantiate(m_cardPrefab);
             currentCardObject.SetActive(true);
             m_currentCard = currentCardObject.GetComponent<ArrowCard>();
-            m_currentCard.transform.position = m_playingCardTransform.position;
-            m_currentCard.PrepareIntroductionTween();
-            var introTween = m_currentCard.m_tweens.Introduction;
+            //m_currentCard.transform.position = m_playingCardTransform.position;
+            m_currentCard.transform.position = m_popingCardTransform.position;
+            //m_currentCard.PrepareIntroductionTween();
             var unveilTween = m_currentCard.m_tweens.ActivationUnveil;
-            introTween.StartTween();
+            m_currentCard.MoveToPosition(m_playingCardTransform.position);
             unveilTween.StartTween();
         }
 
@@ -575,7 +582,7 @@ namespace ArrowLink
         {
             foreach (var tile in m_boardLogic.AllTilePlaced)
             {
-                tile.PhysicalCard.IsCrunchableAnimation = true;
+                tile.PhysicalCard.IsWigglingAnimation = true;
             }
         }
 
@@ -584,10 +591,50 @@ namespace ArrowLink
 
             foreach (var tile in m_boardLogic.AllTilePlaced)
             {
-                tile.PhysicalCard.IsCrunchableAnimation = false;
+                tile.PhysicalCard.IsWigglingAnimation = false;
             }
         }
 
+        public void OnHoldButtonPressed()
+        {
+            if (m_holdedCard != null)
+            {
+                m_holdedCard.MoveToPosition(m_playingCardTransform.position);
+                m_holdedCard.m_tweens.ActivationUnveil.StartTween();
+            }
+            m_currentCard.MoveToPosition(m_holdingCardTransform.position);
+            m_currentCard.m_tweens.ActivationVeil.StartTween();
+
+            var temp = m_holdedCard;
+            m_holdedCard = m_currentCard;
+            if (temp != null)
+                m_currentCard = temp;
+            else
+                DrawNextCard();
+        }
+
+        public void OnNextButtonPressed()
+        {
+            for (int x = 0; x < BoardLogic.c_col; ++x)
+            {
+                for (int y = 0; y < BoardLogic.c_row; ++y)
+                {
+                    if (!m_boardLogic.IsFilled(x, y))
+                    {
+                        m_board.GetSlot(x, y).Flash();
+                    }
+                }
+            }
+        }
+
+        public void OnDispenserPressed()
+        {
+            if (!m_currentCard.IsWigglingAnimation)
+            {
+                m_currentCard.IsWigglingAnimation = true;
+                m_currentCard.IsWigglingAnimation = false;
+            }
+        }
     }
     #endregion
 }

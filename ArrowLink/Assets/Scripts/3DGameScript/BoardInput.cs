@@ -17,6 +17,11 @@ namespace ArrowLink
 				m_slots[i].Y = i / BoardLogic.c_col;
 			}
 		}
-        
+
+
+        public BoardSlot GetSlot(int x, int y)
+        {
+            return (m_slots[y * BoardLogic.c_col + x]);
+        }
 	}
 }
