@@ -24,9 +24,9 @@ namespace ArrowLink
         SequenceUITween m_introFadeOutTween = null;
 
         [SerializeField]
-        private VeilSprite m_bankVeil;
+        private VeilText m_bankVeil;
         [SerializeField]
-        private VeilSprite m_crunchVeil;
+        private VeilText m_crunchVeil;
         [SerializeField]
         ParticleSystem m_bankParticles = null;
 

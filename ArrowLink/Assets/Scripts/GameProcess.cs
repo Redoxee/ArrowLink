@@ -68,9 +68,9 @@ namespace ArrowLink
         private const int c_crunchTarget = 4;
         private int m_crunchPoints = 0;
 
-        private int m_bankPointTarget = 4;
+        private int m_bankPointTarget = 2;
         private int m_bankPoints = 0;
-        public const int c_maxLinkPoints = 20;
+        public const int c_maxLinkPoints = 33;
 
         [SerializeField]
         private DotCollection m_bankDots = null;
