@@ -73,6 +73,9 @@ namespace ArrowLink
         public const int c_maxLinkPoints = 33;
 
         [SerializeField]
+        private Transform m_feedbackCapsule = null;
+
+        [SerializeField]
         private DotCollection m_bankDots = null;
         [SerializeField]
         private DotCollection m_crunchDots = null;
@@ -128,26 +131,7 @@ namespace ArrowLink
 
         void DrawNextCard()
         {
-            //if (m_nextCard != null)
-            //{
-            //    m_currentCard = m_nextCard;
-
-            //    m_currentCard.PrepareActivationTween(m_playingCardTransform.position);
-            //    var currentCardTween = m_currentCard.m_tweens.Activation;
-            //    var unveilTween = m_currentCard.m_tweens.ActivationUnveil;
-            //    currentCardTween.StartTween(null);
-            //    unveilTween.StartTween();
-            //    m_nextCard = null;
-            //}
-
-            //if (m_currentCard == null)
-            //{
-                ShootNewCurrentCard();
-            //}
-            //if (m_nextCard == null)
-            //{
-            //    ShootNewNextCard();
-            //}
+            ShootNewCurrentCard();
         }
 
         private void ShootNewCurrentCard()
@@ -155,9 +139,7 @@ namespace ArrowLink
             GameObject currentCardObject = Instantiate(m_cardPrefab);
             currentCardObject.SetActive(true);
             m_currentCard = currentCardObject.GetComponent<ArrowCard>();
-            //m_currentCard.transform.position = m_playingCardTransform.position;
             m_currentCard.transform.position = m_popingCardTransform.position;
-            //m_currentCard.PrepareIntroductionTween();
             var unveilTween = m_currentCard.m_tweens.ActivationUnveil;
             m_currentCard.MoveToPosition(m_playingCardTransform.position);
             unveilTween.StartTween();
@@ -303,6 +285,23 @@ namespace ArrowLink
                 if (m_crunchPoints >= c_crunchTarget)
                 {
                     m_guiManager.SetCrunchable(true);
+                }
+
+
+                int pointToBonus = chainCount - pointToBank - pointToCrunch;
+                if (pointToBonus > 0)
+                {
+                    for (delay = 0; delay < pointToBonus; ++delay)
+                    {
+                        var target = m_feedbackCapsule;
+                        var logicTile = chainAsList[delay];
+                        StartCoroutine(AnimatedLineWithDelay(delay * c_flashDelay + .25f, logicTile.PhysicalCard.transform.position, target.position,
+                            () =>
+                            {
+
+                            }
+                            ));
+                    }
                 }
             }
 

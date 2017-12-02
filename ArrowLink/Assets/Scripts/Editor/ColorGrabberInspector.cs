@@ -23,5 +23,14 @@ public class ColorGrabberInspector : Editor {
             EditorGUILayout.PropertyField(sp);
         }
         serializedObject.ApplyModifiedProperties();
+
+        if (GUILayout.Button("Apply Colors"))
+        {
+            var manager = GameObject.FindObjectOfType<ColorManager>();
+            if (manager != null)
+            {
+                ((ColorGrabber)target).ApplyColor(manager.ColorCollection);
+            }
+        }
     }
 }
