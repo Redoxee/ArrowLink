@@ -26,6 +26,7 @@ public class RoundedLineAnimation : MonoBehaviour {
     [Header("Animation Parameters")]
     [SerializeField]
     private float m_lineTravelTime = 1f;
+    public float AnimationDuration { get { return m_lineTravelTime; } }
     [SerializeField]
     [Range(1, c_totalLinePoints * 2)]
     private int m_lineLengthInPoints = 64;

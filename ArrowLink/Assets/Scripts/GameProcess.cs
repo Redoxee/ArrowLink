@@ -79,6 +79,10 @@ namespace ArrowLink
         private DotCollection m_bankDots = null;
         [SerializeField]
         private DotCollection m_crunchDots = null;
+
+        private DelayedActionCollection m_placementTileDelayedActions = new DelayedActionCollection();
+
+        private OverLinkModule m_overLinkModule = new OverLinkModule();
         
 
         private void Awake()
@@ -120,13 +124,16 @@ namespace ArrowLink
 
             m_guiManager.SetBankable(false);
             m_guiManager.SetCrunchable(false);
+
+            m_guiManager.SetOverLinkCapsuleState(m_overLinkModule);
         }
 
         private void Update()
         {
             ProcessPressedCard();
-
             m_currentState.ProcessPlayedSlot();
+
+            m_placementTileDelayedActions.ManualUpdate();
         }
 
         void DrawNextCard()
@@ -212,17 +219,18 @@ namespace ArrowLink
         }
 
         public const float c_flashDelay = .15f;
+        public const float c_lineDelay = .25f;
 
         void CardTweenToSlotEnd(LogicTile tile)
         {
             m_nbCardOnTheWay -= 1;
             tile.IsPlaced = true;
 
-            var card = tile.PhysicalCard;
+            var placedCard = tile.PhysicalCard;
 
-            var pos = card.transform.position;
+            var pos = placedCard.transform.position;
             pos.z = ArrowCard.c_firstLevel;
-            card.transform.position = pos;
+            placedCard.transform.position = pos;
 
             HashSet<LogicTile> chain = new HashSet<LogicTile>();
             List<LogicTile> chainAsList = new List<LogicTile>();
@@ -238,25 +246,26 @@ namespace ArrowLink
             {
                 for (int i = 0; i < chainCount; i++)
                 {
-                    StartCoroutine(FlashWithDelay(i * c_flashDelay, chainAsList[i].PhysicalCard));
+                    var flashingCard = chainAsList[i].PhysicalCard;
+                    FlashWithDelay(i * c_flashDelay, flashingCard);
                 }
 
 
-                int pointToBank =Mathf.Clamp(chainCount, 0, m_bankPointTarget - m_bankPoints);
-
-                int delay = 0;
-                for (; delay < pointToBank; ++delay)
+                int pointToBank = Mathf.Clamp(chainCount, 0, m_bankPointTarget - m_bankPoints);
+                
+                for (int i = 0 ; i < pointToBank; ++i)
                 {
+                    int delay = i;
                     int dotIndex = m_bankPoints + delay;
                     Transform dot = m_bankDots.GetDot(dotIndex);
                     var logicTile = chainAsList[delay];
 
-                    StartCoroutine(AnimatedLineWithDelay(delay * c_flashDelay + .25f, logicTile.PhysicalCard.transform.position, dot.position,
+                    AnimatedLineWithDelay(delay * c_flashDelay + c_lineDelay, logicTile.PhysicalCard.transform.position, dot.position,
                         () =>
                         {
                             m_bankDots.LightDot(dotIndex);
                         }
-                        ));
+                        );
                 }
                 m_bankPoints += pointToBank;
                 if (m_bankPoints >= m_bankPointTarget)
@@ -268,18 +277,19 @@ namespace ArrowLink
 
                 pointToCrunch = Mathf.Min(pointToCrunch, c_crunchTarget - m_crunchPoints);
 
-                for (delay = 0; delay < pointToCrunch; ++delay)
+                for (int i = 0; i < pointToCrunch; ++i)
                 {
+                    int delay = i;
                     int dotIndex = m_crunchPoints + delay;
                     Transform dot = m_crunchDots.GetDot(dotIndex);
-                    var logicTile = chainAsList[delay];
+                    var logicTile = chainAsList[delay + pointToBank];
 
-                    StartCoroutine(AnimatedLineWithDelay(delay * c_flashDelay + .25f, logicTile.PhysicalCard.transform.position, dot.position,
+                    AnimatedLineWithDelay(delay * c_flashDelay + c_lineDelay, logicTile.PhysicalCard.transform.position, dot.position,
                         () =>
                         {
                             m_crunchDots.LightDot(dotIndex);
                         }
-                        ));
+                        );
                 }
                 m_crunchPoints += pointToCrunch;
                 if (m_crunchPoints >= c_crunchTarget)
@@ -291,22 +301,36 @@ namespace ArrowLink
                 int pointToBonus = chainCount - pointToBank - pointToCrunch;
                 if (pointToBonus > 0)
                 {
-                    for (delay = 0; delay < pointToBonus; ++delay)
+                    for (int i = 0;  i < pointToBonus; ++i)
                     {
+                        int delay = i;
                         var target = m_feedbackCapsule;
-                        var logicTile = chainAsList[delay];
-                        StartCoroutine(AnimatedLineWithDelay(delay * c_flashDelay + .25f, logicTile.PhysicalCard.transform.position, target.position,
+                        var logicTile = chainAsList[pointToBank + pointToCrunch + delay];
+                        int baseBonus = m_overLinkModule.OverLinkCounter ;
+                        AnimatedLineWithDelay(delay * c_flashDelay + c_lineDelay, logicTile.PhysicalCard.transform.position, target.position,
                             () =>
                             {
-
+                                m_guiManager.OverLinkGUICapsule.FlashTween.StartTween();
+                                int currentBonus = baseBonus + delay + 1;
+                                m_guiManager.OverLinkGUICapsule.DotBonus.text = string.Format("+{0}", m_overLinkModule.GetDotBonusForCounter(currentBonus));
+                                m_guiManager.OverLinkGUICapsule.ScoreBonus.text = string.Format("+{0}", m_overLinkModule.GetScoreBonusForCounter(currentBonus));
                             }
-                            ));
+                            );
                     }
+                    m_overLinkModule.OverLinkCounter += pointToBonus;
+
+                    float overLinkDelay = pointToBonus * c_lineDelay + AnimatedLinePool.GetLineAnimationDuration();
+                    m_placementTileDelayedActions.AddAction(overLinkDelay, () =>
+                     {
+                         m_guiManager.OverLinkGUICapsule.DotBonus.text = string.Format("+{0}", m_overLinkModule.GetDotBonus());
+                         m_guiManager.OverLinkGUICapsule.ScoreBonus.text = string.Format("+{0}", m_overLinkModule.GetScoreBonus());
+                     });
+
                 }
             }
 
 
-            card.m_tileLinks = new List<TileLink>(tile.m_listLinkedTile.Count);
+            placedCard.m_tileLinks = new List<TileLink>(tile.m_listLinkedTile.Count);
             var p1 = tile.PhysicalCard.transform.position;
 
             if (tile.m_listLinkedTile.Count > 0)
@@ -329,27 +353,36 @@ namespace ArrowLink
 
         }
 
-        private IEnumerator FlashWithDelay(float delay, ArrowCard card)
+        private void FlashWithDelay(float delay, ArrowCard card)
         {
-            yield return new WaitForSeconds(delay);
-            if (card != null)
-                card.FlashIntoSuperMode();
+
+            m_placementTileDelayedActions.AddAction(delay,
+                () =>
+                {
+
+                    card.FlashIntoSuperMode();
+                }
+                );
         }
 
-        private IEnumerator AnimatedLineWithDelay(float delay, Vector3 source, Vector3 target, Action endAction)
+        private void AnimatedLineWithDelay(float delay, Vector3 source, Vector3 target, Action endAction)
         {
-            yield return new WaitForSeconds(delay);
+            m_placementTileDelayedActions.AddAction(delay,
+                () => {
+                    GameObject lineObject;
+                    RoundedLineAnimation lineAnimation;
+                    AnimatedLinePool.GetInstance(out lineObject, out lineAnimation);
+                    float decalRandom = UnityEngine.Random.Range(-1f, 1f);
+                    float lineTime = lineAnimation.AnimationDuration;
+                    
+                    lineAnimation.SetUpLine(source, target, decalRandom,()=> {
+                        AnimatedLinePool.FreeInstance(lineObject);
+                    });
 
-            GameObject lineObject;
-            RoundedLineAnimation lineAnimation;
-            AnimatedLinePool.GetInstance(out lineObject, out lineAnimation);
-            float decalRandom = UnityEngine.Random.Range(-1f, 1f);
-            lineAnimation.SetUpLine(source, target, decalRandom, () =>
-            {
-                AnimatedLinePool.FreeInstance(lineObject);
-                endAction();
-            });
-            lineAnimation.StartAnimation();
+                    lineAnimation.StartAnimation();
+                });
+            float lineDuration = AnimatedLinePool.GetLineAnimationDuration();
+            m_placementTileDelayedActions.AddAction(delay + lineDuration,endAction);
         }
 
         private void ProcessPressedCard()
@@ -402,6 +435,8 @@ namespace ArrowLink
 
             int tileLinked = 0;
 
+            m_placementTileDelayedActions.Clear();
+
             for (int chIndex = 0; chIndex < allChainCount; ++ chIndex)
             {
                 var chain = allChains[chIndex];
@@ -421,11 +456,16 @@ namespace ArrowLink
                         }
                         GameObject lineObject;
                         RoundedLineAnimation lineAnimation;
+
                         m_animatedLinePool.GetInstance(out lineObject, out lineAnimation);
                         float decalRandom = UnityEngine.Random.Range(-1f, 1f);
                         lineAnimation.SetUpLine(card.transform, m_scoreTransform, decalRandom, () => { m_animatedLinePool.FreeInstance(lineObject); });
-                        StartCoroutine(lineAnimation.StartAnimationDelayed(tileIndex * lineGap));
 
+                        m_placementTileDelayedActions.AddAction(tileIndex * lineGap, () =>
+                        {
+                            lineAnimation.StartAnimation();
+                        });
+                        
                         card.SoftDestroy();
 
                         tileLinked++;
@@ -434,9 +474,8 @@ namespace ArrowLink
             }
 
             int comboPoints = ComputeComboPoint(tileLinked);
-
-
-            m_currentScore += comboPoints;
+            
+            m_currentScore += comboPoints + m_overLinkModule.GetScoreBonus();
             m_currentTileScore += tileLinked;
 
             m_guiManager.NotifyScoreChanged(m_currentScore, comboPoints);
@@ -448,10 +487,15 @@ namespace ArrowLink
 
             m_bankDots.StopAllDots();
             m_bankPoints = 0;
-            m_bankPointTarget += 1;
+            m_bankPointTarget += m_overLinkModule.GetDotBonus();
             m_bankPointTarget = Mathf.Min(m_bankPointTarget, c_maxLinkPoints);
             m_bankDots.SetNumberOfDots(m_bankPointTarget);
             m_guiManager.SetBankable(false);
+            
+            m_overLinkModule.OverLinkCounter = 0;
+            m_guiManager.SetOverLinkCapsuleState(m_overLinkModule);
+
+            m_flagDistributor.NotifyBonusRequested();
 
             CheckEndGame();
 
@@ -462,19 +506,7 @@ namespace ArrowLink
 
         int ComputeComboPoint(int nbTile)
         {
-            int points = 0;
-
-            int count = nbTile;
-
-            points += count * c_baseComboPoints;
-            count -= c_comboCurveStart;
-            while (count > 0)
-            {
-                points += c_baseComboPoints * count;
-                count--;
-            }
-
-            return points;
+            return nbTile * c_baseComboPoints;
         }
 
 
@@ -635,6 +667,62 @@ namespace ArrowLink
             }
         }
     }
+    #endregion
+
+    #region Delayed Action
+
+    public class DelayedActionCollection
+    {
+        public class TimedAction
+        {
+            public float TimeOfActivation = 0f;
+            public Action Action;
+
+            public static int Comparer(TimedAction a, TimedAction b)
+            {
+                return (a.TimeOfActivation == b.TimeOfActivation) ? 0 : (a.TimeOfActivation < b.TimeOfActivation) ? -1: 1;
+            }
+        }
+        List<TimedAction> m_actionList = new List<TimedAction>(100);
+
+        float m_timer = 0f;
+
+        
+
+        public void AddAction(float delay, Action action)
+        {
+            var newinstance = new TimedAction();
+            newinstance.TimeOfActivation = delay + m_timer;
+            newinstance.Action = action;
+            m_actionList.Add(newinstance);
+            m_actionList.Sort(TimedAction.Comparer);
+        }
+
+        public void Clear()
+        {
+            m_actionList.Clear();
+            m_timer = 0f;
+        }
+
+        public void ManualUpdate()
+        {
+            if (m_actionList.Count == 0)
+                return;
+            m_timer += Time.deltaTime;
+            if (m_timer < m_actionList[0].TimeOfActivation)
+                return;
+            int index = 0;
+            for (; index < m_actionList.Count; index++)
+            {
+                if (m_actionList[index].TimeOfActivation > m_timer)
+                    break;
+                m_actionList[index].Action();
+            }
+            m_actionList.RemoveRange(0, index);
+
+        }
+    }
+
     #endregion
 }
 

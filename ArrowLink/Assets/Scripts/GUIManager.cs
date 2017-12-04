@@ -33,6 +33,8 @@ namespace ArrowLink
         [SerializeField]
         private DayNightModule m_dayNightModule;
 
+        [SerializeField]
+        public OverlinkGUICapsule OverLinkGUICapsule;
 
         GameProcess m_gameProcess;
 
@@ -122,6 +124,13 @@ namespace ArrowLink
         public void SetCrunchable(bool isCrunchable)
         {
             m_crunchVeil.SetVeilState(!isCrunchable);
+        }
+
+        public void SetOverLinkCapsuleState(OverLinkModule ovm)
+        {
+            OverLinkGUICapsule.FlashTween.StartTween();
+            OverLinkGUICapsule.DotBonus.text = string.Format("+{0}", ovm.GetDotBonus());
+            OverLinkGUICapsule.ScoreBonus.text = string.Format("+{0}", ovm.GetScoreBonus());
         }
 
         GUIFSMState m_currentState;

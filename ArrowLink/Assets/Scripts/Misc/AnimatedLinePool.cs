@@ -42,4 +42,9 @@ public class AnimatedLinePool : MonoBehaviour {
         Debug.Assert(m_idToIndex.ContainsKey(id), "Unkown instance");
         m_availableObject.Add(id);
     }
+
+    public float GetLineAnimationDuration()
+    {
+        return m_cPool[0].AnimationDuration;
+    }
 }

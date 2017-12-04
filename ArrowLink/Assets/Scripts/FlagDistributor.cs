@@ -50,8 +50,9 @@ namespace ArrowLink
 		}
 
 
-		private List<int>[] m_allFlagsBynumber = new List<int>[8];
-		private HashSet<int> m_allFlags = new HashSet<int>();
+		protected List<int>[] m_allFlagsBynumber = new List<int>[8];
+		protected HashSet<int> m_allFlags = new HashSet<int>();
+
 		private void ComputeFallTiles()
 		{
 			m_allFlags.Clear();
@@ -96,7 +97,7 @@ namespace ArrowLink
 			return -1;
 		}
 
-		public ArrowFlag PickRandomFlags()
+		public virtual ArrowFlag PickRandomFlags()
 		{
 			if (m_allFlags.Count == 0)
 				throw new Exception("No more flag to dispense !");
@@ -133,6 +134,10 @@ namespace ArrowLink
 			m_allFlagsBynumber[nbArrow - 1].Add(iFlag);
 			return true;
 		}
+
+        public virtual void NotifyBonusRequested()
+        {
+        }
 
 		void TestRules()
 		{
