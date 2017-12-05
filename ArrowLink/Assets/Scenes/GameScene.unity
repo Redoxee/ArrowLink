@@ -268,7 +268,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: HOLD
+  m_Text: KEEP
 --- !u!222 &27170183
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3070,7 +3070,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_mode: 2
-  m_colorToGrab: 11
+  m_colorToGrab: 10
   m_customGrabber: {fileID: 0}
 --- !u!114 &244315197
 MonoBehaviour:
@@ -3084,7 +3084,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 0.56078434, g: 0.6039216, b: 0.6745098, a: 1}
   m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -4081,7 +4081,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_mode: 2
-  m_colorToGrab: 11
+  m_colorToGrab: 10
   m_customGrabber: {fileID: 0}
 --- !u!114 &349414049
 MonoBehaviour:
@@ -4095,7 +4095,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 0.56078434, g: 0.6039216, b: 0.6745098, a: 1}
   m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -7649,7 +7649,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.6901961, g: 0, b: 0.42352945, a: 1}
+  m_Color: {r: 0.9725491, g: 0.52156866, b: 0.03137255, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -7682,7 +7682,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_mode: 1
-  m_colorToGrab: 9
+  m_colorToGrab: 8
   m_customGrabber: {fileID: 0}
 --- !u!114 &869303494
 MonoBehaviour:
@@ -10836,7 +10836,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_mode: 1
-  m_colorToGrab: 10
+  m_colorToGrab: 0
   m_customGrabber: {fileID: 0}
 --- !u!114 &1232143799
 MonoBehaviour:
@@ -10850,7 +10850,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.56078434, g: 0.6039216, b: 0.6745098, a: 1}
+  m_Color: {r: 0.10196079, g: 0.1137255, b: 0.13725491, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -13772,7 +13772,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 917946898
+  randomSeed: 230801798
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -18322,6 +18322,11 @@ Prefab:
         type: 2}
       propertyPath: m_LocalPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114120255018399756, guid: 499c76845d9b1484b85659f4125a42b7,
+        type: 2}
+      propertyPath: m_colorToGrab
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 499c76845d9b1484b85659f4125a42b7, type: 2}

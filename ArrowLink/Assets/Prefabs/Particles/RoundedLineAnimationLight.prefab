@@ -40,7 +40,7 @@ GameObject:
   - component: {fileID: 120624622589795626}
   - component: {fileID: 114575076178853952}
   m_Layer: 0
-  m_Name: RoundedLineAnimation
+  m_Name: RoundedLineAnimationLight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

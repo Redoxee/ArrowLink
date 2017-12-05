@@ -210,12 +210,11 @@ namespace ArrowLink
                 Destroy(tile.PhysicalCard.gameObject);
                 
                 SetState(DefaultState);
+                m_crunchPoints = 0;
+                m_crunchDots.StopAllDots();
+                m_guiManager.SetCrunchable(false);
             }
             m_playedSlot = null;
-            m_crunchPoints = 0;
-            m_crunchDots.StopAllDots();
-            m_guiManager.SetCrunchable(false);
-
         }
 
         public const float c_flashDelay = .15f;
@@ -242,6 +241,10 @@ namespace ArrowLink
 
             var newLinkDirection = tile.m_linkedTile.Keys;
 
+            int pointToBank = 0;
+            int pointToBonus = 0;
+            int pointToCrunch = 0;
+
             if (chainCount > 1)
             {
                 for (int i = 0; i < chainCount; i++)
@@ -251,7 +254,7 @@ namespace ArrowLink
                 }
 
 
-                int pointToBank = Mathf.Clamp(chainCount, 0, m_bankPointTarget - m_bankPoints);
+                pointToBank = Mathf.Clamp(chainCount, 0, m_bankPointTarget - m_bankPoints);
                 
                 for (int i = 0 ; i < pointToBank; ++i)
                 {
@@ -273,7 +276,7 @@ namespace ArrowLink
                     m_guiManager.SetBankable(true);
                 }
 
-                int pointToCrunch = chainCount - pointToBank;
+                pointToCrunch = chainCount - pointToBank;
 
                 pointToCrunch = Mathf.Min(pointToCrunch, c_crunchTarget - m_crunchPoints);
 
@@ -282,9 +285,10 @@ namespace ArrowLink
                     int delay = i;
                     int dotIndex = m_crunchPoints + delay;
                     Transform dot = m_crunchDots.GetDot(dotIndex);
-                    var logicTile = chainAsList[delay + pointToBank];
+                    var tIndex = delay + pointToBank;
+                    var logicTile = chainAsList[tIndex];
 
-                    AnimatedLineWithDelay(delay * c_flashDelay + c_lineDelay, logicTile.PhysicalCard.transform.position, dot.position,
+                    AnimatedLineWithDelay(tIndex * c_flashDelay + c_lineDelay, logicTile.PhysicalCard.transform.position, dot.position,
                         () =>
                         {
                             m_crunchDots.LightDot(dotIndex);
@@ -298,16 +302,17 @@ namespace ArrowLink
                 }
 
 
-                int pointToBonus = chainCount - pointToBank - pointToCrunch;
+                pointToBonus = chainCount - pointToBank - pointToCrunch;
                 if (pointToBonus > 0)
                 {
                     for (int i = 0;  i < pointToBonus; ++i)
                     {
                         int delay = i;
                         var target = m_feedbackCapsule;
-                        var logicTile = chainAsList[pointToBank + pointToCrunch + delay];
+                        var tIndex = pointToBank + pointToCrunch + delay;
+                        var logicTile = chainAsList[tIndex];
                         int baseBonus = m_overLinkModule.OverLinkCounter ;
-                        AnimatedLineWithDelay(delay * c_flashDelay + c_lineDelay, logicTile.PhysicalCard.transform.position, target.position,
+                        AnimatedLineWithDelay(tIndex * c_flashDelay + c_lineDelay, logicTile.PhysicalCard.transform.position, target.position,
                             () =>
                             {
                                 m_guiManager.OverLinkGUICapsule.FlashTween.StartTween();
@@ -319,7 +324,7 @@ namespace ArrowLink
                     }
                     m_overLinkModule.OverLinkCounter += pointToBonus;
 
-                    float overLinkDelay = pointToBonus * c_lineDelay + AnimatedLinePool.GetLineAnimationDuration();
+                    float overLinkDelay = pointToBonus * c_flashDelay + AnimatedLinePool.GetLineAnimationDuration();
                     m_placementTileDelayedActions.AddAction(overLinkDelay, () =>
                      {
                          m_guiManager.OverLinkGUICapsule.DotBonus.text = string.Format("+{0}", m_overLinkModule.GetDotBonus());
@@ -349,7 +354,9 @@ namespace ArrowLink
 
             }
 
-            CheckEndGame();
+
+            m_placementTileDelayedActions.AddAction((pointToBank + pointToCrunch + pointToBonus) * c_flashDelay + c_lineDelay + AnimatedLinePool.GetLineAnimationDuration() + .25f, CheckEndGame);
+            //CheckEndGame();
 
         }
 
@@ -491,9 +498,10 @@ namespace ArrowLink
             m_bankPointTarget = Mathf.Min(m_bankPointTarget, c_maxLinkPoints);
             m_bankDots.SetNumberOfDots(m_bankPointTarget);
             m_guiManager.SetBankable(false);
-            
+
+            bool flashOverLink = m_overLinkModule.OverLinkCounter > 0;
             m_overLinkModule.OverLinkCounter = 0;
-            m_guiManager.SetOverLinkCapsuleState(m_overLinkModule);
+            m_guiManager.SetOverLinkCapsuleState(m_overLinkModule,flashOverLink);
 
             m_flagDistributor.NotifyBonusRequested();
 

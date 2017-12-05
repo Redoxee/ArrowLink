@@ -126,9 +126,13 @@ namespace ArrowLink
             m_crunchVeil.SetVeilState(!isCrunchable);
         }
 
-        public void SetOverLinkCapsuleState(OverLinkModule ovm)
+        public void SetOverLinkCapsuleState(OverLinkModule ovm, bool flash = true)
         {
-            OverLinkGUICapsule.FlashTween.StartTween();
+            if (flash)
+            {
+                OverLinkGUICapsule.FlashTween.StartTween();
+            }
+
             OverLinkGUICapsule.DotBonus.text = string.Format("+{0}", ovm.GetDotBonus());
             OverLinkGUICapsule.ScoreBonus.text = string.Format("+{0}", ovm.GetScoreBonus());
         }

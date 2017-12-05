@@ -8,12 +8,12 @@ public class OverLinkModule {
 
     public int GetDotBonusForCounter(int counter)
     {
-        return counter / 4 + 1;
+        return counter / 3 + 1;
     }
 
     public int GetScoreBonusForCounter(int counter)
     {
-        return (counter + 1) * 15;
+        return (counter ) * 35;
     }
 
     public int GetDotBonus()
