@@ -272,6 +272,17 @@ namespace ArrowLink
             StartCoroutine(DelayedDestroy(m_timeBeforeDeath));
         }
 
+        public void SoftDestroy(float delay)
+        {
+            StartCoroutine(_SoftDestroyCoroutine(delay));
+        }
+
+        private IEnumerator _SoftDestroyCoroutine(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            SoftDestroy();
+        }
+
         private IEnumerator SoftStopParticleDelayed(float delay)
         {
             yield return new WaitForSeconds(delay);

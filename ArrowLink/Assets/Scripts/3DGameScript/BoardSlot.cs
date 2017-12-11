@@ -44,6 +44,7 @@ namespace ArrowLink
 
         private void OnMouseUpAsButton()
         {
+            OnUnfocus();
             GameProcess.Instance.OnTilePressed(this);
         }
     }

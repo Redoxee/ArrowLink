@@ -4,13 +4,17 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class DotCollection : MonoBehaviour {
+
     [SerializeField]
+    private Transform[] m_rows = null;
+    
     private GameObject[] m_dots = null;
 
     private BaseUITween[] m_fadeIn;
     private BaseUITween[] m_fadeOut;
     private ParticleSystem[] m_particles;
 
+    int m_dotpPerRow;
 
     private int m_currentDiplay = 0;
     private int m_targetDisplay = 0;
@@ -21,26 +25,37 @@ public class DotCollection : MonoBehaviour {
 
     private void Awake()
     {
-        var count = m_dots.Length;
-        m_fadeIn = new BaseUITween[count];
-        m_fadeOut = new BaseUITween[count];
-        m_particles = new ParticleSystem[count];
+        int rowCount = m_rows.Length;
+        int dotPerRow = m_rows[0].childCount;
+        m_dotpPerRow = dotPerRow;
+        int totalDotCount = rowCount * dotPerRow;
+        m_dots = new GameObject[totalDotCount];
+             
+        m_fadeIn = new BaseUITween[totalDotCount];
+        m_fadeOut = new BaseUITween[totalDotCount];
+        m_particles = new ParticleSystem[totalDotCount];
 
-        for (int i = 0; i < count; ++i)
+        for (int r = 0; r < rowCount; ++r)
         {
+            var row = m_rows[r];
+            for (int d = 0; d < dotPerRow; ++d)
+            {
+                var obj = row.GetChild(d).gameObject;
+                int dotIndex = r * dotPerRow + d;
+                m_dots[dotIndex] = obj;
+                var tweens = obj.GetComponents<BaseUITween>();
+                m_fadeIn[dotIndex] = tweens[1];
+                m_fadeOut[dotIndex] = tweens[0];
 
-            var obj = m_dots[i];
-            var tweens = obj.GetComponents<BaseUITween>();
-            m_fadeIn[i] = tweens[1];
-            m_fadeOut[i] = tweens[0];
+                var sprite = obj.GetComponent<Image>();
+                var col = sprite.color;
+                col.a = 0;
+                sprite.color = col;
 
-            var sprite = obj.GetComponent<Image>();
-            var col = sprite.color;
-            col.a = 0;
-            sprite.color = col;
+                m_particles[dotIndex] = obj.transform.GetChild(0).GetComponent<ParticleSystem>();
+                obj.SetActive(false);
+            }
 
-            m_particles[i] = obj.transform.GetChild(0).GetComponent<ParticleSystem>();
-            
         }
         enabled = false;
         
@@ -57,6 +72,10 @@ public class DotCollection : MonoBehaviour {
         m_targetDisplay = target;
         enabled = true;
         m_animationTimer = 0;
+        for (int i = m_currentDiplay; i < m_targetDisplay; ++i)
+        {
+            m_dots[i].gameObject.SetActive(true);
+        }
     }
 
     private void Update()
