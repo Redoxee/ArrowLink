@@ -42,6 +42,7 @@ namespace ArrowLink
         Transform m_holdingCardTransform = null;
 
         private ArrowCard m_holdedCard = null;
+        public bool IsHoldingCard { get { return m_holdedCard != null; } }
 
         [SerializeField]
         AnimatedLinePool m_animatedLinePool = null;
@@ -86,7 +87,11 @@ namespace ArrowLink
         private DelayedActionCollection m_placementTileDelayedActions = new DelayedActionCollection();
 
         private OverLinkModule m_overLinkModule = new OverLinkModule();
-        
+
+        private bool m_isGameEnded = false;
+        private float m_gameStartTime = float.MaxValue;
+
+        List<Action> m_onTilePlayedListeners = null;
 
         private void Awake()
         {
@@ -97,6 +102,8 @@ namespace ArrowLink
                 return;
             }
             s_instance = this;
+
+            m_onTilePlayedListeners = new List<Action>();
         }
 
         private void Start()
@@ -136,6 +143,7 @@ namespace ArrowLink
                 startParams["date"] = DateTime.UtcNow.ToString();
                 TrackingManager.TrackEvent("Game Start", 1, startParams);
             }
+            m_gameStartTime = Time.time;
         }
 
         private void Update()
@@ -198,6 +206,11 @@ namespace ArrowLink
                 m_nbCardOnTheWay += 1;
                 m_currentCard = null;
                 DrawNextCard();
+
+                foreach (var act in m_onTilePlayedListeners)
+                {
+                    act();
+                }
             }
             m_playedSlot = null;
         }
@@ -543,10 +556,28 @@ namespace ArrowLink
             {
                 if (m_crunchPoints < m_crunchTarget)
                 {
-                    m_guiManager.NotifyEndGame();
+                    EndGame();
                 }
                 return;
             }
+        }
+
+        private void EndGame()
+        {
+            if (m_isGameEnded)
+                return;
+            m_isGameEnded = true;
+
+            m_guiManager.NotifyEndGame();
+
+            Dictionary<string, object> endTrackingParameters = new Dictionary<string, object>();
+            endTrackingParameters["Score"] = m_currentScore;
+            endTrackingParameters["TileMatched"] = m_currentTileScore;
+            endTrackingParameters["GameDuration"] = Time.time - m_gameStartTime;
+            endTrackingParameters["BankTarget"] = m_bankPointTarget;
+            endTrackingParameters["CrunchTarget"] = m_crunchTarget;
+            endTrackingParameters["HasUsedHold"] = m_holdedCard != null;
+            TrackingManager.TrackEvent("GameEnd",1 , endTrackingParameters);
         }
 
         public void RequestBank()
@@ -686,6 +717,18 @@ namespace ArrowLink
                 m_currentCard.IsWigglingAnimation = true;
                 m_currentCard.IsWigglingAnimation = false;
             }
+        }
+
+        public void RegisterTilePlayedListeners(Action act)
+        {
+            if (!m_onTilePlayedListeners.Contains(act))
+                m_onTilePlayedListeners.Add(act);
+        }
+
+        public void UnregisterTilePlayedListeners(Action act)
+        {
+            if (m_onTilePlayedListeners.Contains(act))
+                m_onTilePlayedListeners.Remove(act);
         }
     }
     #endregion

@@ -18,7 +18,7 @@ namespace ArrowLink
         public static void InvokMainSceneIfNecessary()
         {
             int sceneIndex = SceneManager.GetActiveScene().buildIndex;
-            if (sceneIndex != 0)
+            if (s_instance == null)
             {
                 s_loadingScene = sceneIndex;
                 SceneManager.LoadSceneAsync(0, LoadSceneMode.Additive);
@@ -47,7 +47,7 @@ namespace ArrowLink
                 return;
             }
 
-            FBInit();
+            //FBInit();
 
 
             LoadScene(c_gameScene);

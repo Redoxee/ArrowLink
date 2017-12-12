@@ -5841,6 +5841,8 @@ GameObject:
   - component: {fileID: 724169784}
   - component: {fileID: 724169783}
   - component: {fileID: 724169786}
+  - component: {fileID: 724169788}
+  - component: {fileID: 724169787}
   m_Layer: 0
   m_Name: HoldPedestal
   m_TagString: Untagged
@@ -5967,6 +5969,82 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &724169787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 724169781}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1ae0636430f9a247bf91d1d0fac7356, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_name: Nudge
+  m_parameters:
+    m_optionalTarget: {fileID: 0}
+    Duration: 0.1
+    IsPosition: 0
+    IsLocalPosition: 0
+    PositionStart: {x: 0, y: 0, z: 0}
+    PositionEnd: {x: 0, y: 0, z: 0}
+    PositionCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsRotation: 1
+    AngleStart: 0
+    AngleEnd: 360
+    AngleCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0
+        inSlope: 0.18648632
+        outSlope: 0.18648632
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1
+        value: 0
+        inSlope: 0.17265338
+        outSlope: 0.17265338
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+    IsScale: 0
+    ScaleStart: {x: 0, y: 0, z: 0}
+    ScaleEnd: {x: 0, y: 0, z: 0}
+    ScaleCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    IsAlpha: 0
+    AlphaStart: 0
+    AlphaEnd: 0
+    AlphaCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+--- !u!114 &724169788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 724169781}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b406a2773a0b3864dbb703a4f8da8467, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_nudgeTween: {fileID: 724169787}
 --- !u!1 &724928640
 GameObject:
   m_ObjectHideFlags: 0
