@@ -27,7 +27,7 @@ namespace ArrowLink
         {
             if (ColorManager.s_instance != null)
             {
-                Debug.LogError("Several Color manager instanciated !");
+//                Debug.LogError("Several Color manager instanciated !");
                 Destroy(this);
                 return;
             }

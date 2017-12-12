@@ -23,6 +23,7 @@ public class AnimatedLinePool : MonoBehaviour {
             int id = instance.GetInstanceID();
             m_idToIndex[id] = i;
             m_availableObject.Add(id);
+            instance.transform.SetParent(transform, false);
         }
     }
 

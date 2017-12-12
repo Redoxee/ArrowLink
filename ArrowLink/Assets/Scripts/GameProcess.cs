@@ -129,6 +129,13 @@ namespace ArrowLink
             m_guiManager.SetCrunchable(false);
 
             m_guiManager.SetOverLinkCapsuleState(m_overLinkModule);
+
+            if (MainProcess.IsReady)
+            {
+                Dictionary<string, object> startParams = new Dictionary<string, object>();
+                startParams["date"] = DateTime.UtcNow.ToString();
+                TrackingManager.TrackEvent("Game Start", 1, startParams);
+            }
         }
 
         private void Update()
@@ -147,6 +154,7 @@ namespace ArrowLink
         private void ShootNewCurrentCard()
         {
             GameObject currentCardObject = Instantiate(m_cardPrefab);
+            currentCardObject.transform.SetParent(transform, false);
             currentCardObject.SetActive(true);
             m_currentCard = currentCardObject.GetComponent<ArrowCard>();
             m_currentCard.transform.position = m_popingCardTransform.position;
@@ -158,6 +166,7 @@ namespace ArrowLink
         private void ShootNewNextCard()
         {
             GameObject nextCardObject = Instantiate(m_cardPrefab);
+            nextCardObject.transform.SetParent(transform, false);
             nextCardObject.SetActive(true);
             m_nextCard = nextCardObject.GetComponent<ArrowCard>();
             m_nextCard.transform.position = m_nextPlayingCardTransform.position;
@@ -432,25 +441,6 @@ namespace ArrowLink
 
                 m_pressedCard = null;
             }
-        }
-
-        TileLink CreateTileLink(Vector3 p1, Vector3 p2)
-        {
-            var linkObject = Instantiate(m_linkPrefab);
-            var link = linkObject.GetComponent<TileLink>();
-
-            var linkRotation = Quaternion.FromToRotation(Vector3.up, (p2 - p1));
-            link.transform.rotation = linkRotation;
-            var linkPosition = (p1 + p2) / 2;
-            linkPosition.z -= 10;
-
-            link.transform.position = linkPosition;
-            if (p1.x != p2.x && p1.y != p2.y)
-            {
-                link.transform.localScale = link.c_diagonalScale;
-            }
-
-            return link;
         }
 
         void EndCombo()

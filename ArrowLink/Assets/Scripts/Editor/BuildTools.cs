@@ -17,7 +17,7 @@ namespace AntonMakesGames.Tools
 
 		private bool m_IncrementPatch = true;
 		private bool m_isDevelopementBuild = false;
-		private bool m_androidAutoPush = true;
+		private bool m_androidAutoPush = false;
 
 		#region Create build data
 

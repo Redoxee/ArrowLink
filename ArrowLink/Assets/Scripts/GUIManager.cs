@@ -65,7 +65,7 @@ namespace ArrowLink
 
         public void OnPausePressed()
         {
-            UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(0);
+            MainProcess.Instance.LoadOrReloadGameScene();
         }
 
         public void OnBankPressed()
