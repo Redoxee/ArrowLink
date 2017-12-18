@@ -616,7 +616,7 @@ namespace ArrowLink
         }
 
         const int c_baseComboPoints = 10;
-        const float c_baseMultiplier = .1f;
+        const float c_baseMultiplier = .5f;
 
         int ComputebasePoints(int nbTile)
         {
