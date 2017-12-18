@@ -14,8 +14,6 @@ namespace ArrowLink
 
         [SerializeField]
         GameObject m_cardPrefab = null;
-        [SerializeField]
-        GameObject m_linkPrefab = null;
 
         [SerializeField]
         BoardInput m_board = null;
@@ -49,10 +47,7 @@ namespace ArrowLink
         public AnimatedLinePool AnimatedLinePool { get { return m_animatedLinePool; } }
         [SerializeField]
         AnimatedLinePool m_darkAnimatedLinePool = null;
-
-        [SerializeField]
-        Transform m_scoreTransform = null;
-
+        
         ArrowCard m_currentCard = null;
         ArrowCard m_nextCard = null;
 
@@ -75,18 +70,19 @@ namespace ArrowLink
         private int m_bankPointTarget = 2;
         private int m_bankPoints = 0;
         public const int c_maxBankPoints = 33;
-
-        [SerializeField]
-        private Transform m_feedbackCapsule = null;
-
+        
         [SerializeField]
         private DotCollection m_bankDots = null;
         [SerializeField]
         private DotCollection m_crunchDots = null;
+        [SerializeField]
+        private DotCollection m_overlinkDotCollection = null;
 
-        private DelayedActionCollection m_placementTileDelayedActions = new DelayedActionCollection();
-
-        private OverLinkModule m_overLinkModule = new OverLinkModule();
+        private DelayedActionCollection m_bankDelayedAction = new DelayedActionCollection();
+        private DelayedActionCollection m_crunchDelayedAction = new DelayedActionCollection();
+        private DelayedActionCollection m_overLinkDelayedAction = new DelayedActionCollection();
+        
+        private int m_overLinkCounter = 0;
 
         private bool m_isGameEnded = false;
         private float m_gameStartTime = float.MaxValue;
@@ -134,9 +130,7 @@ namespace ArrowLink
 
             m_guiManager.SetBankable(false);
             m_guiManager.SetCrunchable(false);
-
-            m_guiManager.SetOverLinkCapsuleState(m_overLinkModule);
-
+            
             if (MainProcess.IsReady)
             {
                 Dictionary<string, object> startParams = new Dictionary<string, object>();
@@ -144,6 +138,10 @@ namespace ArrowLink
                 TrackingManager.TrackEvent("Game Start", 1, startParams);
             }
             m_gameStartTime = Time.time;
+
+            m_overlinkDotCollection.SetNumberOfDots(m_overlinkDotCollection.MaxDots);
+            m_overlinkDotCollection.LightDot(0, false);
+            m_overLinkCounter = 1;
         }
 
         private void Update()
@@ -151,7 +149,9 @@ namespace ArrowLink
             ProcessPressedCard();
             m_currentState.ProcessPlayedSlot();
 
-            m_placementTileDelayedActions.ManualUpdate();
+            m_bankDelayedAction.ManualUpdate();
+            m_crunchDelayedAction.ManualUpdate();
+            m_overLinkDelayedAction.ManualUpdate();
         }
 
         void DrawNextCard()
@@ -233,6 +233,8 @@ namespace ArrowLink
                 }
                 m_boardLogic.RemoveTile(m_playedSlot.X, m_playedSlot.Y);
 
+                m_crunchDelayedAction.Clear();
+
                 Vector3 targetPos = tile.PhysicalCard.transform.position;
 
                 float delay = m_darkAnimatedLinePool.GetLineAnimationDuration();
@@ -256,8 +258,6 @@ namespace ArrowLink
                 m_crunchDots.SetNumberOfDots(m_crunchTarget);
 
                 m_guiManager.SetCrunchable(false);
-
-                
             }
             m_playedSlot = null;
         }
@@ -287,8 +287,10 @@ namespace ArrowLink
             var newLinkDirection = tile.m_linkedTile.Keys;
 
             int pointToBank = 0;
-            int pointToBonus = 0;
+            int pointToOverLink = 0;
             int pointToCrunch = 0;
+
+            float animationDelay = 0;
 
             if (chainCount > 1)
             {
@@ -300,45 +302,52 @@ namespace ArrowLink
 
 
                 pointToBank = Mathf.Clamp(chainCount, 0, m_bankPointTarget - m_bankPoints);
-                
-                for (int i = 0 ; i < pointToBank; ++i)
-                {
-                    int delay = i;
-                    int dotIndex = m_bankPoints + delay;
-                    Transform dot = m_bankDots.GetDot(dotIndex);
-                    var logicTile = chainAsList[delay];
 
-                    AnimatedLineWithDelay(delay * c_flashDelay + c_lineDelay, logicTile.PhysicalCard.transform.position, dot.position,
-                        () =>
-                        {
-                            m_bankDots.LightDot(dotIndex);
-                        }
+                pointToCrunch = chainCount - pointToBank;
+                pointToCrunch = Mathf.Min(pointToCrunch, m_crunchTarget - m_crunchPoints);
+
+                pointToOverLink = chainCount - pointToBank - pointToCrunch;
+
+
+                for (int i = 0; i < pointToBank; ++i)
+                {
+
+                    int dotIndex = m_bankPoints + i;
+                    Transform dot = m_bankDots.GetDot(dotIndex);
+                    var logicTile = chainAsList[i];
+                    animationDelay += c_flashDelay;
+                    Action lightDotAction = () =>
+                    {
+                        m_bankDots.LightDot(dotIndex);
+                    };
+                    AnimatedLineWithDelay(animationDelay + c_lineDelay, logicTile.PhysicalCard.transform.position, dot.position, lightDotAction
+                        , m_bankDelayedAction
                         );
                 }
+
                 m_bankPoints += pointToBank;
                 if (m_bankPoints >= m_bankPointTarget)
                 {
                     m_guiManager.SetBankable(true);
                 }
 
-                pointToCrunch = chainCount - pointToBank;
-
-                pointToCrunch = Mathf.Min(pointToCrunch, m_crunchTarget - m_crunchPoints);
 
                 for (int i = 0; i < pointToCrunch; ++i)
                 {
-                    int delay = i;
-                    int dotIndex = m_crunchPoints + delay;
+                    int dotIndex = m_crunchPoints + i;
                     Transform dot = m_crunchDots.GetDot(dotIndex);
-                    var tIndex = delay + pointToBank;
+                    var tIndex = i + pointToBank;
                     var logicTile = chainAsList[tIndex];
 
-                    AnimatedLineWithDelay(tIndex * c_flashDelay + c_lineDelay, logicTile.PhysicalCard.transform.position, dot.position,
-                        () =>
-                        {
-                            m_crunchDots.LightDot(dotIndex);
-                        }
-                        );
+                    animationDelay += c_flashDelay;
+
+                    Action lightDot = () =>
+                            {
+                                m_crunchDots.LightDot(dotIndex);
+                            };
+
+                    AnimatedLineWithDelay(animationDelay + c_lineDelay, logicTile.PhysicalCard.transform.position, dot.position, lightDot, m_crunchDelayedAction);
+
                 }
                 m_crunchPoints += pointToCrunch;
                 if (m_crunchPoints >= m_crunchTarget)
@@ -347,35 +356,30 @@ namespace ArrowLink
                 }
 
 
-                pointToBonus = chainCount - pointToBank - pointToCrunch;
-                if (pointToBonus > 0)
+                if (pointToOverLink > 0)
                 {
-                    for (int i = 0;  i < pointToBonus; ++i)
+                    for (int i = 0; i < pointToOverLink; ++i)
                     {
-                        int delay = i;
-                        var target = m_feedbackCapsule;
-                        var tIndex = pointToBank + pointToCrunch + delay;
-                        var logicTile = chainAsList[tIndex];
-                        int baseBonus = m_overLinkModule.OverLinkCounter ;
-                        AnimatedLineWithDelay(tIndex * c_flashDelay + c_lineDelay, logicTile.PhysicalCard.transform.position, target.position,
-                            () =>
-                            {
-                                m_guiManager.OverLinkGUICapsule.FlashTween.StartTween();
-                                int currentBonus = baseBonus + delay + 1;
-                                m_guiManager.OverLinkGUICapsule.DotBonus.text = string.Format("+{0}", m_overLinkModule.GetDotBonusForCounter(currentBonus));
-                                m_guiManager.OverLinkGUICapsule.ScoreBonus.text = string.Format("+{0}", m_overLinkModule.GetScoreBonusForCounter(currentBonus));
-                            }
-                            );
+                        var tIndex = pointToBank + pointToCrunch + i;
+                        var logicTilePosition = chainAsList[tIndex].PhysicalCard.transform.position;
+
+                        int baseCounter = m_overLinkCounter;
+
+                        animationDelay += c_flashDelay;
+
+                        int dotIndex = baseCounter + i;
+                        dotIndex = Mathf.Min(dotIndex, m_overlinkDotCollection.MaxDots - 1);
+
+                        var dot = m_overlinkDotCollection.GetDot(dotIndex);
+                        bool light = ! IsNextOverLinkBad(m_overLinkCounter + i, m_bankPointTarget);
+                        Action lightDots = () =>
+                        {
+                            m_overlinkDotCollection.LightDot(dotIndex, light);
+                        };
+
+                        AnimatedLineWithDelay(animationDelay + c_lineDelay, logicTilePosition, dot.position, lightDots, m_overLinkDelayedAction);
                     }
-                    m_overLinkModule.OverLinkCounter += pointToBonus;
-
-                    float overLinkDelay = pointToBonus * c_flashDelay + AnimatedLinePool.GetLineAnimationDuration();
-                    m_placementTileDelayedActions.AddAction(overLinkDelay, () =>
-                     {
-                         m_guiManager.OverLinkGUICapsule.DotBonus.text = string.Format("+{0}", m_overLinkModule.GetDotBonus());
-                         m_guiManager.OverLinkGUICapsule.ScoreBonus.text = string.Format("+{0}", m_overLinkModule.GetScoreBonus());
-                     });
-
+                    m_overLinkCounter += pointToOverLink;
                 }
             }
 
@@ -399,16 +403,19 @@ namespace ArrowLink
 
             }
 
-
-            m_placementTileDelayedActions.AddAction((pointToBank + pointToCrunch + pointToBonus) * c_flashDelay + c_lineDelay + AnimatedLinePool.GetLineAnimationDuration() + .25f, CheckEndGame);
-            //CheckEndGame();
-
+           
+            if (animationDelay > 0)
+            {
+                animationDelay += c_lineDelay + AnimatedLinePool.GetLineAnimationDuration() ;
+            }
+            animationDelay += .25f;
+            m_bankDelayedAction.AddAction(animationDelay , CheckEndGame);
         }
 
         private void FlashWithDelay(float delay, ArrowCard card)
         {
 
-            m_placementTileDelayedActions.AddAction(delay,
+            m_bankDelayedAction.AddAction(delay,
                 () =>
                 {
 
@@ -417,9 +424,9 @@ namespace ArrowLink
                 );
         }
 
-        private void AnimatedLineWithDelay(float delay, Vector3 source, Vector3 target, Action endAction)
+        private void AnimatedLineWithDelay(float delay, Vector3 source, Vector3 target, Action endAction, DelayedActionCollection delayManager)
         {
-            m_placementTileDelayedActions.AddAction(delay,
+            delayManager.AddAction(delay,
                 () => {
                     GameObject lineObject;
                     RoundedLineAnimation lineAnimation;
@@ -434,7 +441,7 @@ namespace ArrowLink
                     lineAnimation.StartAnimation();
                 });
             float lineDuration = AnimatedLinePool.GetLineAnimationDuration();
-            m_placementTileDelayedActions.AddAction(delay + lineDuration,endAction);
+            delayManager.AddAction(delay + lineDuration,endAction);
         }
 
         private void ProcessPressedCard()
@@ -458,19 +465,74 @@ namespace ArrowLink
 
         void EndCombo()
         {
-
-            List<LogicLinkStandalone> trashList = new List<LogicLinkStandalone>();
-            var allChains = m_boardLogic.GetAllChains(ref trashList);
-
-            int allChainCount = allChains.Count;
-
-            float lineGap = 0f;
-
             int tileLinked = 0;
 
-            m_placementTileDelayedActions.Clear();
+            int nextBankTarget = m_bankPointTarget + NumberOfMalus(m_overLinkCounter);
+            nextBankTarget = Mathf.Min(nextBankTarget, c_maxBankPoints);
 
-            for (int chIndex = 0; chIndex < allChainCount; ++ chIndex)
+            m_bankDelayedAction.Clear();
+            m_overLinkDelayedAction.Clear();
+
+            m_overlinkDotCollection.StopAllDots();
+            float multiplierDelay = BankOverLinkAnimation();
+
+            bool malus = (nextBankTarget < c_maxBankPoints);
+
+            if(malus)
+                m_overlinkDotCollection.LightDot(0, false);
+
+            DestroyAndScoreAnimationCombo(out tileLinked);
+
+            int basePoints = ComputebasePoints(tileLinked);
+            float multiplier = ComputeMultiplier(m_overLinkCounter);
+
+            int gainedPoints = Mathf.FloorToInt(basePoints * multiplier);
+            m_currentScore += gainedPoints;
+            m_currentTileScore += tileLinked;
+
+            m_guiManager.NotifyDeltaScoreChanged(basePoints, m_animatedLinePool.GetLineAnimationDuration());
+
+            if (multiplier > 1f)
+            {
+                m_bankDelayedAction.AddAction(multiplierDelay + 1.5f, () => { m_guiManager.ApplyMultiplier(Mathf.FloorToInt(basePoints * multiplier)); });
+                m_bankDelayedAction.AddAction(multiplierDelay + 3.5f, () => { m_guiManager.ApplyScoreDelta(m_currentScore); });
+            }
+            else
+            {
+                m_bankDelayedAction.AddAction(multiplierDelay + 1.5f, () => { m_guiManager.ApplyScoreDelta(m_currentScore); });
+            }
+
+            if (m_currentCard == null)
+            {
+                DrawNextCard();
+            }
+
+            m_bankDots.StopAllDots();
+            m_bankPoints = 0;
+            m_bankPointTarget = nextBankTarget;
+            m_bankDots.SetNumberOfDots(m_bankPointTarget);
+            m_guiManager.SetBankable(false);
+
+            m_overLinkCounter = malus ? 1 : 0;
+
+            m_flagDistributor.NotifyBonusRequested();
+
+            CheckEndGame();
+
+        }
+
+        private List<LogicLinkStandalone> m_trashList = new List<LogicLinkStandalone>(16 * 8);
+
+        private void DestroyAndScoreAnimationCombo(out int tileLinked)
+        {
+            
+            var allChains = m_boardLogic.GetAllChains(ref m_trashList);
+            int allChainCount = allChains.Count;
+
+            Vector3 targetPos = m_guiManager.DeltaTransform.position;
+
+            tileLinked = 0;
+            for (int chIndex = 0; chIndex < allChainCount; ++chIndex)
             {
                 var chain = allChains[chIndex];
                 int chainLength = chain.Count;
@@ -492,58 +554,85 @@ namespace ArrowLink
 
                         m_animatedLinePool.GetInstance(out lineObject, out lineAnimation);
                         float decalRandom = UnityEngine.Random.Range(-1f, 1f);
-                        lineAnimation.SetUpLine(card.transform, m_scoreTransform, decalRandom, () => { m_animatedLinePool.FreeInstance(lineObject); });
+                        lineAnimation.SetUpLine(card.transform.position, targetPos, decalRandom, () => { m_animatedLinePool.FreeInstance(lineObject); });
 
-                        m_placementTileDelayedActions.AddAction(tileIndex * lineGap, () =>
+                        m_bankDelayedAction.AddAction(tileIndex * .1f, () =>
                         {
                             lineAnimation.StartAnimation();
                         });
-                        
+
                         card.SoftDestroy();
 
                         tileLinked++;
                     }
                 }
             }
+        }
 
-            int comboPoints = ComputeComboPoint(tileLinked);
-            
-            m_currentScore += comboPoints + m_overLinkModule.GetScoreBonus();
-            m_currentTileScore += tileLinked;
+        private float BankOverLinkAnimation()
+        {
+            int counter = m_overLinkCounter;
+            counter = Mathf.Min(counter, m_overlinkDotCollection.MaxDots);
+            int dotAdded = 0;
+            Vector3 multiplierPos = m_guiManager.MultiplierTransform.position;
 
-            m_guiManager.NotifyScoreChanged(m_currentScore, comboPoints);
-
-            if (m_currentCard == null)
+            float animationDelay = 0f;
+            float lineAnimDuration = m_animatedLinePool.GetLineAnimationDuration();
+            for (int i = 0; i < counter; ++i)
             {
-                DrawNextCard();
+                bool isBad = IsNextOverLinkBad(i, m_bankPointTarget);
+                var start = m_overlinkDotCollection.GetDot(i).position;
+                Vector3 target;
+                GameObject go;
+                RoundedLineAnimation lineAnimation;
+                Action freeLine;
+                if (isBad)
+                {
+                    target = m_bankDots.GetDot(0).position;
+                    dotAdded += 1;
+                    m_darkAnimatedLinePool.GetInstance(out go, out lineAnimation);
+                    freeLine = () => { m_darkAnimatedLinePool.FreeInstance(go); };
+                }
+                else
+                {
+                    target = multiplierPos;
+                    m_animatedLinePool.GetInstance(out go, out lineAnimation);
+
+                    var multiplier = ComputeMultiplier(m_overLinkCounter - counter + i + 1);
+
+                    freeLine = () => { m_animatedLinePool.FreeInstance(go); };
+                    m_bankDelayedAction.AddAction(animationDelay + lineAnimDuration, () =>
+                     {
+                         m_guiManager.SetScoreMultiplier(multiplier);
+                     });
+                }
+                float factor = UnityEngine.Random.Range(-1f, 1f);
+                lineAnimation.SetUpLine(start, target, factor, freeLine);
+                m_bankDelayedAction.AddAction(animationDelay, () => { lineAnimation.StartAnimation(); });
+                animationDelay += .05f;
             }
 
-            m_bankDots.StopAllDots();
-            m_bankPoints = 0;
-            m_bankPointTarget += m_overLinkModule.GetDotBonus();
-            m_bankPointTarget = Mathf.Min(m_bankPointTarget, c_maxBankPoints);
-            m_bankDots.SetNumberOfDots(m_bankPointTarget);
-            m_guiManager.SetBankable(false);
-
-            bool flashOverLink = m_overLinkModule.OverLinkCounter > 0;
-            m_overLinkModule.OverLinkCounter = 0;
-            m_guiManager.SetOverLinkCapsuleState(m_overLinkModule,flashOverLink);
-
-            m_flagDistributor.NotifyBonusRequested();
-
-            CheckEndGame();
-
+            return animationDelay + lineAnimDuration;
         }
 
         const int c_baseComboPoints = 10;
-        const int c_comboCurveStart = 5;
+        const float c_baseMultiplier = .1f;
 
-        int ComputeComboPoint(int nbTile)
+        int ComputebasePoints(int nbTile)
         {
             return nbTile * c_baseComboPoints;
         }
+        
+        float ComputeMultiplier(int nbOverLink)
+        {
+            int nbPts = nbOverLink - NumberOfMalus(nbOverLink);
+            return 1f + nbPts * c_baseMultiplier;
+        }
 
-
+        private int NumberOfMalus(int nbOverLink)
+        {
+            return (nbOverLink - 1) / m_bonusGaps + 1;
+        }
 
         private void CheckEndGame()
         {
@@ -610,6 +699,16 @@ namespace ArrowLink
             if (m_boardLogic.IsBoardEmpty())
                 return false;
             return true;
+        }
+
+
+        private int m_bonusGaps = 3;
+        private bool IsNextOverLinkBad(int overLinkIndex, int currentBankTarget)
+        {
+            int nbDots = NumberOfMalus(overLinkIndex);
+            if ((nbDots + currentBankTarget) >= c_maxBankPoints)
+                return false;
+            return (overLinkIndex % m_bonusGaps) == 0;
         }
 
 
@@ -750,9 +849,7 @@ namespace ArrowLink
         List<TimedAction> m_actionList = new List<TimedAction>(100);
 
         float m_timer = 0f;
-
         
-
         public void AddAction(float delay, Action action)
         {
             var newinstance = new TimedAction();

@@ -8,6 +8,8 @@ public class VeilText : MonoBehaviour {
 
     [SerializeField]
     private float m_shadedAlpha = .75f;
+    [SerializeField]
+    private float m_nonShadedAlpha = 1f;
 
     private Text m_text = null;
 
@@ -27,7 +29,7 @@ public class VeilText : MonoBehaviour {
 
     public void SetVeilState(bool isVeilOn)
     {
-        SetTarget(isVeilOn ? m_shadedAlpha : 1f);
+        SetTarget(isVeilOn ? m_shadedAlpha : m_nonShadedAlpha);
     }
 
     public void SetDisplay(float value)

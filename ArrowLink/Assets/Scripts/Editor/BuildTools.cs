@@ -19,6 +19,8 @@ namespace AntonMakesGames.Tools
 		private bool m_isDevelopementBuild = false;
 		private bool m_androidAutoPush = false;
 
+        private bool m_iosAutoRun = false;
+
 		#region Create build data
 
 		[MenuItem("Tools/Time")]
@@ -53,16 +55,20 @@ namespace AntonMakesGames.Tools
             {
                 m_currentBuildData = AssetDatabase.LoadAssetAtPath<BuildData>(PlayerPrefs.GetString("BuildData"));
             }
-            if (PlayerPrefs.HasKey("BuildFolder"))
-            {
-                m_buildFolder = PlayerPrefs.GetString("BuildFolder");
-            }
-            if (PlayerPrefs.HasKey("BuildNameTemplate"))
-            {
-                m_buildnameTemplate = PlayerPrefs.GetString("BuildNameTemplate");
-            }
+
+            GetConfIfItExists("BuildFolder", ref m_buildFolder);
+            GetConfIfItExists("BuildNameTemplate", ref m_buildnameTemplate);
+#if UNITY_IOS
+            GetConfIfItExists("IOS_Path", ref IOS_path);
+            GetConfIfItExists("IOS_FolderName", ref IOS_folderName);
+#endif
 		}
 
+        private void GetConfIfItExists(string key, ref string confString)
+        {
+            if (PlayerPrefs.HasKey(key))
+                confString = PlayerPrefs.GetString(key);
+        }
 
         bool m_toolConf = false;
         
@@ -128,6 +134,9 @@ namespace AntonMakesGames.Tools
                 }
                 EditorGUILayout.EndHorizontal();
 
+
+
+
                 GUILayout.Space(15);
                 
             }
@@ -158,10 +167,12 @@ namespace AntonMakesGames.Tools
 				PushLastAndroidBuild();
 			}
 
-#if UNITY_EDITOR_OSX
+#if UNITY_IOS
+            m_iosAutoRun = GUILayout.Toggle(m_iosAutoRun, "IOS Auto run");
+
 			if(GUILayout.Button("Build IOS"))
 			{
-					BuildForIOS(m_isDevelopementBuild,m_IncrementPatch,m_androidAutoPlay);
+					BuildForIOS(m_isDevelopementBuild,m_IncrementPatch, m_iosAutoRun);
 
 			}
 #endif
@@ -174,14 +185,14 @@ namespace AntonMakesGames.Tools
 			GUILayout.EndScrollView();
 		}
 
-		#region Set scenes in builds
+#region Set scenes in builds
 		void SetSceneInProjects()
 		{
             
 		}
-		#endregion
+#endregion
 
-		#region Builds
+#region Builds
 
 		string m_buildFolder = "../../TileLink/";
 		string m_buildnameTemplate = "TileLink_{0:D}_{1:D2}_{2:D3}";
@@ -232,9 +243,9 @@ namespace AntonMakesGames.Tools
 			return bo;
 		}
         
-		#region Platforms
+#region Platforms
 
-		#region Android
+#region Android
 		const string c_androidFolder = "Android/";
 		const string c_androidExtension = ".apk";
 
@@ -313,18 +324,18 @@ namespace AntonMakesGames.Tools
 			Process.Start(info);
 		}
 
-		#endregion
+#endregion
 
-		#region IOS
+#region IOS
 		
-		#if UNITY_EDITOR_OSX
+#if UNITY_IOS
 
-		const string IOS_path = "/users/antonroy/Desktop/";
-		const string IOS_folder = "DasherIOS";
+		string IOS_path = "/users/antonroy/Desktop/";
+		string IOS_folderName = "DasherIOS";
 		public void BuildForIOS(bool isDebug,bool increment, bool autoRun)
 		{
 
-			string buildPath = IOS_path + IOS_folder + GetVersionName();
+			string buildPath = IOS_path + IOS_folderName + GetVersionName();
 
 			if(!Directory.Exists(buildPath))
 			{
@@ -361,10 +372,10 @@ namespace AntonMakesGames.Tools
 			}		
 		}
 
-		#endif
-		#endregion
+#endif
+#endregion
 
-		#region Web
+#region Web
 		const string c_webFolder = "Web/";
 
 		public void BuildForWeb(bool isDebug, bool increment)
@@ -395,13 +406,13 @@ namespace AntonMakesGames.Tools
 				UnityEngine.Debug.LogError("Error building Web:\n" + buildResult);
 			}
 		}
-		#endregion
+#endregion
 
-		#endregion
+#endregion
 
-		#endregion
+#endregion
 
-		#region Show save folder
+#region Show save folder
 
 		[MenuItem("AMG/Open save folder")]
 		public static void OpenSaveFolder()
@@ -411,6 +422,6 @@ namespace AntonMakesGames.Tools
 			System.Diagnostics.Process.Start("explorer.exe", "/select," + itemPath);
 		}
 
-		#endregion
+#endregion
 	}
 }

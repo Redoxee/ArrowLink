@@ -12,7 +12,8 @@ public class DotCollection : MonoBehaviour {
 
     private BaseUITween[] m_fadeIn;
     private BaseUITween[] m_fadeOut;
-    private ParticleSystem[] m_particles;
+    private ParticleSystem[] m_lightParticles;
+    private ParticleSystem[] m_darkParticles;
 
     int m_dotpPerRow;
 
@@ -30,10 +31,11 @@ public class DotCollection : MonoBehaviour {
         m_dotpPerRow = dotPerRow;
         int totalDotCount = rowCount * dotPerRow;
         m_dots = new GameObject[totalDotCount];
-             
+
         m_fadeIn = new BaseUITween[totalDotCount];
         m_fadeOut = new BaseUITween[totalDotCount];
-        m_particles = new ParticleSystem[totalDotCount];
+        m_lightParticles = new ParticleSystem[totalDotCount];
+        m_darkParticles = new ParticleSystem[totalDotCount];
 
         for (int r = 0; r < rowCount; ++r)
         {
@@ -52,7 +54,8 @@ public class DotCollection : MonoBehaviour {
                 col.a = 0;
                 sprite.color = col;
 
-                m_particles[dotIndex] = obj.transform.GetChild(0).GetComponent<ParticleSystem>();
+                m_lightParticles[dotIndex] = obj.transform.GetChild(0).GetComponent<ParticleSystem>();
+                m_darkParticles[dotIndex] = obj.transform.GetChild(1).GetComponent<ParticleSystem>();
                 obj.SetActive(false);
             }
 
@@ -65,6 +68,8 @@ public class DotCollection : MonoBehaviour {
     {
         return m_dots[index].transform;
     }
+
+    public int MaxDots { get { return m_dots.Length; } }
 
     public void SetNumberOfDots(int target)
     {
@@ -88,7 +93,7 @@ public class DotCollection : MonoBehaviour {
                 m_fadeIn[m_currentDiplay].StartTween();
                 m_currentDiplay += 1;
             }
-            else
+            else if(m_currentDiplay > m_targetDisplay)
             {
                 m_fadeOut[m_currentDiplay].StartTween();
                 m_currentDiplay -= 1;
@@ -103,9 +108,9 @@ public class DotCollection : MonoBehaviour {
         }
     }
 
-    public void LightDot(int index)
+    public void LightDot(int index, bool light = true)
     {
-        var particles = m_particles[index];
+        var particles = light ? m_lightParticles[index] : m_darkParticles[index];
         var param  = particles.main;
         param.loop = true;
         particles.Play();
@@ -113,7 +118,7 @@ public class DotCollection : MonoBehaviour {
 
     public void StopAllDots()
     {
-        for (int i = 0; i < m_particles.Length; ++i)
+        for (int i = 0; i < m_lightParticles.Length; ++i)
         {
             SoftStopDot(i);
         }
@@ -121,8 +126,10 @@ public class DotCollection : MonoBehaviour {
 
     public void SoftStopDot(int index)
     {
-        var particles = m_particles[index];
+        var particles = m_lightParticles[index];
         var param = particles.main;
+        param.loop = false;
+        param = m_darkParticles[index].main;
         param.loop = false;
     }
 }

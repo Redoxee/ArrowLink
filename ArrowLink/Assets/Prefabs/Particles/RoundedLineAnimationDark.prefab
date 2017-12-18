@@ -116,7 +116,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_mode: 0
-  m_colorToGrab: 9
+  m_colorToGrab: 12
   m_customGrabber: {fileID: 0}
 --- !u!114 &114297794456651306
 MonoBehaviour:
@@ -204,7 +204,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_mode: 6
-  m_colorToGrab: 9
+  m_colorToGrab: 12
   m_customGrabber: {fileID: 0}
 --- !u!114 &114630356631836744
 MonoBehaviour:
@@ -218,7 +218,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_mode: 0
-  m_colorToGrab: 9
+  m_colorToGrab: 12
   m_customGrabber: {fileID: 0}
 --- !u!120 &120624622589795626
 LineRenderer:

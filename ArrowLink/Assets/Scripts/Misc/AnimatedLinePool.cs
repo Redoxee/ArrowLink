@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AnimatedLinePool : MonoBehaviour {
     
-    const int c_poolSize = 50;
+    const int c_poolSize = 100;
     [SerializeField]
     GameObject m_linePrefab = null;
     GameObject[] m_goPool = new GameObject[c_poolSize];

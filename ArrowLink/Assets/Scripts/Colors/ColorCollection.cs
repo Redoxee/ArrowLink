@@ -13,6 +13,7 @@ public class ColorCollection : ScriptableObject {
     public Color LinkOn;
     public Color LinkSuper;
 
+    public Color LinkDark;
 
     public Color Slot;
     public Color SlotShadow;
@@ -36,6 +37,7 @@ public class ColorCollection : ScriptableObject {
         ButtonDark,
         TextLight,
         TextDark,
+        LinkDark,
     }
 
     public Color GetColor(GrabbableColor c)
@@ -66,6 +68,8 @@ public class ColorCollection : ScriptableObject {
                 return TextLight;
             case GrabbableColor.TextDark:
                 return TextDark;
+            case GrabbableColor.LinkDark:
+                return LinkDark;
             default:
                 throw new System.NotSupportedException();
         }

@@ -19,23 +19,30 @@ namespace ArrowLink
         AnimatedTextNumber m_scoreText = null;
         [SerializeField]
         AnimatedTextNumber m_scoreDeltaText = null;
+        [SerializeField]
+        Transform m_deltaTarget = null;
+        public Transform DeltaTransform { get { return m_deltaTarget; } }
+
+        [SerializeField]
+        Text m_scoreMultiplier = null;
+        [SerializeField]
+        Transform m_scoreMultiplierTarget = null;
+        public Transform MultiplierTransform { get { return m_scoreMultiplierTarget; } }
+        VeilText m_multiplierVeil = null;
 
         [SerializeField]
         SequenceUITween m_introFadeOutTween = null;
 
         [SerializeField]
-        private VeilText m_bankVeil;
+        private VeilText m_bankVeil = null;
         [SerializeField]
-        private VeilText m_crunchVeil;
+        private VeilText m_crunchVeil = null;
         [SerializeField]
         ParticleSystem m_bankParticles = null;
 
         [SerializeField]
         private DayNightModule m_dayNightModule;
-
-        [SerializeField]
-        public OverlinkGUICapsule OverLinkGUICapsule;
-
+        
         GameProcess m_gameProcess;
 
         private void Start()
@@ -44,12 +51,15 @@ namespace ArrowLink
 
             m_scoreText.SetDisplay(0);
             m_scoreDeltaText.SetDisplay(0);
-            m_scoreDeltaText.gameObject.SetActive(false);
+
             m_scoreDeltaText.ReachedAction = OnScoreDeltaTextAnimEnded;
-            
+
             m_endScreen.Initialize(this);
 
             m_dayNightModule.ManagerRef = ColorManager.Instance;
+
+            m_multiplierVeil = m_scoreMultiplier.GetComponent<VeilText>();
+            InstantHideMultiplier();
 
             InitFMS();
             if (m_introUI.activeSelf)
@@ -73,18 +83,34 @@ namespace ArrowLink
             m_gameProcess.RequestBank();
         }
 
-        public void NotifyDeltaScoreChanged(int newDelta)
+        public void NotifyDeltaScoreChanged(int newDelta, float delay)
         {
             m_scoreDeltaText.gameObject.SetActive(true);
-            m_scoreDeltaText.SetNumber(newDelta);
+            m_scoreDeltaText.SetNumber(newDelta, delay);
         }
 
-        public void NotifyScoreChanged(int newScore, int scoreDelta)
+        public void SetScoreMultiplier(float multiplier)
         {
-            m_scoreText.SetNumber(newScore, .25f);
-            m_scoreDeltaText.gameObject.SetActive(true);
-            m_scoreDeltaText.SetDisplay(scoreDelta);
-            m_scoreDeltaText.SetNumber(0, .25f);
+            m_multiplierVeil.SetVeilState(false);
+            m_scoreMultiplier.text = string.Format("x {0:0.0}", multiplier);
+        }
+
+        public void InstantHideMultiplier()
+        {
+            m_multiplierVeil.SetDisplay(0f);
+            m_multiplierVeil.SetVeilState(true);
+        }
+
+        public void ApplyMultiplier(int newDeltaScore)
+        {
+            m_multiplierVeil.SetVeilState(true);
+            m_scoreDeltaText.SetNumber(newDeltaScore);
+        }
+
+        public void ApplyScoreDelta(int newScore)
+        {
+            m_scoreText.SetNumber(newScore);
+            m_scoreDeltaText.SetNumber(0);
         }
 
         private void OnScoreDeltaTextAnimEnded()
@@ -124,17 +150,6 @@ namespace ArrowLink
         public void SetCrunchable(bool isCrunchable)
         {
             m_crunchVeil.SetVeilState(!isCrunchable);
-        }
-
-        public void SetOverLinkCapsuleState(OverLinkModule ovm, bool flash = true)
-        {
-            if (flash)
-            {
-                OverLinkGUICapsule.FlashTween.StartTween();
-            }
-
-            OverLinkGUICapsule.DotBonus.text = string.Format("+{0}", ovm.GetDotBonus());
-            OverLinkGUICapsule.ScoreBonus.text = string.Format("+{0}", ovm.GetScoreBonus());
         }
 
         GUIFSMState m_currentState;
