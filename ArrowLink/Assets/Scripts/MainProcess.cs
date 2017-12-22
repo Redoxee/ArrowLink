@@ -26,6 +26,7 @@ namespace ArrowLink
         }
 
         private const int c_gameScene = 1;
+        private const int c_menuScene = 2;
 
         private HashSet<int> m_additionalSceneLoaded;
 
@@ -50,7 +51,7 @@ namespace ArrowLink
             //FBInit();
 
 
-            LoadScene(c_gameScene);
+            LoadScene(c_menuScene);
         }
 
         private void OnApplicationFocus(bool focus)
