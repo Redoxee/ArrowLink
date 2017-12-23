@@ -63,7 +63,8 @@ public class SingleUITween : BaseUITween {
 		m_endTweenAction = onTweendEnd;
 		m_timer = 0f;
 		enabled = true;
-	}
+        ApplyTween(0f);
+    }
 	
 	public void UpdateTween()
 	{

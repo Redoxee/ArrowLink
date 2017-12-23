@@ -801,9 +801,11 @@ namespace ArrowLink
             if (m_holdedCard != null)
             {
                 m_holdedCard.MoveToPosition(m_playingCardTransform.position);
+                m_holdedCard.m_tweens.ActivationVeil.StopTween();
                 m_holdedCard.m_tweens.ActivationUnveil.StartTween();
             }
             m_currentCard.MoveToPosition(m_holdingCardTransform.position);
+            m_currentCard.m_tweens.ActivationUnveil.StopTween();
             m_currentCard.m_tweens.ActivationVeil.StartTween();
 
             var temp = m_holdedCard;

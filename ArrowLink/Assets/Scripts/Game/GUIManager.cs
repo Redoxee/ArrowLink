@@ -11,8 +11,6 @@ namespace ArrowLink
         GameObject m_popupUI = null;
         public GameObject PopupUI { get { return m_popupUI; } }
         [SerializeField]
-        GameObject m_introUI = null;
-        [SerializeField]
         EndScreen m_endScreen = null;
 
         [SerializeField]
@@ -62,10 +60,7 @@ namespace ArrowLink
             InstantHideMultiplier();
 
             InitFMS();
-            if (m_introUI.activeSelf)
-                SetState(m_introState);
-            else
-                SetState(m_inGameState);
+            SetState(m_inGameState);
         }
 
         public void NotifyEndGame()
@@ -164,7 +159,6 @@ namespace ArrowLink
 
 		private void InitFMS()
 		{
-			m_introState = new GUIFSMState(IntroStart, IntroEnd);
 			m_inGameState = new GUIFSMState(_InGameStart, _InGameEnd);
 			m_endGameState = new GUIFSMState(_StartEndGame, null);
 		}
@@ -189,23 +183,6 @@ namespace ArrowLink
 				End = nd;
 			}
 		}
-
-		#region State Intro
-
-		private GUIFSMState m_introState;
-
-		private void IntroStart()
-		{
-
-		}
-
-		private void IntroEnd()
-		{
-			m_popupUI.SetActive(false);
-			m_introUI.SetActive(false);
-		}
-
-		#endregion
 
 		#region State InGame
 

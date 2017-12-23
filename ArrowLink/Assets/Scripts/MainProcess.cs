@@ -28,7 +28,7 @@ namespace ArrowLink
         private const int c_gameScene = 1;
         private const int c_menuScene = 2;
 
-        private HashSet<int> m_additionalSceneLoaded;
+        private List<int> m_additionalSceneLoaded;
 
         private TrackingManager m_tracking;
         public TrackingManager TrackingManager {get{return m_tracking;} }
@@ -37,7 +37,7 @@ namespace ArrowLink
         {
             s_instance = this;
 
-            m_additionalSceneLoaded = new HashSet<int>();
+            m_additionalSceneLoaded = new List<int>();
 
             m_tracking = new TrackingManager();
 
@@ -119,9 +119,32 @@ namespace ArrowLink
                 onUnloaded();
         }
 
+        private void UnloadAllAdditionalScene(Action onUnloaded)
+        {
+            if (m_additionalSceneLoaded.Count > 0)
+            {
+                StartCoroutine(_unloadAllAditionalScene(onUnloaded));
+            }
+            else
+            {
+                onUnloaded();
+            }
+        }
+
+        private IEnumerator _unloadAllAditionalScene(Action OnUnloaded)
+        {
+            while (m_additionalSceneLoaded.Count > 0)
+            {
+                int sceneIndex = m_additionalSceneLoaded[0];
+                m_additionalSceneLoaded.RemoveAt(0);
+                yield return SceneManager.UnloadSceneAsync(sceneIndex);
+            }
+            OnUnloaded();
+        }
+
         public void LoadOrReloadGameScene()
         {
-            UnloadScene(c_gameScene, () => { LoadScene(c_gameScene); });
+            UnloadAllAdditionalScene(() => { LoadScene(c_gameScene); } );
         }
     }
 }
