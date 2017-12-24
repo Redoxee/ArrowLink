@@ -47,7 +47,7 @@ namespace ArrowLink
 
 		public void OnRetryPressed()
 		{
-			UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(0);
+            MainProcess.Instance.LoadOrReloadGameScene();
 		}
 
 

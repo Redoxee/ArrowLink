@@ -88,10 +88,23 @@ namespace ArrowLink
             m_tweens.LinkTweens[direction].IsNudging = isNudging;
         }
         
-        private void Awake()
+        private FlagDistributor FlagDistributor
+        {
+            get
+            {
+
+                if (GameProcess.Instance)
+                    return GameProcess.Instance.FlagDistributor;
+                else if (MainMenu.Instance)
+                    return MainMenu.Instance.FlagDistributor;
+                return null;
+            }
+        }
+
+        private void Start()
         {
 
-            FlagDistributor distribuor = GameProcess.Instance.FlagDistributor;
+            FlagDistributor distribuor = FlagDistributor;
 
             GrabLinkTweens();
 
@@ -101,8 +114,9 @@ namespace ArrowLink
 
         private void OnDestroy()
 		{
-			FlagDistributor distribuor = GameProcess.Instance.FlagDistributor;
-			distribuor.UnregisterUsedFlag(m_arrows);
+			FlagDistributor distribuor = FlagDistributor;
+            if(distribuor)
+                distribuor.UnregisterUsedFlag(m_arrows);
 		}
 
         public void SetupArrows(ArrowFlag flags)
@@ -234,7 +248,7 @@ namespace ArrowLink
         {
             m_tweens.LinkTweens[direction].Shrink.StartTween();
 
-            FlagDistributor distribuor = GameProcess.Instance.FlagDistributor;
+            FlagDistributor distribuor = FlagDistributor;
 
             distribuor.UnregisterUsedFlag(m_arrows);
             m_arrows = (ArrowFlag)((int)m_arrows - (int)direction);
@@ -374,7 +388,8 @@ namespace ArrowLink
 
         private void OnMouseUpAsButton()
         {
-            GameProcess.Instance.OnArrowCardPressed(this);
+            if(GameProcess.Instance)
+                GameProcess.Instance.OnArrowCardPressed(this);
         }
 
         [Serializable]
