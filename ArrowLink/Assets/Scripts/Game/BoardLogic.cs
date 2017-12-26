@@ -58,14 +58,17 @@ namespace ArrowLink{
 					if (neighbor != null && neighbor.IsPlaced)
 					{
 						var oposite = dir.Reverse();
-						if (neighbor.m_flags.DoHave(oposite))
-						{
-							tile.m_linkedTile[dir] = neighbor;
-							neighbor.m_linkedTile[oposite] = tile;
+                        if (neighbor.m_flags.DoHave(oposite))
+                        {
+                            tile.m_linkedTile[dir] = neighbor;
+                            neighbor.m_linkedTile[oposite] = tile;
 
-							tile.m_listLinkedTile.Add(neighbor);
-                            neighbor.m_listLinkedTile.Add(tile);
-						}
+                            if (!tile.m_listLinkedTile.Contains(neighbor))
+                            {
+                                tile.m_listLinkedTile.Add(neighbor);
+                                neighbor.m_listLinkedTile.Add(tile);
+                            }
+                        }
 					}
 				}
 			}

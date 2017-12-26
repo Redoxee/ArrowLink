@@ -222,6 +222,15 @@ namespace ArrowLink
             if (m_boardLogic.IsFilled(m_playedSlot.X, m_playedSlot.Y))
             {
                 LogicTile tile = m_boardLogic.GetTile(m_playedSlot.X, m_playedSlot.Y);
+                
+                HashSet<LogicTile> chain = new HashSet<LogicTile>();
+                List<LogicTile> chainAsList = new List<LogicTile>();
+                List<float> depthList = new List<float>();
+                List<LogicLinkStandalone> freeLinks = new List<LogicLinkStandalone>();
+                m_boardLogic.ComputeTileNeighbor(tile);
+                tile.ComputeLinkedChain(ref chain, ref chainAsList, ref depthList, ref freeLinks);
+                chainAsList.Remove(tile);
+
                 foreach (var entry in tile.m_linkedTile)
                 {
                     var direction = entry.Key.Reverse();
@@ -258,6 +267,8 @@ namespace ArrowLink
                 m_crunchDots.SetNumberOfDots(m_crunchTarget);
 
                 m_guiManager.SetCrunchable(false);
+
+                RewardTiles(chainAsList);
             }
             m_playedSlot = null;
         }
@@ -282,21 +293,46 @@ namespace ArrowLink
             List<LogicLinkStandalone> freeLinks = new List<LogicLinkStandalone>();
             m_boardLogic.ComputeTileNeighbor(tile);
             tile.ComputeLinkedChain(ref chain, ref chainAsList, ref depthList, ref freeLinks);
-            int chainCount = chain.Count;
 
             var newLinkDirection = tile.m_linkedTile.Keys;
 
+            RewardTiles(chainAsList);
+
+
+            placedCard.m_tileLinks = new List<TileLink>(tile.m_listLinkedTile.Count);
+            var p1 = tile.PhysicalCard.transform.position;
+
+            if (tile.m_listLinkedTile.Count > 0)
+            {
+
+                tile.PhysicalCard.LigthArrows(tile.m_linkedTile.Keys);
+                tile.PhysicalCard.SwitchCenter(true);
+
+                foreach (var entry in tile.m_linkedTile)
+                {
+                    var neighbor = entry.Value;
+                    var dir = entry.Key.Reverse();
+                    neighbor.PhysicalCard.SwitchArrow(dir, true);
+                    neighbor.PhysicalCard.SwitchCenter(true);
+                }
+
+            }
+        }
+
+        private void RewardTiles(List<LogicTile> chainAsList, float baseAnimDelay = 0f)
+        {
             int pointToBank = 0;
             int pointToOverLink = 0;
             int pointToCrunch = 0;
+            float animationDelay = baseAnimDelay;
 
-            float animationDelay = 0;
-
+            int chainCount = chainAsList.Count;
             if (chainCount > 1)
             {
                 for (int i = 0; i < chainCount; i++)
                 {
-                    var flashingCard = chainAsList[i].PhysicalCard;
+                    var tile = chainAsList[i];
+                    var flashingCard = tile.PhysicalCard;
                     FlashWithDelay(i * c_flashDelay, flashingCard);
                 }
 
@@ -342,9 +378,9 @@ namespace ArrowLink
                     animationDelay += c_flashDelay;
 
                     Action lightDot = () =>
-                            {
-                                m_crunchDots.LightDot(dotIndex);
-                            };
+                    {
+                        m_crunchDots.LightDot(dotIndex);
+                    };
 
                     AnimatedLineWithDelay(animationDelay + c_lineDelay, logicTile.PhysicalCard.transform.position, dot.position, lightDot, m_crunchDelayedAction);
 
@@ -371,7 +407,7 @@ namespace ArrowLink
                         dotIndex = Mathf.Min(dotIndex, m_overlinkDotCollection.MaxDots - 1);
 
                         var dot = m_overlinkDotCollection.GetDot(dotIndex);
-                        bool light = ! IsNextOverLinkBad(m_overLinkCounter + i, m_bankPointTarget);
+                        bool light = !IsNextOverLinkBad(m_overLinkCounter + i, m_bankPointTarget);
                         Action lightDots = () =>
                         {
                             m_overlinkDotCollection.LightDot(dotIndex, light);
@@ -383,33 +419,12 @@ namespace ArrowLink
                 }
             }
 
-
-            placedCard.m_tileLinks = new List<TileLink>(tile.m_listLinkedTile.Count);
-            var p1 = tile.PhysicalCard.transform.position;
-
-            if (tile.m_listLinkedTile.Count > 0)
-            {
-
-                tile.PhysicalCard.LigthArrows(tile.m_linkedTile.Keys);
-                tile.PhysicalCard.SwitchCenter(true);
-
-                foreach (var entry in tile.m_linkedTile)
-                {
-                    var neighbor = entry.Value;
-                    var dir = entry.Key.Reverse();
-                    neighbor.PhysicalCard.SwitchArrow(dir, true);
-                    neighbor.PhysicalCard.SwitchCenter(true);
-                }
-
-            }
-
-           
             if (animationDelay > 0)
             {
-                animationDelay += c_lineDelay + AnimatedLinePool.GetLineAnimationDuration() ;
+                animationDelay += c_lineDelay + AnimatedLinePool.GetLineAnimationDuration();
             }
             animationDelay += .25f;
-            m_bankDelayedAction.AddAction(animationDelay , CheckEndGame);
+            m_bankDelayedAction.AddAction(animationDelay, CheckEndGame);
         }
 
         private void FlashWithDelay(float delay, ArrowCard card)

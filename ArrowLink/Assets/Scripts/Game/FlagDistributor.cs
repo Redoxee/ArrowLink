@@ -1,4 +1,6 @@
-﻿using System;
+﻿//#define AMG_SUPER_EASY_MODE 
+
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,17 +9,6 @@ namespace ArrowLink
 
 	public class FlagDistributor : MonoBehaviour
 	{
-		//[Serializable]
-		//public struct FlagEntry
-		//{
-		//	public int Weight;
-		//	[EnumFlagsAttribute]
-		//	public ArrowFlag Flags;
-
-		//}
-
-		//[SerializeField]
-		//List<FlagEntry> m_entryList = null;
 		[SerializeField]
 		int[] m_arrowNumberDistribution = new int[8];
 
@@ -107,8 +98,13 @@ namespace ArrowLink
 				nbArrow = PickNbArrow();
 			var pool = m_allFlagsBynumber[nbArrow - 1];
 			int resultIndex = Mathf.RoundToInt(UnityEngine.Random.value * (pool.Count - 1));
-            //return ArrowFlag.N | ArrowFlag.S | ArrowFlag.E | ArrowFlag.W;
+
+#if AMG_SUPER_EASY_MODE
+            return ArrowFlag.N | ArrowFlag.S | ArrowFlag.E | ArrowFlag.W;
+#else
             return (ArrowFlag)pool[resultIndex];
+#endif
+
         }
 
 		public bool RegisterUsedFlag(ArrowFlag flag)

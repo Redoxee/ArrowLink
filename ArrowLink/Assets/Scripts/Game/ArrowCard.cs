@@ -240,8 +240,6 @@ namespace ArrowLink
         {
             yield return new WaitForSeconds(delay);
             IsSuperMode = true;
-
-            GameProcess gp = GameProcess.Instance;
         }
 
         public void RemoveArrow(ArrowFlag direction)
