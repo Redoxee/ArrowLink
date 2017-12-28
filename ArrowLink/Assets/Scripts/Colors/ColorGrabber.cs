@@ -133,5 +133,23 @@ namespace ArrowLink
             lr.startColor = col;
             lr.endColor = col;
         }
+
+#if UNITY_EDITOR
+        private void Reset()
+        {
+            if (GetComponent<Sprite>() != null)
+                m_mode = GrabMode.Sprite;
+            else if (GetComponent<UnityEngine.UI.Image>() != null)
+                m_mode = GrabMode.Image;
+            else if (GetComponent<UnityEngine.UI.Text>() != null)
+                m_mode = GrabMode.Text;
+            else if (GetComponent<Camera>() != null)
+                m_mode = GrabMode.Camera;
+            else if (GetComponent<ParticleSystem>() != null)
+                m_mode = GrabMode.Particles;
+            else if (GetComponent<LineRenderer>() != null)
+                m_mode = GrabMode.LineRenderer;
+        }
+#endif
     }
 }

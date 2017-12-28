@@ -147,7 +147,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_mode: 1
-  m_colorToGrab: 11
+  m_colorToGrab: 13
   m_customGrabber: {fileID: 0}
 --- !u!114 &114454707388852864
 MonoBehaviour:
