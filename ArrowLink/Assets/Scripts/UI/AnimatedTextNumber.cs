@@ -18,6 +18,13 @@ public class AnimatedTextNumber : MonoBehaviour {
     [SerializeField]
     private string m_format = null;
 
+    [SerializeField]
+    private float m_maxDuration = -1f;
+
+    private bool m_isSpeeding = false;
+    private float m_alternativeSpeed = 1f;
+
+
 	void Awake () {
         m_text = GetComponent<Text>();
 	}
@@ -36,6 +43,15 @@ public class AnimatedTextNumber : MonoBehaviour {
         }
 
         m_delayTimer = delay;
+
+        m_isSpeeding = false;
+        float distance = Mathf.Abs(m_displayedNumber - m_targetNumber);
+        float timeToTarget = distance / m_speed;
+        if (m_maxDuration > 0f && timeToTarget >= m_maxDuration)
+        {
+            m_isSpeeding = true;
+            m_alternativeSpeed = distance / m_maxDuration;
+        }
     }
 
     public void SetDisplay(int display)
@@ -58,7 +74,11 @@ public class AnimatedTextNumber : MonoBehaviour {
             m_delayTimer -= Time.deltaTime;
             return;
         }
-        float delta = Time.deltaTime * m_speed * (m_currentNumber < m_targetNumber ? 1 : -1);
+        float speed = m_speed;
+        if (m_isSpeeding)
+            speed = m_alternativeSpeed;
+
+        float delta = Time.deltaTime * speed * (m_currentNumber < m_targetNumber ? 1 : -1);
         if (delta < Mathf.Abs(m_currentNumber - m_targetNumber))
         {
             m_currentNumber += delta;
