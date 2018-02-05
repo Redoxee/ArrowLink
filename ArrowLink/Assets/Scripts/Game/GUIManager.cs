@@ -28,8 +28,14 @@ namespace ArrowLink
         public Transform MultiplierTransform { get { return m_scoreMultiplierTarget; } }
         VeilText m_multiplierVeil = null;
 
+        
+        public Transform BonusCapsuleTransform = null;
         [SerializeField]
-        SequenceUITween m_introFadeOutTween = null;
+        Text m_bonusMultiplier = null;
+        [SerializeField]
+        Text m_bonusBank = null;
+        [SerializeField]
+        BaseUITween m_bonusIncrementAnim = null;
 
         [SerializeField]
         private VeilText m_bankVeil = null;
@@ -90,6 +96,13 @@ namespace ArrowLink
             m_scoreMultiplier.text = string.Format("x {0:0.0}", multiplier);
         }
 
+        public void SetCapsuleBonus(float multiplier, int bank)
+        {
+            m_bonusIncrementAnim.StartTween();
+            m_bonusMultiplier.text = string.Format("POINTS x{0}",multiplier);
+            m_bonusBank.text = string.Format("BANK +{0}",bank);
+        }
+
         public void InstantHideMultiplier()
         {
             m_multiplierVeil.SetDisplay(0f);
@@ -117,12 +130,6 @@ namespace ArrowLink
         }
         
         public void OnIntroCloseButtonPressed()
-        {
-            Debug.Log("Intro close button pressed");
-            m_introFadeOutTween.StartTween(_OnIntroFadedOut);
-        }
-
-        private void _OnIntroFadedOut()
         {
             SetState(m_inGameState);
         }
