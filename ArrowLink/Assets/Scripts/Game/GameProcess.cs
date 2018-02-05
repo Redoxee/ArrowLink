@@ -65,7 +65,7 @@ namespace ArrowLink
 
         private int m_crunchTarget = 2;
         private int m_crunchPoints = 0;
-        private const int c_maxCrunchPoints = 22;
+        private const int c_maxCrunchPoints = 33;
 
         private int m_bankPointTarget = 2;
         private int m_bankPoints = 0;
@@ -140,8 +140,8 @@ namespace ArrowLink
             m_gameStartTime = Time.time;
 
             m_overlinkDotCollection.SetNumberOfDots(m_overlinkDotCollection.MaxDots);
-            m_overlinkDotCollection.LightDot(0, false);
-            m_overLinkCounter = 1;
+            //m_overlinkDotCollection.LightDot(0, false);
+            m_overLinkCounter = 0;
         }
 
         private void Update()
@@ -407,10 +407,9 @@ namespace ArrowLink
                         dotIndex = Mathf.Min(dotIndex, m_overlinkDotCollection.MaxDots - 1);
 
                         var dot = m_overlinkDotCollection.GetDot(dotIndex);
-                        bool light = !IsNextOverLinkBad(m_overLinkCounter + i, m_bankPointTarget);
                         Action lightDots = () =>
                         {
-                            m_overlinkDotCollection.LightDot(dotIndex, light);
+                            m_overlinkDotCollection.LightDot(dotIndex);
                         };
 
                         AnimatedLineWithDelay(animationDelay + c_lineDelay, logicTilePosition, dot.position, lightDots, m_overLinkDelayedAction);
@@ -490,11 +489,6 @@ namespace ArrowLink
 
             m_overlinkDotCollection.StopAllDots();
 
-            bool malus = (nextBankTarget < c_maxBankPoints);
-
-            if(malus)
-                m_overlinkDotCollection.LightDot(0, false);
-
             float animationDelay = DestroyAndScoreAnimationCombo(out tileLinked);
             float multiplierDelay = BankOverLinkAnimation(animationDelay);
 
@@ -528,7 +522,7 @@ namespace ArrowLink
             m_bankDots.SetNumberOfDots(m_bankPointTarget);
             m_guiManager.SetBankable(false);
 
-            m_overLinkCounter = malus ? 1 : 0;
+            m_overLinkCounter = 0;
 
             m_flagDistributor.NotifyBonusRequested();
 
@@ -736,7 +730,8 @@ namespace ArrowLink
         }
 
 
-        private int m_bonusGaps = 3;
+        private const int m_bonusGaps = 6;
+
         private bool IsNextOverLinkBad(int overLinkIndex, int currentBankTarget)
         {
             int nbDots = NumberOfMalus(overLinkIndex);
