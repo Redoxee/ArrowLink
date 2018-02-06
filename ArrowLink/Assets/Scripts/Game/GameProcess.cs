@@ -82,8 +82,6 @@ namespace ArrowLink
         private DelayedActionCollection m_crunchDelayedAction = new DelayedActionCollection();
         private DelayedActionCollection m_overLinkDelayedAction = new DelayedActionCollection();
         
-        private int m_overLinkCounter = 0;
-
         private bool m_isGameEnded = false;
         private float m_gameStartTime = float.MaxValue;
 
@@ -149,7 +147,6 @@ namespace ArrowLink
 
             m_overlinkDotCollection.SetNumberOfDots(m_overlinkDotCollection.MaxDots);
             //m_overlinkDotCollection.LightDot(0, false);
-            m_overLinkCounter = 0;
         }
 
         private void Update()
@@ -433,7 +430,6 @@ namespace ArrowLink
 
                         animationDelay += c_flashDelay;
                     }
-                    m_overLinkCounter += pointToOverLink;
                 }
             }
 
@@ -498,21 +494,26 @@ namespace ArrowLink
 
         void EndCombo()
         {
+
+            float animatedLineDuration = m_animatedLinePool.GetLineAnimationDuration();
+
             int tileLinked = 0;
 
             int nextBankTarget = m_bankPointTarget + ComputeBankBonus(m_bonusLevel);
             nextBankTarget = Mathf.Min(nextBankTarget, c_maxBankPoints);
 
-            float pointsAnimationDelay = c_bankPointAnimationShotTime / m_bankPoints;
+            float pointsAnimationDelay = m_bankPoints > 1 ? c_bankPointAnimationShotTime / (m_bankPoints - 1) : 0;
+            pointsAnimationDelay = Mathf.Min(pointsAnimationDelay, c_bankPointMaxAnimationDelay);
 
             m_bankDelayedAction.Clear();
             m_overLinkDelayedAction.Clear();
 
             m_overlinkDotCollection.StopAllDots();
 
-            float animationDelay = AnimationDestroyCards(out tileLinked);
+            AnimationDestroyCards(out tileLinked);
             BankToScoreLineAnimation(pointsAnimationDelay);
-            float multiplierDelay = BankOverLinkAnimation(c_bankPointAnimationShotTime + m_animatedLinePool.GetLineAnimationDuration());
+            float bonusDelay = pointsAnimationDelay * (m_bankPoints - 1);
+            float multiplierDelay = BankApplyBonusesAnimations(bonusDelay + animatedLineDuration);
 
 
 
@@ -524,7 +525,7 @@ namespace ArrowLink
             m_currentScore += gainedPoints;
             m_currentTileScore += tileLinked;
 
-            m_guiManager.NotifyDeltaScoreChanged(basePoints, m_animatedLinePool.GetLineAnimationDuration());
+            m_guiManager.NotifyDeltaScoreChanged(basePoints, animatedLineDuration);
 
             if (multiplier > 1f)
             {
@@ -544,12 +545,16 @@ namespace ArrowLink
             m_bankDots.StopAllDots();
             m_bankPoints = 0;
             m_bankPointTarget = nextBankTarget;
-            m_bankDots.SetNumberOfDots(m_bankPointTarget);
             m_guiManager.SetBankable(false);
 
-            m_guiManager.SetCapsuleBonus(ComputeMultiplierBonus(0), ComputeBankBonus(0));
+            float displayDelay = (m_bonusLevel > 0) ? multiplierDelay - animatedLineDuration : 0;
 
-            m_overLinkCounter = 0;
+            m_bankDelayedAction.AddAction(displayDelay, () => {
+                m_guiManager.SetCapsuleBonus(ComputeMultiplierBonus(0), ComputeBankBonus(0));
+            });
+
+            m_dotBonusCurrent = 0;
+            m_bonusLevel = 0;
 
             m_flagDistributor.NotifyBonusRequested();
 
@@ -600,6 +605,7 @@ namespace ArrowLink
         }
 
         public const float c_bankPointAnimationShotTime = 1f;
+        public const float c_bankPointMaxAnimationDelay = .15f;
 
         private void BankToScoreLineAnimation(float animationSteps)
         {
@@ -629,22 +635,18 @@ namespace ArrowLink
 
         }
 
-        private float BankOverLinkAnimation(float animationDelay)
+        private float BankApplyBonusesAnimations(float animationDelay)
         {
-            int counter = m_overLinkCounter;
-            counter = Mathf.Min(counter, m_overlinkDotCollection.MaxDots);
-            int dotAdded = 0;
+
             Vector3 multiplierPos = m_guiManager.MultiplierTransform.position;
 
             float lineAnimDuration = m_animatedLinePool.GetLineAnimationDuration();
             
+            Vector3 startPosition = m_guiManager.BonusCapsuleTransform.position;
 
-            //float animationDelay = 0f;
-            for (int i = 0; i < counter; ++i)
+           for (int i = 0; i < m_bonusLevel; ++i)
             {
                 animationDelay += .05f;
-                
-                var start = m_overlinkDotCollection.GetDot(i).position;
                 Action freeLine;
                 
                 Vector3 target = multiplierPos;
@@ -662,11 +664,41 @@ namespace ArrowLink
                         m_guiManager.SetScoreMultiplier(multiplier);
                     });
 
-                lineAnimation.SetUpLine(start, target, factor, freeLine);
+                lineAnimation.SetUpLine(startPosition, target, factor, freeLine);
                 m_bankDelayedAction.AddAction(animationDelay, () => { lineAnimation.StartAnimation(); });
             }
+           
+            int bankBonus = ComputeBankBonus(m_bonusLevel);
+            m_bankDelayedAction.AddAction(animationDelay, () =>
+            {
+                m_bankDots.SetNumberOfDots(m_bankPointTarget);
+            });
 
-            return animationDelay + lineAnimDuration;
+            animationDelay += .25f;
+
+            for (int i = 0; i < bankBonus; ++i)
+            {
+                animationDelay += .05f;
+                Action freeLine;
+                
+                GameObject go;
+                RoundedLineAnimation lineAnimation;
+                float factor = UnityEngine.Random.Range(-1f, 1f);
+                int index = m_bankPointTarget + i;
+                m_darkAnimatedLinePool.GetInstance(out go, out lineAnimation);
+
+                freeLine = () => { m_darkAnimatedLinePool.FreeInstance(go); };
+                
+                m_bankDelayedAction.AddAction(animationDelay, () => {
+                    Vector3 target = m_bankDots.GetDot(index).position;
+                    lineAnimation.SetUpLine(startPosition, target, factor, freeLine);
+                    lineAnimation.StartAnimation();
+                });
+            }
+            animationDelay += lineAnimDuration;
+
+
+            return animationDelay;
         }
 
         IEnumerator _animatedLineFrameDelayed(Vector3 start, Transform target, float animationDelay)
@@ -694,7 +726,8 @@ namespace ArrowLink
 
         private int ComputeBankBonus(int bonusLevel)
         {
-            return bonusLevel;
+            int projected = m_bankPointTarget + bonusLevel;
+            return Mathf.Min(projected,c_maxBankPoints) - m_bankPointTarget;
         }
 
         private void CheckEndGame()
