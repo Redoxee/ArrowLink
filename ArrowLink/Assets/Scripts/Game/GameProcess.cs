@@ -135,7 +135,7 @@ namespace ArrowLink
             m_guiManager.SetBankable(false);
             m_guiManager.SetCrunchable(false);
 
-            m_guiManager.SetCapsuleBonus(ComputeMultiplierBonus(0), ComputeBankBonus(0));
+            m_guiManager.SetCapsuleBonusValues(ComputeMultiplierBonus(0), ComputeBankBonus(0));
             
             if (MainProcess.IsReady)
             {
@@ -394,6 +394,7 @@ namespace ArrowLink
                 if (m_crunchPoints >= m_crunchTarget)
                 {
                     m_guiManager.SetCrunchable(true);
+                    m_guiManager.SetCapsuleBonusEnabled(true);
                 }
 
 
@@ -423,7 +424,7 @@ namespace ArrowLink
                             Action incrementBonus = () =>
                             {
                                 m_overlinkDotCollection.StopAllDots();
-                                m_guiManager.SetCapsuleBonus(ComputeMultiplierBonus(levelCopy), ComputeBankBonus(levelCopy));
+                                m_guiManager.SetCapsuleBonusValues(ComputeMultiplierBonus(levelCopy), ComputeBankBonus(levelCopy));
                             };
                             AnimatedLineWithDelay(animationDelay + c_lineDelay, logicTilePosition,m_guiManager.BonusCapsuleTransform.position, incrementBonus, m_overLinkDelayedAction);
                         }
@@ -550,7 +551,8 @@ namespace ArrowLink
             float displayDelay = (m_bonusLevel > 0) ? multiplierDelay - animatedLineDuration : 0;
 
             m_bankDelayedAction.AddAction(displayDelay, () => {
-                m_guiManager.SetCapsuleBonus(ComputeMultiplierBonus(0), ComputeBankBonus(0));
+                m_guiManager.SetCapsuleBonusValues(ComputeMultiplierBonus(0), ComputeBankBonus(0));
+                m_guiManager.SetCapsuleBonusEnabled(false);
             });
 
             m_dotBonusCurrent = 0;

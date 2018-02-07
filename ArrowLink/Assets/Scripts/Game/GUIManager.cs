@@ -28,7 +28,7 @@ namespace ArrowLink
         public Transform MultiplierTransform { get { return m_scoreMultiplierTarget; } }
         VeilText m_multiplierVeil = null;
 
-        
+
         public Transform BonusCapsuleTransform = null;
         [SerializeField]
         Text m_bonusMultiplier = null;
@@ -36,6 +36,8 @@ namespace ArrowLink
         Text m_bonusBank = null;
         [SerializeField]
         BaseUITween m_bonusIncrementAnim = null;
+        [SerializeField]
+        VeilSprite m_bonusCapsuleVeil = null;
 
         [SerializeField]
         private VeilText m_bankVeil = null;
@@ -46,7 +48,7 @@ namespace ArrowLink
 
         [SerializeField]
         private DayNightModule m_dayNightModule;
-        
+
         GameProcess m_gameProcess;
 
         private void Start()
@@ -96,11 +98,11 @@ namespace ArrowLink
             m_scoreMultiplier.text = string.Format("x {0:0.0}", multiplier);
         }
 
-        public void SetCapsuleBonus(float multiplier, int bank)
+        public void SetCapsuleBonusValues(float multiplier, int bank)
         {
             m_bonusIncrementAnim.StartTween();
-            m_bonusMultiplier.text = string.Format("POINTS x{0}",multiplier);
-            m_bonusBank.text = string.Format("BANK +{0}",bank);
+            m_bonusMultiplier.text = string.Format("POINTS x{0}", multiplier);
+            m_bonusBank.text = string.Format("BANK +{0}", bank);
         }
 
         public void InstantHideMultiplier()
@@ -119,6 +121,11 @@ namespace ArrowLink
         {
             m_scoreText.SetNumber(newScore);
             m_scoreDeltaText.SetNumber(0);
+        }
+
+        public void SetCapsuleBonusEnabled(bool enabled)
+        {
+            m_bonusCapsuleVeil.SetVeilState(!enabled);
         }
 
         private void OnScoreDeltaTextAnimEnded()
