@@ -81,9 +81,9 @@ public class SingleUITween : BaseUITween {
 
 		if (m_timer > m_parameters.Duration)
 		{
+			enabled = false;
 			if(m_endTweenAction != null)
 				m_endTweenAction();
-			enabled = false;
 			return;
 		}
 	}

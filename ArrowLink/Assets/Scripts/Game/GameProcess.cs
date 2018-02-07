@@ -394,7 +394,11 @@ namespace ArrowLink
                 if (m_crunchPoints >= m_crunchTarget)
                 {
                     m_guiManager.SetCrunchable(true);
-                    m_guiManager.SetCapsuleBonusEnabled(true);
+
+                    if (m_bankPoints >= m_bankPointTarget)
+                    {
+                        m_guiManager.SetCapsuleBonusEnabled(true);
+                    }
                 }
 
 
