@@ -1618,7 +1618,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 129781529}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3214b5b90c4ccf347a64178bbac5994d, type: 3}
   m_Name: 
@@ -8689,6 +8689,7 @@ GameObject:
   - component: {fileID: 1065526239}
   - component: {fileID: 1065526241}
   - component: {fileID: 1065526242}
+  - component: {fileID: 1065526243}
   m_Layer: 0
   m_Name: GameProcess
   m_TagString: Untagged
@@ -8712,7 +8713,7 @@ MonoBehaviour:
   m_board: {fileID: 608220604}
   m_gameCamera: {fileID: 1610179224}
   m_guiManager: {fileID: 175105413}
-  m_flagDistributor: {fileID: 1065526241}
+  m_flagDistributor: {fileID: 1065526243}
   m_popingCardTransform: {fileID: 344643450}
   m_playingCardTransform: {fileID: 1145674186}
   m_nextPlayingCardTransform: {fileID: 151990098}
@@ -8760,6 +8761,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_arrowNumberDistribution: 0000000000000000000000000000000000000000000000000000000000000000
   m_flagSequence: 0200000003000000020000000200000001000000030000000200000002000000040000000100000002000000020000000200000003000000020000000200000001000000050000000200000002000000
+--- !u!114 &1065526243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1065526238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9bd861691dded644b7091507f3936b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_arrowNumberDistribution: d007000098080000b60300002c010000c8000000640000001e00000001000000
+  m_difficulties:
+  - HitPoint: 0
+    MaxInterval: 4
+  - HitPoint: 1
+    MaxInterval: 8
+  - HitPoint: 4
+    MaxInterval: 16
+  - HitPoint: 8
+    MaxInterval: 32
+  - HitPoint: 16
+    MaxInterval: 64
+  - HitPoint: 24
+    MaxInterval: 128
+  m_currentDifficulty:
+    HitPoint: 0
+    MaxInterval: 0
 --- !u!114 &1076603777 stripped
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 114617283164075296, guid: a7f477e4809188d40a1355cbdbba9fed,

@@ -26,7 +26,7 @@ namespace ArrowLink
             return (ArrowFlag)pool[resultIndex];
         }
 
-        public override void NotifyBonusRequested()
+        public override void NotifyBank()
         {
             m_bonus = 3;
         }

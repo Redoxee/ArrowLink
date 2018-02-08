@@ -17,7 +17,7 @@ namespace ArrowLink
 
 		HashSet<ArrowFlag> m_usedFlags = new HashSet<ArrowFlag>();
 
-		private void Awake()
+		protected virtual void Awake()
 		{
 			Initialize();
 			//TestRules();
@@ -131,7 +131,7 @@ namespace ArrowLink
 			return true;
 		}
 
-        public virtual void NotifyBonusRequested()
+        public virtual void NotifyBank()
         {
         }
 

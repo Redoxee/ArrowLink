@@ -93,6 +93,8 @@ namespace ArrowLink
 
         private const float c_multiplierPerBonus = .5f;
 
+        private int m_nbCombo = 0;
+
         private void Awake()
         {
             if (s_instance != null)
@@ -128,6 +130,7 @@ namespace ArrowLink
             m_nbCardOnTheWay = 0;
 
             m_crunchPoints = 0;
+            m_nbCombo = 0;
 
             m_bankDots.SetNumberOfDots(m_bankPointTarget);
             m_crunchDots.SetNumberOfDots(m_crunchTarget);
@@ -529,6 +532,7 @@ namespace ArrowLink
             int gainedPoints = Mathf.FloorToInt(basePoints * multiplier);
             m_currentScore += gainedPoints;
             m_currentTileScore += tileLinked;
+            m_nbCombo++;
 
             m_guiManager.NotifyDeltaScoreChanged(basePoints, animatedLineDuration);
 
@@ -562,7 +566,7 @@ namespace ArrowLink
             m_dotBonusCurrent = 0;
             m_bonusLevel = 0;
 
-            m_flagDistributor.NotifyBonusRequested();
+            m_flagDistributor.NotifyBank();
 
             CheckEndGame();
 
@@ -768,6 +772,7 @@ namespace ArrowLink
             endTrackingParameters["BankTarget"] = m_bankPointTarget;
             endTrackingParameters["CrunchTarget"] = m_crunchTarget;
             endTrackingParameters["HasUsedHold"] = m_holdedCard != null;
+            endTrackingParameters["NbCombo"] = m_nbCombo;
             TrackingManager.TrackEvent("GameEnd",1 , endTrackingParameters);
         }
 

@@ -30,11 +30,6 @@ namespace ArrowLink
                 ColorManager.Instance.UnregisterListener(this);
         }
 
-        void Update()
-        {
-            enabled = false;
-        }
-
         public enum GrabMode
         {
             Sprite,

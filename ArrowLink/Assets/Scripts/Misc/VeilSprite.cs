@@ -40,6 +40,7 @@ public class VeilSprite : MonoBehaviour {
 
     public void SetTarget(float target)
     {
+        m_baseColor = m_image.color;
         m_targetValue = target;
         enabled = true;
     }
