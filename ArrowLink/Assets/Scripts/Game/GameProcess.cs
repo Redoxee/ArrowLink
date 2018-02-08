@@ -555,7 +555,7 @@ namespace ArrowLink
             float displayDelay = (m_bonusLevel > 0) ? multiplierDelay - animatedLineDuration : 0;
 
             m_bankDelayedAction.AddAction(displayDelay, () => {
-                m_guiManager.SetCapsuleBonusValues(ComputeMultiplierBonus(0), ComputeBankBonus(0));
+                m_guiManager.SetCapsuleBonusValues(ComputeMultiplierBonus(0), ComputeBankBonus(0),true);
                 m_guiManager.SetCapsuleBonusEnabled(false);
             });
 

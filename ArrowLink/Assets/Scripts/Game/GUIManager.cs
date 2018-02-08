@@ -100,9 +100,13 @@ namespace ArrowLink
             m_scoreMultiplier.text = string.Format("x {0:0.0}", multiplier);
         }
 
-        public void SetCapsuleBonusValues(float multiplier, int bank)
+        public void SetCapsuleBonusValues(float multiplier, int bank, bool inhibitAnimation = false)
         {
-            m_bonusIncrementAnim.StartTween();
+            if (!inhibitAnimation)
+            {
+                m_bonusIncrementAnim.StartTween();
+            }
+
             m_bonusMultiplier.text = string.Format("POINTS x{0}", multiplier);
             m_bonusBank.text = string.Format("BANK +{0}", bank);
         }

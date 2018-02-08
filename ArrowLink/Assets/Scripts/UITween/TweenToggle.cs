@@ -24,9 +24,7 @@ namespace ArrowLink
             }
         }
 
-
-
-        private void Start()
+        private void Awake()
         {
             m_tween = GetComponent<BaseUITween>();
         }
