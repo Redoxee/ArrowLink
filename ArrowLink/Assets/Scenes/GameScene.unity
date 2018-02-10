@@ -8772,7 +8772,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9bd861691dded644b7091507f3936b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_arrowNumberDistribution: d007000098080000b60300002c010000c8000000640000001e00000001000000
+  m_arrowNumberDistribution: 40060000d0070000e8030000f4010000c8000000640000001e00000001000000
   m_difficulties:
   - HitPoint: 0
     MaxInterval: 4

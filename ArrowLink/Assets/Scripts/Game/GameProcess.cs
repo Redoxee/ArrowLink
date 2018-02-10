@@ -87,7 +87,7 @@ namespace ArrowLink
 
         List<Action> m_onTilePlayedListeners = null;
 
-        private const int c_dotBonusTarget = 5;
+        private const int c_dotBonusTarget = 4;
         private int m_dotBonusCurrent = 0;
         private int m_bonusLevel = 0;
 
@@ -148,7 +148,7 @@ namespace ArrowLink
             }
             m_gameStartTime = Time.time;
 
-            m_overlinkDotCollection.SetNumberOfDots(m_overlinkDotCollection.MaxDots);
+            m_overlinkDotCollection.SetNumberOfDots(c_dotBonusTarget);
             //m_overlinkDotCollection.LightDot(0, false);
         }
 
@@ -731,7 +731,8 @@ namespace ArrowLink
         
         float ComputeMultiplierBonus(int bonusLevel)
         {
-            return 1f + bonusLevel * c_multiplierPerBonus;
+            float fullBonus = m_bankPointTarget >= c_maxBankPoints ? 1f : 0;
+            return 1f + bonusLevel * c_multiplierPerBonus + fullBonus;
         }
 
         private int ComputeBankBonus(int bonusLevel)
