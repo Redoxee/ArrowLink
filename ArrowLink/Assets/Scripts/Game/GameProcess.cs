@@ -94,6 +94,8 @@ namespace ArrowLink
         private const float c_multiplierPerBonus = .5f;
 
         private int m_nbCombo = 0;
+        private int m_nbCrunchInCombo = 0;
+
 
         private void Awake()
         {
@@ -268,8 +270,10 @@ namespace ArrowLink
                 }
 
                 SetState(DefaultState);
+
+                m_nbCrunchInCombo++;
                 m_crunchPoints = 0;
-                m_crunchTarget = Mathf.Min(m_crunchTarget + 1, c_maxCrunchPoints);
+                m_crunchTarget = Mathf.Min(m_crunchTarget + m_nbCrunchInCombo, c_maxCrunchPoints);
 
                 m_crunchDots.StopAllDots();
                 m_crunchDots.SetNumberOfDots(m_crunchTarget);
@@ -522,10 +526,7 @@ namespace ArrowLink
             BankToScoreLineAnimation(pointsAnimationDelay);
             float bonusDelay = pointsAnimationDelay * (m_bankPoints - 1);
             float multiplierDelay = BankApplyBonusesAnimations(bonusDelay + animatedLineDuration);
-
-
-
-
+            
             int basePoints = ComputebasePoints(m_bankPoints);
             float multiplier = ComputeMultiplierBonus(m_bonusLevel);
 
@@ -565,6 +566,7 @@ namespace ArrowLink
 
             m_dotBonusCurrent = 0;
             m_bonusLevel = 0;
+            m_nbCrunchInCombo = 0;
 
             m_flagDistributor.NotifyBank();
 
@@ -654,7 +656,10 @@ namespace ArrowLink
             
             Vector3 startPosition = m_guiManager.BonusCapsuleTransform.position;
 
-           for (int i = 0; i < m_bonusLevel; ++i)
+            float multiplier = ComputeMultiplierBonus(m_bonusLevel);
+            int nbParticle = Mathf.Min(m_bonusLevel, 100);
+
+            for (int i = 0; i < m_bonusLevel; ++i)
             {
                 animationDelay += .05f;
                 Action freeLine;
@@ -666,7 +671,6 @@ namespace ArrowLink
 
                 m_animatedLinePool.GetInstance(out go, out lineAnimation);
 
-                var multiplier = ComputeMultiplierBonus(m_bonusLevel);
 
                 freeLine = () => { m_animatedLinePool.FreeInstance(go); };
                 m_bankDelayedAction.AddAction(animationDelay + lineAnimDuration, () =>

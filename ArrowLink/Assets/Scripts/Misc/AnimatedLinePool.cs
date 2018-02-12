@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AnimatedLinePool : MonoBehaviour {
     
-    const int c_poolSize = 100;
+    const int c_poolSize = 200;
     [SerializeField]
     GameObject m_linePrefab = null;
     GameObject[] m_goPool = new GameObject[c_poolSize];
@@ -35,6 +35,7 @@ public class AnimatedLinePool : MonoBehaviour {
         asObject = m_goPool[index];
         asComponent = m_cPool[index];
         m_availableObject.RemoveAt(m_availableObject.Count - 1);
+        //Debug.LogFormat("Left in pool {0}", m_availableObject.Count);
     }
 
     public void FreeInstance(GameObject asObject)
@@ -42,6 +43,7 @@ public class AnimatedLinePool : MonoBehaviour {
         int id = asObject.GetInstanceID();
         Debug.Assert(m_idToIndex.ContainsKey(id), "Unkown instance");
         m_availableObject.Add(id);
+        //Debug.LogFormat("Back in pool {0}", m_availableObject.Count);
     }
 
     public float GetLineAnimationDuration()
