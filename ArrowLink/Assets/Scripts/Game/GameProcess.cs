@@ -152,6 +152,7 @@ namespace ArrowLink
 
             m_overlinkDotCollection.SetNumberOfDots(c_dotBonusTarget);
             //m_overlinkDotCollection.LightDot(0, false);
+            
         }
 
         private void Update()

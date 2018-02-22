@@ -97,11 +97,13 @@ namespace ArrowLink
                     return GameProcess.Instance.FlagDistributor;
                 else if (MainMenu.Instance)
                     return MainMenu.Instance.FlagDistributor;
+                else if (TestFlag.Instance)
+                    return TestFlag.Instance.Distributor;
                 return null;
             }
         }
 
-        private void Start()
+        private void Awake()
         {
 
             FlagDistributor distribuor = FlagDistributor;

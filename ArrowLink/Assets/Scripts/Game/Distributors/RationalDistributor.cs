@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ArrowLink
 {
-    public sealed class RationalDistributor : FlagDistributor
+    public class RationalDistributor : FlagDistributor
     {
         [Serializable]
         public struct DifficultyEntry

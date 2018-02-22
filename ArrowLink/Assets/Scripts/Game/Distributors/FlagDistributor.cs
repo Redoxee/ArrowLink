@@ -15,7 +15,10 @@ namespace ArrowLink
 		KeyValuePair<int, int>[] m_sortedWeight = new KeyValuePair<int, int>[8];
 		int m_totalWeight;
 
-		HashSet<ArrowFlag> m_usedFlags = new HashSet<ArrowFlag>();
+		protected List<ArrowFlag> m_usedFlags = new List<ArrowFlag>();
+
+        [SerializeField]
+        private int m_maxOneArrow = 3;
 
 		protected virtual void Awake()
 		{
@@ -78,14 +81,24 @@ namespace ArrowLink
 		private int PickNbArrow()
 		{
 			int pickedValue = Mathf.RoundToInt(UnityEngine.Random.value * (m_totalWeight - 1));
+            int result = -1;
 			for (int i = 0; i < m_sortedWeight.Length; ++i)
 			{
 				var entry = m_sortedWeight[i];
-				if (pickedValue < entry.Value)
-					return entry.Key;
+                if (pickedValue < entry.Value)
+                {
+                    result = entry.Key;
+                    break;
+                }
 				pickedValue -= entry.Value;
 			}
-			return -1;
+            Debug.Log(m_allFlagsBynumber[0].Count);
+            if (result < 2 && (m_allFlagsBynumber[0].Count < (8 - m_maxOneArrow - 1)))
+            {
+                return 2;
+            }
+
+            return result;
 		}
 
 		public virtual ArrowFlag PickRandomFlags()
@@ -115,6 +128,8 @@ namespace ArrowLink
 			m_allFlags.Remove(iFlag);
 			int nbFlags = CountFlag(iFlag);
 			m_allFlagsBynumber[nbFlags - 1].Remove(iFlag);
+
+            m_usedFlags.Add(flag);
 			return true;
 		}
 
@@ -128,6 +143,8 @@ namespace ArrowLink
                 return false;
 			m_allFlags.Add(iFlag);
 			m_allFlagsBynumber[nbArrow - 1].Add(iFlag);
+
+            m_usedFlags.Remove(flag);
 			return true;
 		}
 

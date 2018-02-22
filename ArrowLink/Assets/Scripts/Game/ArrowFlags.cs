@@ -125,9 +125,81 @@ namespace ArrowLink
 				array[count++] = ArrowFlag.NW;
 		}
 
+        public static int NbArrows(this ArrowFlag flags)
+        {
+            int res = 0;
+            for(int i = 0; i < 8; ++i)
+            {
+                if (((int)flags & 0x1 << i) != 0)
+                    ++res;
+            }
+            return res;
+        }
+
 		public static bool DoHave(this ArrowFlag a, ArrowFlag b)
 		{
 			return (a & b) == b;
 		}
-	}
+
+        public static ArrowFlag Rotate(this ArrowFlag flag)
+        {
+            uint b = (uint)flag;
+            uint one = (b & 0x1) << 7;
+            b = (b & 255) >> 1;
+            return (ArrowFlag)(b | one);
+        }
+
+        public static int Differences(this ArrowFlag a, ArrowFlag b)
+        {
+            int result = 0;
+            for (int i = 0; i < 8; ++i)
+            {
+                if (((int)a & (0x1 << i)) == ((int)b & (0x1 << i)))
+                {
+                    result++;
+                }
+            }
+            return result;
+        }
+        public static int Lookalike(this ArrowFlag a, ArrowFlag b)
+        {
+            int result = 0;
+            for (int i = 0; i < 8; ++i)
+            {
+                if
+                    (
+                        (
+                            (
+                                a & (ArrowFlag)(0x1 << i)
+                            ) &
+                            (
+                                b & (ArrowFlag)(0x1 << i)
+                            )
+                        )
+                        != ArrowFlag.NONE
+                    )
+                {
+                    result++;
+                }
+            }
+            return result;
+        }
+        public static int XorDiff(this ArrowFlag a, ArrowFlag b)
+        {
+            int result = 0;
+            for (int i = 0; i < 8; ++i)
+            {
+                bool hasA = ((int)a & (0x1 << i)) > 0;
+                bool hasB = ((int)b & (0x1 << i)) > 0;
+
+                if ((hasA && !hasB) || (!hasA && hasB) )
+                {
+                    result++;
+                }
+            }
+            return result;
+        }
+
+
+    }
 }
