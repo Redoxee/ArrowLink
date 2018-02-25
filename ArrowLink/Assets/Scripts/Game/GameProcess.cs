@@ -88,7 +88,7 @@ namespace ArrowLink
         List<Action> m_onTilePlayedListeners = null;
 
         private const int c_dotBonusTarget = 4;
-        private int m_dotBonusCurrent = 0;
+        private int m_dotBonusCurrent = c_dotBonusTarget;
         private int m_bonusLevel = 0;
 
         private const float c_multiplierPerBonus = .5f;
@@ -565,7 +565,7 @@ namespace ArrowLink
                 m_guiManager.SetCapsuleBonusEnabled(false);
             });
 
-            m_dotBonusCurrent = 0;
+            m_dotBonusCurrent = c_dotBonusTarget;
             m_bonusLevel = 0;
             m_nbCrunchInCombo = 0;
 
