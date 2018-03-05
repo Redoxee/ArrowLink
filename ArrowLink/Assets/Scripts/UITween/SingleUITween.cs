@@ -91,10 +91,17 @@ public class SingleUITween : BaseUITween {
 	void ApplyTween(float progression)
 	{
 
-		if (m_parameters.isPosition)
-		{
-			transform.position = m_parameters.PositionCurve.Evaluate(progression) * m_parameters.PositionDelta + m_parameters.PositionStart;
-		}
+        if (m_parameters.isPosition)
+        {
+            if (!m_parameters.isLocalPosition)
+            {
+                transform.position = m_parameters.PositionCurve.Evaluate(progression) * m_parameters.PositionDelta + m_parameters.PositionStart;
+            }
+            else
+            {
+                ((RectTransform)transform).anchoredPosition = m_parameters.PositionCurve.Evaluate(progression) * m_parameters.PositionDelta + m_parameters.PositionStart; ;
+            }
+        }
 
 		if (m_parameters.isScale)
 		{
@@ -148,6 +155,7 @@ public class UITweenParameters
 
 	[Header("Position")]
 	public bool isPosition;
+    public bool isLocalPosition;
 	public Vector3 PositionStart;
 	public Vector3 PositionEnd;
 	[NonSerialized]

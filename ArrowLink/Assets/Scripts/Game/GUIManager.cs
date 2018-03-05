@@ -12,6 +12,8 @@ namespace ArrowLink
         public GameObject PopupUI { get { return m_popupUI; } }
         [SerializeField]
         EndScreen m_endScreen = null;
+        [SerializeField]
+        private PauseUI m_pauseUI = null;
 
         [SerializeField]
         AnimatedTextNumber m_scoreText = null;
@@ -71,6 +73,8 @@ namespace ArrowLink
 
             InitFMS();
             SetState(m_inGameState);
+
+            m_pauseUI.ShowTween.StartTween();
         }
 
         public void NotifyEndGame()
