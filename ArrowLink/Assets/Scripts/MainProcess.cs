@@ -146,5 +146,10 @@ namespace ArrowLink
         {
             UnloadAllAdditionalScene(() => { LoadScene(c_gameScene); } );
         }
+
+        public void LoadMenuScene()
+        {
+            UnloadAllAdditionalScene(() => { LoadScene(c_menuScene); });
+        }
     }
 }

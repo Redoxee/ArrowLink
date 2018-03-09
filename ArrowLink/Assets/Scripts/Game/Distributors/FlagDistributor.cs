@@ -92,7 +92,7 @@ namespace ArrowLink
                 }
 				pickedValue -= entry.Value;
 			}
-            Debug.Log(m_allFlagsBynumber[0].Count);
+
             if (result < 2 && (m_allFlagsBynumber[0].Count <= (8 - m_maxOneArrow)))
             {
                 return 2;

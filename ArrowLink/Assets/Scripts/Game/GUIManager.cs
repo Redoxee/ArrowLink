@@ -73,8 +73,6 @@ namespace ArrowLink
 
             InitFMS();
             SetState(m_inGameState);
-
-            m_pauseUI.ShowTween.StartTween();
         }
 
         public void NotifyEndGame()
@@ -84,7 +82,17 @@ namespace ArrowLink
 
         public void OnPausePressed()
         {
-            MainProcess.Instance.LoadOrReloadGameScene();
+            SetState(m_pauseState);
+        }
+
+        public void OnPauseCloseRequested()
+        {
+            SetState(m_inGameState);
+        }
+
+        public void OnHomePressed()
+        {
+            MainProcess.Instance.LoadMenuScene();
         }
 
         public void OnBankPressed()
@@ -186,6 +194,7 @@ namespace ArrowLink
 		{
 			m_inGameState = new GUIFSMState(_InGameStart, _InGameEnd);
 			m_endGameState = new GUIFSMState(_StartEndGame, null);
+            m_pauseState = new GUIFSMState(_StartPause, _EndPause);
 		}
 
 		private void SetState(GUIFSMState state)
@@ -213,13 +222,13 @@ namespace ArrowLink
 
 		private void _InGameStart()
 		{
-
+            m_gameProcess.IsGamePaused = false;
 		}
 
 		private void _InGameEnd()
-		{
-
-		}
+        {
+            m_gameProcess.IsGamePaused = true;
+        }
 
 		#endregion
 
@@ -232,6 +241,21 @@ namespace ArrowLink
 			GameProcess gp = GameProcess.Instance;
 			m_endScreen.DisplayEndScreen(gp.CurrentScore, gp.CurrentTileScore);
 		}
+
+        #endregion
+
+        #region State Pause
+        GUIFSMState m_pauseState;
+        private void _StartPause()
+        {
+            GameProcess gp = GameProcess.Instance;
+            m_pauseUI.Show(gp.CurrentScore, gp.CurrentTileScore);
+        }
+
+        private void _EndPause()
+        {
+            m_pauseUI.Hide();
+        }
 
         #endregion
 

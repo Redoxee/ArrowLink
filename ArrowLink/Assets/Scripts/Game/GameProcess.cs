@@ -91,10 +91,12 @@ namespace ArrowLink
         private int m_dotBonusCurrent = c_dotBonusTarget;
         private int m_bonusLevel = 0;
 
-        private const float c_multiplierPerBonus = .5f;
+        private const float c_multiplierPerBonus = 1.0f;
 
         private int m_nbCombo = 0;
         private int m_nbCrunchInCombo = 0;
+
+        public bool IsGamePaused = false;
 
 
         private void Awake()
@@ -157,12 +159,14 @@ namespace ArrowLink
 
         private void Update()
         {
-            ProcessPressedCard();
-            m_currentState.ProcessPlayedSlot();
-
-            m_bankDelayedAction.ManualUpdate();
-            m_crunchDelayedAction.ManualUpdate();
-            m_overLinkDelayedAction.ManualUpdate();
+            if (!IsGamePaused)
+            {
+                ProcessPressedCard();
+                m_currentState.ProcessPlayedSlot();
+                m_bankDelayedAction.ManualUpdate();
+                m_crunchDelayedAction.ManualUpdate();
+                m_overLinkDelayedAction.ManualUpdate();
+            }
         }
 
         void DrawNextCard()
@@ -196,11 +200,15 @@ namespace ArrowLink
 
         public void OnTilePressed(BoardSlot slot)
         {
+            if (IsGamePaused)
+                return;
             m_playedSlot = slot;
         }
 
         public void OnArrowCardPressed(ArrowCard pressedCard)
         {
+            if (IsGamePaused)
+                return;
             m_pressedCard = pressedCard;
         }
 
@@ -784,6 +792,8 @@ namespace ArrowLink
 
         public void RequestBank()
         {
+            if (IsGamePaused)
+                return;
             if (m_bankPoints >= m_bankPointTarget)
             {
                 EndCombo();
@@ -792,6 +802,9 @@ namespace ArrowLink
 
         public void RequestTileCrunchToggle()
         {
+            if (IsGamePaused)
+                return;
+
             if (m_currentState == DefaultState)
             {
                 if (CheckCrunchAllowance())
