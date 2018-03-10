@@ -37,6 +37,8 @@ namespace ArrowLink
         {
             s_instance = this;
 
+            Application.targetFrameRate = 30;
+
             m_additionalSceneLoaded = new List<int>();
 
             m_tracking = new TrackingManager();

@@ -44,9 +44,7 @@ namespace ArrowLink
         [SerializeField]
         private VeilText m_bankVeil = null;
         [SerializeField]
-        private VeilText m_crunchVeil = null;
-        [SerializeField]
-        ParticleSystem m_bankParticles = null;
+        private VeilSprite m_crunchVeil = null;
         [SerializeField]
         TweenToggle m_bankableTweenToggle = null;
 
@@ -169,10 +167,6 @@ namespace ArrowLink
         {
             m_bankVeil.SetVeilState(!isBankable);
             m_bankableTweenToggle.IsOn = isBankable;
-            //if (isBankable)
-            //    m_bankParticles.Play();
-            //else
-            //    m_bankParticles.Stop();
         }
 
         public void SetCrunchable(bool isCrunchable)

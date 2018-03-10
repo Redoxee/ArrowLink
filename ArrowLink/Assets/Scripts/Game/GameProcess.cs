@@ -47,7 +47,7 @@ namespace ArrowLink
         public AnimatedLinePool AnimatedLinePool { get { return m_animatedLinePool; } }
         [SerializeField]
         AnimatedLinePool m_darkAnimatedLinePool = null;
-        
+
         ArrowCard m_currentCard = null;
         ArrowCard m_nextCard = null;
 
@@ -63,9 +63,9 @@ namespace ArrowLink
 
         int m_nbCardOnTheWay = 0;
 
-        private int m_crunchTarget = 2;
-        private int m_crunchPoints = 0;
-        private const int c_maxCrunchPoints = 33;
+        public const int c_crunchCooldown = 1;
+        private int m_crunchCoolDown = 0;
+        public bool CanCrunch { get { return (m_crunchCoolDown < 1) && !m_boardLogic.IsBoardEmpty(); } }
 
         private int m_bankPointTarget = 2;
         private int m_bankPoints = 0;
@@ -73,8 +73,6 @@ namespace ArrowLink
         
         [SerializeField]
         private DotCollection m_bankDots = null;
-        [SerializeField]
-        private DotCollection m_crunchDots = null;
         [SerializeField]
         private DotCollection m_overlinkDotCollection = null;
 
@@ -94,7 +92,6 @@ namespace ArrowLink
         private const float c_multiplierPerBonus = 1.0f;
 
         private int m_nbCombo = 0;
-        private int m_nbCrunchInCombo = 0;
 
         public bool IsGamePaused = false;
 
@@ -133,11 +130,10 @@ namespace ArrowLink
             m_currentScore = 0;
             m_nbCardOnTheWay = 0;
 
-            m_crunchPoints = 0;
+            m_crunchCoolDown = c_crunchCooldown;
             m_nbCombo = 0;
 
             m_bankDots.SetNumberOfDots(m_bankPointTarget);
-            m_crunchDots.SetNumberOfDots(m_crunchTarget);
 
             m_guiManager.SetBankable(false);
             m_guiManager.SetCrunchable(false);
@@ -153,7 +149,6 @@ namespace ArrowLink
             m_gameStartTime = Time.time;
 
             m_overlinkDotCollection.SetNumberOfDots(c_dotBonusTarget);
-            //m_overlinkDotCollection.LightDot(0, false);
             
         }
 
@@ -265,27 +260,11 @@ namespace ArrowLink
 
                 Vector3 targetPos = tile.PhysicalCard.transform.position;
 
-                float delay = m_darkAnimatedLinePool.GetLineAnimationDuration();
-
-                tile.PhysicalCard.SoftDestroy(delay);
-
-                for (int i = 0; i < m_crunchTarget; ++i)
-                {
-                    GameObject go; RoundedLineAnimation animation;
-                    m_darkAnimatedLinePool.GetInstance(out go, out animation);
-                    Vector3 start = m_crunchDots.GetDot(i).transform.position;
-                    animation.SetUpLine(start, targetPos, 1f, ()=> { m_darkAnimatedLinePool.FreeInstance(go); });
-                    animation.StartAnimation();
-                }
+                tile.PhysicalCard.SoftDestroy();
 
                 SetState(DefaultState);
 
-                m_nbCrunchInCombo++;
-                m_crunchPoints = 0;
-                m_crunchTarget = Mathf.Min(m_crunchTarget + m_nbCrunchInCombo, c_maxCrunchPoints);
-
-                m_crunchDots.StopAllDots();
-                m_crunchDots.SetNumberOfDots(m_crunchTarget);
+                m_crunchCoolDown = c_crunchCooldown;
 
                 m_guiManager.SetCrunchable(false);
 
@@ -344,7 +323,6 @@ namespace ArrowLink
         {
             int pointToBank = 0;
             int pointToOverLink = 0;
-            int pointToCrunch = 0;
             float animationDelay = baseAnimDelay;
 
             int chainCount = chainAsList.Count;
@@ -359,11 +337,8 @@ namespace ArrowLink
 
 
                 pointToBank = Mathf.Clamp(chainCount, 0, m_bankPointTarget - m_bankPoints);
-
-                pointToCrunch = chainCount - pointToBank;
-                pointToCrunch = Mathf.Min(pointToCrunch, m_crunchTarget - m_crunchPoints);
-
-                pointToOverLink = chainCount - pointToBank - pointToCrunch;
+                
+                pointToOverLink = chainCount - pointToBank;
 
 
                 for (int i = 0; i < pointToBank; ++i)
@@ -386,44 +361,17 @@ namespace ArrowLink
                 if (m_bankPoints >= m_bankPointTarget)
                 {
                     m_guiManager.SetBankable(true);
+                    //m_guiManager.SetCapsuleBonusEnabled(true);
                 }
-
-
-                for (int i = 0; i < pointToCrunch; ++i)
-                {
-                    int dotIndex = m_crunchPoints + i;
-                    Transform dot = m_crunchDots.GetDot(dotIndex);
-                    var tIndex = i + pointToBank;
-                    var logicTile = chainAsList[tIndex];
-
-                    animationDelay += c_flashDelay;
-
-                    Action lightDot = () =>
-                    {
-                        m_crunchDots.LightDot(dotIndex);
-                    };
-
-                    AnimatedLineWithDelay(animationDelay + c_lineDelay, logicTile.PhysicalCard.transform.position, dot.position, lightDot, m_crunchDelayedAction);
-
-                }
-                m_crunchPoints += pointToCrunch;
-                if (m_crunchPoints >= m_crunchTarget)
-                {
-                    m_guiManager.SetCrunchable(true);
-
-                    if (m_bankPoints >= m_bankPointTarget)
-                    {
-                        m_guiManager.SetCapsuleBonusEnabled(true);
-                    }
-                }
-
+                
 
                 if (pointToOverLink > 0)
                 {
+                    m_guiManager.SetCapsuleBonusEnabled(true);
                     for (int i = 0; i < pointToOverLink; ++i)
                     {
                         m_dotBonusCurrent++;
-                        int tileIndex = pointToBank + pointToCrunch + i;
+                        int tileIndex = pointToBank + i;
                         var logicTilePosition = chainAsList[tileIndex].PhysicalCard.transform.position;
 
                         if (m_dotBonusCurrent <=  c_dotBonusTarget)
@@ -575,7 +523,11 @@ namespace ArrowLink
 
             m_dotBonusCurrent = c_dotBonusTarget;
             m_bonusLevel = 0;
-            m_nbCrunchInCombo = 0;
+            --m_crunchCoolDown;
+            if (CanCrunch)
+            {
+                m_guiManager.SetCrunchable(true);
+            }
 
             m_flagDistributor.NotifyBank();
 
@@ -763,7 +715,7 @@ namespace ArrowLink
 
             if (m_boardLogic.IsBoardFull())
             {
-                if (m_crunchPoints < m_crunchTarget)
+                if (!CanCrunch)
                 {
                     EndGame();
                 }
@@ -784,7 +736,6 @@ namespace ArrowLink
             endTrackingParameters["TileMatched"] = m_currentTileScore;
             endTrackingParameters["GameDuration"] = Time.time - m_gameStartTime;
             endTrackingParameters["BankTarget"] = m_bankPointTarget;
-            endTrackingParameters["CrunchTarget"] = m_crunchTarget;
             endTrackingParameters["HasUsedHold"] = m_holdedCard != null;
             endTrackingParameters["NbCombo"] = m_nbCombo;
             TrackingManager.TrackEvent("GameEnd",1 , endTrackingParameters);
@@ -807,7 +758,7 @@ namespace ArrowLink
 
             if (m_currentState == DefaultState)
             {
-                if (CheckCrunchAllowance())
+                if (CanCrunch)
                 {
                     SetState(TileCrunchState);
                 }
@@ -816,15 +767,6 @@ namespace ArrowLink
             {
                 SetState(DefaultState);
             }
-        }
-
-        public bool CheckCrunchAllowance()
-        {
-            if (m_crunchPoints < m_crunchTarget)
-                return false;
-            if (m_boardLogic.IsBoardEmpty())
-                return false;
-            return true;
         }
         
         #region FSM
