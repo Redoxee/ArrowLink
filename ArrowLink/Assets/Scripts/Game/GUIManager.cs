@@ -80,7 +80,10 @@ namespace ArrowLink
 
         public void OnPausePressed()
         {
-            SetState(m_pauseState);
+            if (!m_gameProcess.IsGameEnded)
+            {
+                SetState(m_pauseState);
+            }
         }
 
         public void OnPauseCloseRequested()

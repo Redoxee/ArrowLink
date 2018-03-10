@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,6 +19,33 @@ namespace ArrowLink
         {
             Debug.Assert(s_instance == null, "More than one instance of the main menu !!");
             s_instance = this;
+
+            CheckIsItANewDay();
+        }
+
+        public const string c_lastConectionKey = "LastConection";
+
+        private void CheckIsItANewDay()
+        {
+            long currentDay = DateTime.Today.Ticks;
+            if (PlayerPrefs.HasKey(c_lastConectionKey))
+            {
+                string strDate = PlayerPrefs.GetString(c_lastConectionKey);
+                long lastConection;
+                long.TryParse(strDate,out lastConection);
+                if (currentDay > lastConection)
+                {
+                    MainProcess.Instance.NotificationUI.ShowDailyTween();
+                    PlayerPrefs.SetString(c_lastConectionKey, currentDay.ToString());
+                    
+                }
+
+            }
+            else
+            {
+                PlayerPrefs.SetString(c_lastConectionKey, currentDay.ToString());
+            }
+
         }
 
         public void RequestPlay()

@@ -81,6 +81,7 @@ namespace ArrowLink
         private DelayedActionCollection m_overLinkDelayedAction = new DelayedActionCollection();
         
         private bool m_isGameEnded = false;
+        public bool IsGameEnded { get { return m_isGameEnded; } }
         private float m_gameStartTime = float.MaxValue;
 
         List<Action> m_onTilePlayedListeners = null;

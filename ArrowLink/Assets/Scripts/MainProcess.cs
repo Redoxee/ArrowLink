@@ -33,6 +33,9 @@ namespace ArrowLink
         private TrackingManager m_tracking;
         public TrackingManager TrackingManager {get{return m_tracking;} }
 
+        private FloatingNotificationUI m_notificationUI = null;
+        public FloatingNotificationUI NotificationUI = null;
+
         private void Awake()
         {
             s_instance = this;
