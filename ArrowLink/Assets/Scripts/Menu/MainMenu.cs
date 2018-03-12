@@ -35,8 +35,12 @@ namespace ArrowLink
                 long.TryParse(strDate,out lastConection);
                 if (currentDay > lastConection)
                 {
-                    MainProcess.Instance.NotificationUI.ShowDailyTween();
+                    MainProcess mp = MainProcess.Instance;
+                    mp.NotificationUI.ShowFloatingMessage("Hello","Welcome back!");
                     PlayerPrefs.SetString(c_lastConectionKey, currentDay.ToString());
+                    mp.Achievements.NotifyEventIncrement("ConnectedDay");
+                    mp.Achievements.Save();
+                    mp.DisplayCompletedAchievements();
                     
                 }
 

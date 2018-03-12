@@ -1,0 +1,36 @@
+ID,event to watch,target value,Title,Subtitle
+ConnectionStreak {0},ConnectedDay,2,Connect {0} days,Current {0}
+ConnectionStreak {0},ConnectedDay,4,Connect {0} days,Current {0}
+ConnectionStreak {0},ConnectedDay,8,Connect {0} days,Current {0}
+ConnectionStreak {0},ConnectedDay,16,Connect {0} days,Current {0}
+Score {0},BestScore,500,Score {0} points in one game,Current best {0}
+Score {0},BestScore,1000,Score {0} points in one game,Current best {0}
+Score {0},BestScore,2000,Score {0} points in one game,Current best {0}
+Score {0},BestScore,4000,Score {0} points in one game,Current best {0}
+Score {0},BestScore,8000,Score {0} points in one game,Current best {0}
+Score {0},BestScore,16000,Score {0} points in one game,Current best {0}
+Score {0},BestScore,32000,Score {0} points in one game,Current best {0}
+LinkCount {0},TotalTileLinked,200,Link {0} tiles,Current{0}
+LinkCount {0},TotalTileLinked,400,Link {0} tiles,Current{0}
+LinkCount {0},TotalTileLinked,800,Link {0} tiles,Current{0}
+LinkCount {0},TotalTileLinked,1600,Link {0} tiles,Current{0}
+LinkCount {0},TotalTileLinked,3200,Link {0} tiles,Current{0}
+LinkCount {0},TotalTileLinked,6400,Link {0} tiles,Current{0}
+Crunch {0},TotalTileCrunched,20,Crunch {0} tiles,Current {0}
+Crunch {0},TotalTileCrunched,40,Crunch {0} tiles,Current {0}
+Crunch {0},TotalTileCrunched,80,Crunch {0} tiles,Current {0}
+Crunch {0},TotalTileCrunched,160,Crunch {0} tiles,Current {0}
+Crunch {0},TotalTileCrunched,240,Crunch {0} tiles,Current {0}
+Crunch {0},TotalTileCrunched,320,Crunch {0} tiles,Current {0}
+Crunch {0},TotalTileCrunched,400,Crunch {0} tiles,Current {0}
+GameFinished{0},GameFinished,4,Finish {0} games,Current {0}
+GameFinished{0},GameFinished,10,Finish {0} games,Current {0}
+GameFinished{0},GameFinished,20,Finish {0} games,Current {0}
+GameFinished{0},GameFinished,40,Finish {0} games,Current {0}
+GameFinished{0},GameFinished,80,Finish {0} games,Current {0}
+TotalScore,TotalScore,2000,Score a total of {0} points,Current {0}
+TotalScore,TotalScore,10000,Score a total of {0} points,Current {0}
+TotalScore,TotalScore,50000,Score a total of {0} points,Current {0}
+TotalScore,TotalScore,100000,Score a total of {0} points,Current {0}
+TotalScore,TotalScore,200000,Score a total of {0} points,Current {0}
+TotalScore,TotalScore,500000,Score a total of {0} points,Current {0}

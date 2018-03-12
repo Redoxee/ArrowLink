@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Facebook.Unity;
+using AntonMakesGames;
 
 namespace ArrowLink
 {
@@ -31,10 +32,16 @@ namespace ArrowLink
         private List<int> m_additionalSceneLoaded;
 
         private TrackingManager m_tracking;
-        public TrackingManager TrackingManager {get{return m_tracking;} }
+        public TrackingManager TrackingManager { get { return m_tracking; } }
 
+        [SerializeField]
+        private TextAsset m_achievementConfiguration = null;
+        private AchievementManager m_achievementsManager = null;
+        public AchievementManager Achievements { get { return m_achievementsManager; } }
+
+        [SerializeField]
         private FloatingNotificationUI m_notificationUI = null;
-        public FloatingNotificationUI NotificationUI = null;
+        public FloatingNotificationUI NotificationUI { get { return m_notificationUI; } }
 
         private void Awake()
         {
@@ -46,6 +53,8 @@ namespace ArrowLink
 
             m_tracking = new TrackingManager();
 
+            m_achievementsManager = new AchievementManager(m_achievementConfiguration);
+
             int sceneIndex = SceneManager.GetActiveScene().buildIndex;
             if (sceneIndex != 0)
             {
@@ -53,8 +62,7 @@ namespace ArrowLink
                 return;
             }
 
-            //FBInit();
-
+            
 
             LoadScene(c_menuScene);
         }
@@ -156,5 +164,20 @@ namespace ArrowLink
         {
             UnloadAllAdditionalScene(() => { LoadScene(c_menuScene); });
         }
+
+        #region Achievements
+
+        public void DisplayCompletedAchievements()
+        {
+            List<Achievement> completedAchievements = m_achievementsManager.CheckNonCompletedAchievement();
+            int count = completedAchievements.Count;
+            for (int i = 0; i < count; ++i)
+            {
+                Achievement achievement = completedAchievements[i];
+                m_notificationUI.ShowFloatingMessage(achievement.Title, "Completed");
+            }
+        }
+
+        #endregion
     }
 }

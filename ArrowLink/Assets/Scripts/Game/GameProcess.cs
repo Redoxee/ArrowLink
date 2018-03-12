@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using AntonMakesGames;
 
 namespace ArrowLink
 {
@@ -93,6 +94,7 @@ namespace ArrowLink
         private const float c_multiplierPerBonus = 1.0f;
 
         private int m_nbCombo = 0;
+        private int m_nbCrunch = 0;
 
         public bool IsGamePaused = false;
 
@@ -133,6 +135,7 @@ namespace ArrowLink
 
             m_crunchCoolDown = c_crunchCooldown;
             m_nbCombo = 0;
+            m_nbCrunch = 0;
 
             m_bankDots.SetNumberOfDots(m_bankPointTarget);
 
@@ -270,6 +273,8 @@ namespace ArrowLink
                 m_guiManager.SetCrunchable(false);
 
                 RewardTiles(chainAsList);
+
+                ++m_nbCrunch;
             }
             m_playedSlot = null;
         }
@@ -729,6 +734,17 @@ namespace ArrowLink
             if (m_isGameEnded)
                 return;
             m_isGameEnded = true;
+
+            MainProcess mp = MainProcess.Instance;
+            AchievementManager am = mp.Achievements;
+            am.NotifyEventIncrement("GameFinished");
+            am.NotifyEventMaxing("BestScore", m_currentScore);
+            am.NotifyEventIncrement("TotalScore", m_currentScore);
+            am.NotifyEventIncrement("TotalTileLinked", m_currentTileScore);
+            am.NotifyEventIncrement("TotalTileCrunched", m_nbCrunch);
+            am.NotifyEventIncrement("NbBank");
+            am.Save();
+            mp.DisplayCompletedAchievements();
 
             m_guiManager.NotifyEndGame();
 
