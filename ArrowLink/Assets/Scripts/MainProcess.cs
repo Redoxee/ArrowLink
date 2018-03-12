@@ -171,7 +171,7 @@ namespace ArrowLink
         {
             List<Achievement> completedAchievements = m_achievementsManager.CheckNonCompletedAchievement();
             int count = completedAchievements.Count;
-            for (int i = 0; i < count; ++i)
+            for (int i = count - 1; i > -1; --i)
             {
                 Achievement achievement = completedAchievements[i];
                 m_notificationUI.ShowFloatingMessage(achievement.Title, "Completed");

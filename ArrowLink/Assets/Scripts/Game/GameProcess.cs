@@ -530,7 +530,7 @@ namespace ArrowLink
             m_dotBonusCurrent = c_dotBonusTarget;
             m_bonusLevel = 0;
             --m_crunchCoolDown;
-            if (CanCrunch)
+            if (m_crunchCoolDown < 1)
             {
                 m_guiManager.SetCrunchable(true);
             }

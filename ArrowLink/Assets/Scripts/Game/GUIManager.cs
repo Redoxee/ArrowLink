@@ -8,9 +8,6 @@ namespace ArrowLink
     public class GUIManager : MonoBehaviour {
 
         [SerializeField]
-        GameObject m_popupUI = null;
-        public GameObject PopupUI { get { return m_popupUI; } }
-        [SerializeField]
         EndScreen m_endScreen = null;
         [SerializeField]
         private PauseUI m_pauseUI = null;

@@ -118,7 +118,7 @@ namespace AntonMakesGames
         }
         #region Save
 
-        const string c_eventSaveName = "AMG.TrackedEvents";
+        public const string c_eventSaveName = "AMG.TrackedEvents";
         public void Save()
         {
             string sevents = JsonUtility.ToJson(m_events);
@@ -138,6 +138,15 @@ namespace AntonMakesGames
                 m_events = new EventDictionary();
             }
         }
+
+#if UNITY_EDITOR
+        [UnityEditor.MenuItem("Save/ResetAchievement")]
+        private static void DeleteAchievementSave()
+        {
+            PlayerPrefs.SetString(c_eventSaveName, null);
+            PlayerPrefs.Save();
+        }
+#endif
 
         #endregion
     }
