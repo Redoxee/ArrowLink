@@ -16,4 +16,6 @@ public abstract class BaseUITween : MonoBehaviour {
 	public abstract void Stop(bool fireEvents);
 
 	public abstract UITweenParameters[] GetParameters ();
+
+    public abstract void SetToFirstFrame();
 }

@@ -54,6 +54,12 @@ namespace ArrowLink
 
         public void RequestPlay()
         {
+            //var notifs = MainProcess.Instance.NotificationUI;
+            //notifs.AddMessageToQueue("coucou", "coucou");
+            //notifs.AddMessageToQueue("coucou", "coucou");
+            //notifs.AddMessageToQueue("coucou", "coucou");
+            //notifs.DisplayNextMessagesInQueue();
+
             MainProcess.Instance.LoadOrReloadGameScene();
         }
     }

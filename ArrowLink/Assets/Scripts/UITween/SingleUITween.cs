@@ -65,8 +65,13 @@ public class SingleUITween : BaseUITween {
 		enabled = true;
         ApplyTween(0f);
     }
-	
-	public void UpdateTween()
+
+    public override void SetToFirstFrame()
+    {
+        ApplyTween(0f);
+    }
+
+    public void UpdateTween()
 	{
 		if (m_timer > m_parameters.Duration)
 		{

@@ -16,7 +16,12 @@ public class SequenceUITween : BaseUITween {
 		return currentIndex >= 0;
 	}
 
-	public override void StartTween(Action onTweenEnd)
+    public override void SetToFirstFrame()
+    {
+        m_tweenList[0].TweenToPlay.SetToFirstFrame();
+    }
+
+    public override void StartTween(Action onTweenEnd)
 	{
 		m_endAction = onTweenEnd;
 		FireTween();

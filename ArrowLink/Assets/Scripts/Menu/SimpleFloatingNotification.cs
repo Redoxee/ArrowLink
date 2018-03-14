@@ -19,6 +19,8 @@ namespace ArrowLink
         [SerializeField]
         Text m_subTitle = null;
 
+        private float m_delay = 0f;
+
         private void Awake()
         {
             RectTransform rect = (RectTransform)transform;
@@ -34,13 +36,33 @@ namespace ArrowLink
 
         private Action m_endAction;
 
-        public void ShowMessage(string title, string subtitle, Action onEnd = null)
+        public void ShowMessage(string title, string subtitle, float delay = 0, Action onEnd = null)
         {
+            m_delay = delay;
             m_title.text = title;
             m_subTitle.text = subtitle;
-            gameObject.SetActive(true);
             m_endAction = onEnd;
-            m_fullAnimation.StartTween(_OnAnimationEnd);
+            gameObject.SetActive(true);
+            if (m_delay <= 0f)
+            {
+                m_fullAnimation.StartTween(_OnAnimationEnd);
+            }
+            else
+            {
+                m_fullAnimation.SetToFirstFrame();
+            }
+        }
+
+        private void Update()
+        {
+            if (m_delay > 0f)
+            {
+                m_delay -= Time.deltaTime;
+                if (m_delay <= 0f)
+                {
+                    m_fullAnimation.StartTween(_OnAnimationEnd);
+                }
+            }
         }
 
         private void _OnAnimationEnd()
@@ -52,7 +74,7 @@ namespace ArrowLink
 
         public bool IsDisplayingAMessage()
         {
-            return m_fullAnimation.isAnimating();
+            return (m_delay > 0) || m_fullAnimation.isAnimating();
         }
     }
 }

@@ -174,8 +174,9 @@ namespace ArrowLink
             for (int i = count - 1; i > -1; --i)
             {
                 Achievement achievement = completedAchievements[i];
-                m_notificationUI.ShowFloatingMessage(achievement.Title, "Completed");
+                m_notificationUI.AddMessageToQueue(achievement.Title, "Completed");
             }
+            m_notificationUI.DisplayNextMessagesInQueue();
         }
 
         #endregion

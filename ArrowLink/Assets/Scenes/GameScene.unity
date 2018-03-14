@@ -9743,7 +9743,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9bd861691dded644b7091507f3936b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_arrowNumberDistribution: 14050000d00700007e040000f4010000c8000000640000001e00000001000000
+  m_arrowNumberDistribution: 14050000d00700004c040000f4010000c8000000640000001e00000001000000
   m_maxOneArrow: 3
   m_difficulties:
   - HitPoint: 0
@@ -9751,17 +9751,11 @@ MonoBehaviour:
   - HitPoint: 1
     MaxInterval: 6
   - HitPoint: 4
-    MaxInterval: 8
-  - HitPoint: 8
     MaxInterval: 16
+  - HitPoint: 8
+    MaxInterval: 32
   - HitPoint: 16
     MaxInterval: 64
-  - HitPoint: 12
-    MaxInterval: 18
-  - HitPoint: 16
-    MaxInterval: 24
-  - HitPoint: 24
-    MaxInterval: 32
   m_currentDifficulty:
     HitPoint: 0
     MaxInterval: 0
