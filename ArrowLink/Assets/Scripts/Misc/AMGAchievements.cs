@@ -62,7 +62,7 @@ namespace AntonMakesGames
 
         #endregion
 
-        public void NotifyEventIncrement(string eventName, int Value = 1)
+        public void _NotifyEventIncrement(string eventName, int Value = 1)
         {
             if (m_events.ContainsKey(eventName))
             {
@@ -74,7 +74,7 @@ namespace AntonMakesGames
             }
         }
 
-        public void NotifyEventMaxing(string eventName, int Value)
+        public void _NotifyEventMaxing(string eventName, int Value)
         {
 
             if (m_events.ContainsKey(eventName))
@@ -85,6 +85,16 @@ namespace AntonMakesGames
             {
                 m_events[eventName] = Value;
             }
+        }
+
+        public static void NotifyEventIncrement(string eventName, int value = 1)
+        {
+            ArrowLink.MainProcess.Instance.Achievements._NotifyEventIncrement(eventName, value);
+        }
+
+        public static void NotifyEventMaxing(string eventName, int value)
+        {
+            ArrowLink.MainProcess.Instance.Achievements._NotifyEventMaxing(eventName, value = 1);
         }
 
         public int GetEventValue(string eventName)

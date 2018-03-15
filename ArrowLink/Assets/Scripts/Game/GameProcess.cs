@@ -229,6 +229,7 @@ namespace ArrowLink
                 {
                     act();
                 }
+                AntonMakesGames.AchievementManager.NotifyEventIncrement("TotalTilePlaced");
             }
             m_playedSlot = null;
         }
@@ -323,6 +324,8 @@ namespace ArrowLink
                 }
 
             }
+
+            AchievementManager.NotifyEventMaxing("BestTileChain", chainAsList.Count);
         }
 
         private void RewardTiles(List<LogicTile> chainAsList, float baseAnimDelay = 0f)
@@ -536,7 +539,12 @@ namespace ArrowLink
             }
 
             m_flagDistributor.NotifyBank();
-
+            AchievementManager.NotifyEventIncrement("TotalNbBank");
+            AchievementManager.NotifyEventMaxing("OneGamebank", m_nbCombo);
+            if (m_boardLogic.IsBoardEmpty())
+            {
+                AchievementManager.NotifyEventIncrement("BoardCleared");
+            }
             CheckEndGame();
 
         }
@@ -737,12 +745,11 @@ namespace ArrowLink
 
             MainProcess mp = MainProcess.Instance;
             AchievementManager am = mp.Achievements;
-            am.NotifyEventIncrement("GameFinished");
-            am.NotifyEventMaxing("BestScore", m_currentScore);
-            am.NotifyEventIncrement("TotalScore", m_currentScore);
-            am.NotifyEventIncrement("TotalTileLinked", m_currentTileScore);
-            am.NotifyEventIncrement("TotalTileCrunched", m_nbCrunch);
-            am.NotifyEventIncrement("NbBank");
+            am._NotifyEventIncrement("GameFinished");
+            am._NotifyEventMaxing("BestScore", m_currentScore);
+            am._NotifyEventIncrement("TotalScore", m_currentScore);
+            am._NotifyEventIncrement("TotalTileLinked", m_currentTileScore);
+            am._NotifyEventIncrement("TotalTileCrunched", m_nbCrunch);
             am.Save();
             mp.DisplayCompletedAchievements();
 
@@ -869,6 +876,8 @@ namespace ArrowLink
                 m_currentCard = temp;
             else
                 DrawNextCard();
+
+            AchievementManager.NotifyEventIncrement("TileKeeped");
         }
 
         public void OnNextButtonPressed()

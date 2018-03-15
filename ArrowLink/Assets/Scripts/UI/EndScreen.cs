@@ -65,6 +65,8 @@ namespace ArrowLink
             string subject = EscapeURL(header);
             body = EscapeURL(body);
             Application.OpenURL("mailto:" + c_feedbackEmail + "?subject=" + subject + "&body=" + body);
+            AntonMakesGames.AchievementManager.NotifyEventIncrement("FeedbackSent");
+            MainProcess.Instance.DisplayCompletedAchievements();
         }
 
         static string EscapeURL(string url)

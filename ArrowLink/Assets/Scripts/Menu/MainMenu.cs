@@ -38,7 +38,7 @@ namespace ArrowLink
                     MainProcess mp = MainProcess.Instance;
                     mp.NotificationUI.ShowFloatingMessage("Hello","Welcome back!");
                     PlayerPrefs.SetString(c_lastConectionKey, currentDay.ToString());
-                    mp.Achievements.NotifyEventIncrement("ConnectedDay");
+                    mp.Achievements._NotifyEventIncrement("ConnectedDay");
                     mp.Achievements.Save();
                     mp.DisplayCompletedAchievements();
                     
