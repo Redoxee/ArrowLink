@@ -11,16 +11,20 @@ namespace ArrowLink
         public static MainMenu Instance { get { return s_instance; } }
 
         [SerializeField]
-        FlagDistributor m_flagDistributor = null;
+        private AchievementPopup m_achievementPopup;
+
+        [SerializeField]
+        private FlagDistributor m_flagDistributor = null;
 
         public FlagDistributor FlagDistributor { get { return m_flagDistributor; } }
-
+        
         private void Awake()
         {
             Debug.Assert(s_instance == null, "More than one instance of the main menu !!");
             s_instance = this;
 
             CheckIsItANewDay();
+            m_achievementPopup.HidePage();
         }
 
         public const string c_lastConectionKey = "LastConection";
@@ -61,6 +65,11 @@ namespace ArrowLink
             //notifs.DisplayNextMessagesInQueue();
 
             MainProcess.Instance.LoadOrReloadGameScene();
+        }
+
+        public void RequestAchievement()
+        {
+            m_achievementPopup.ShowPage();
         }
     }
 }

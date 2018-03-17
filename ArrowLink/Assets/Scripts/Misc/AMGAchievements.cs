@@ -42,16 +42,18 @@ namespace AntonMakesGames
                 int targetValue = int.Parse(columns[2]);
                 string title = columns[3];
                 string subtitle = columns[4];
-                Achievement achievement = new Achievement();
+                Achievement achievement = new Achievement(this);
                 achievement.EventToWatch = eventToWatch;
                 achievement.TargetValue = targetValue;
                 achievement.Title = string.Format(title,targetValue);
+                achievement.SubTitle = subtitle;
                 if (prevId == id)
                 {
                     achievement.PrevAchievement = prevAchievement;
                 }
                 prevId = id;
                 prevAchievement = achievement;
+                achievement.Index = i;
                 m_allAchievement.Add(achievement);
                 if (GetEventValue(eventToWatch) < targetValue)
                 {
@@ -126,6 +128,41 @@ namespace AntonMakesGames
 
             return result;
         }
+
+        public List<Achievement> GetSortedAchievements()
+        {
+            m_allAchievement.Sort(SortAchievement);
+            return m_allAchievement;
+        }
+
+        private static int SortAchievement(Achievement a, Achievement b)
+        {
+            if (a == b)
+                return 0;
+            bool aPrev = a.PrevAchievementCompleted;
+            bool bPrev = b.PrevAchievementCompleted;
+            if (aPrev != bPrev)
+            {
+                if (aPrev)
+                {
+                    return 1;
+                }
+                return -1;
+            }
+            bool aComp = a.IsComplet;
+            bool bComp = b.IsComplet;
+            if (aComp != bComp)
+            {
+                if (aComp)
+                {
+                    return 1;
+                }
+                return -1;
+            }
+
+            return a.Index - b.Index;
+        }
+
         #region Save
 
         public const string c_eventSaveName = "AMG.TrackedEvents";
@@ -163,10 +200,39 @@ namespace AntonMakesGames
 
     public class Achievement
     {
+        public int Index;
         public Achievement PrevAchievement;
         public int TargetValue ;
         public string EventToWatch ;
         public string Title;
         public string SubTitle;
+
+        private AchievementManager m_managerRef;
+
+        public Achievement(AchievementManager manager)
+        {
+            m_managerRef = manager;
+        }
+
+        public int CurrentValue
+        {
+            get { return m_managerRef.GetEventValue(EventToWatch); }
+        }
+
+        public bool IsComplet
+        { get
+            {
+                return m_managerRef.GetEventValue(EventToWatch) >= TargetValue;
+            }
+        }
+
+        public bool PrevAchievementCompleted
+        {
+            get
+            {
+                return (PrevAchievement == null) || (PrevAchievement.PrevAchievementCompleted && PrevAchievement.IsComplet);
+            }
+        }
+
     }
 }

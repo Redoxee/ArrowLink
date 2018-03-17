@@ -46,5 +46,13 @@ namespace ArrowLink
                 currentPosition.x = basePosition.x;
             }
         }
+
+//#if UNITY_EDITOR
+//        [InspectorButtonAttribute("_GenerateTilesFunction")]
+//        private bool _GenerateTiles = false;
+//        private void _GenerateTilesFunction()
+//        {
+//        }
+//#endif
     }
 }
