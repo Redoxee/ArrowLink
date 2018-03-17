@@ -273,7 +273,7 @@ namespace ArrowLink
 
                 m_guiManager.SetCrunchable(false);
 
-                RewardTiles(chainAsList);
+                //RewardTiles(chainAsList);
 
                 ++m_nbCrunch;
             }

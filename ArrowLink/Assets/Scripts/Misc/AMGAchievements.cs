@@ -155,9 +155,9 @@ namespace AntonMakesGames
             {
                 if (aComp)
                 {
-                    return 1;
+                    return -1;
                 }
-                return -1;
+                return 1;
             }
 
             return a.Index - b.Index;
