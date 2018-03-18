@@ -331,7 +331,7 @@ namespace AntonMakesGames.Tools
 #if UNITY_IOS
 
 		string IOS_path = "/users/antonroy/Desktop/";
-		string IOS_folderName = "DasherIOS";
+		string IOS_folderName = "TileLinkIOS";
 		public void BuildForIOS(bool isDebug,bool increment, bool autoRun)
 		{
 
