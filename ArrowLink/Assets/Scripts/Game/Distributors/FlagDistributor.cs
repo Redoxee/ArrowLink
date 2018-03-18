@@ -1,4 +1,4 @@
-﻿// #define AMG_SUPER_EASY_MODE 
+﻿//#define AMG_SUPER_EASY_MODE 
 
 using System;
 using System.Collections.Generic;

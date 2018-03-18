@@ -1,21 +1,21 @@
 ID,event to watch,target value,Title,Subtitle,Filler
-ConnectionStreak,ConnectedDay,2,Connect {0} days,Current {0},0
-ConnectionStreak,ConnectedDay,4,Connect {0} days,Current {0},0
-ConnectionStreak,ConnectedDay,8,Connect {0} days,Current {0},0
-ConnectionStreak,ConnectedDay,16,Connect {0} days,Current {0},0
-Score,BestScore,500,Score {0} points in one game,Current best {0},0
-Score,BestScore,1000,Score {0} points in one game,Current best {0},0
-Score,BestScore,2000,Score {0} points in one game,Current best {0},0
-Score,BestScore,4000,Score {0} points in one game,Current best {0},0
-Score,BestScore,8000,Score {0} points in one game,Current best {0},0
-Score,BestScore,16000,Score {0} points in one game,Current best {0},0
-Score,BestScore,32000,Score {0} points in one game,Current best {0},0
-LinkCount,TotalTileLinked,200,Link {0} tiles,Current{0},0
-LinkCount,TotalTileLinked,400,Link {0} tiles,Current{0},0
-LinkCount,TotalTileLinked,800,Link {0} tiles,Current{0},0
-LinkCount,TotalTileLinked,1600,Link {0} tiles,Current{0},0
-LinkCount,TotalTileLinked,3200,Link {0} tiles,Current{0},0
-LinkCount,TotalTileLinked,6400,Link {0} tiles,Current{0},0
+ConnectionStreak,ConnectedDay,2,Login {0} days,Current {0},0
+ConnectionStreak,ConnectedDay,4,Login {0} days,Current {0},0
+ConnectionStreak,ConnectedDay,8,Login {0} days,Current {0},0
+ConnectionStreak,ConnectedDay,16,Login {0} days,Current {0},0
+Score,BestScore,500,Score {0} points in a single game,Current best {0},0
+Score,BestScore,1000,Score {0} points in a single game,Current best {0},0
+Score,BestScore,2000,Score {0} points in a single game,Current best {0},0
+Score,BestScore,4000,Score {0} points in a single game,Current best {0},0
+Score,BestScore,8000,Score {0} points in a single game,Current best {0},0
+Score,BestScore,16000,Score {0} points in a single game,Current best {0},0
+Score,BestScore,32000,Score {0} points in a single game,Current best {0},0
+LinkCount,TotalTileLinked,200,Link {0} tiles,Current {0},0
+LinkCount,TotalTileLinked,400,Link {0} tiles,Current {0},0
+LinkCount,TotalTileLinked,800,Link {0} tiles,Current {0},0
+LinkCount,TotalTileLinked,1600,Link {0} tiles,Current {0},0
+LinkCount,TotalTileLinked,3200,Link {0} tiles,Current {0},0
+LinkCount,TotalTileLinked,6400,Link {0} tiles,Current {0},0
 Crunch,TotalTileCrunched,20,Crunch {0} tiles,Current {0},0
 Crunch,TotalTileCrunched,40,Crunch {0} tiles,Current {0},0
 Crunch,TotalTileCrunched,80,Crunch {0} tiles,Current {0},0
@@ -60,12 +60,21 @@ BoardClear,BoardCleared,1,Clear the board {0} times,Current {0},0
 BoardClear,BoardCleared,10,Clear the board {0} times,Current {0},0
 BoardClear,BoardCleared,50,Clear the board {0} times,Current {0},0
 BoardClear,BoardCleared,100,Clear the board {0} times,Current {0},0
-BankGame,OneGamebank,8,Bank {0} times in one game,Current best {0},0
-BankGame,OneGamebank,9,Bank {0} times in one game,Current best {0},0
-BankGame,OneGamebank,10,Bank {0} times in one game,Current best {0},0
-BankGame,OneGamebank,11,Bank {0} times in one game,Current best {0},0
-BankGame,OneGamebank,12,Bank {0} times in one game,Current best {0},0
-BankGame,OneGamebank,13,Bank {0} times in one game,Current best {0},0
-BankGame,OneGamebank,14,Bank {0} times in one game,Current best {0},0
-BankGame,OneGamebank,15,Bank {0} times in one game,Current best {0},0
-BankGame,OneGamebank,16,Bank {0} times in one game,Current best {0},0
+BankGame,OneGamebank,8,Bank {0} times in a single game,Current best {0},0
+BankGame,OneGamebank,9,Bank {0} times in a single game,Current best {0},0
+BankGame,OneGamebank,10,Bank {0} times in a single game,Current best {0},0
+BankGame,OneGamebank,11,Bank {0} times in a single game,Current best {0},0
+BankGame,OneGamebank,12,Bank {0} times in a single game,Current best {0},0
+BankGame,OneGamebank,13,Bank {0} times in a single game,Current best {0},0
+BankGame,OneGamebank,14,Bank {0} times in a single game,Current best {0},0
+BankGame,OneGamebank,15,Bank {0} times in a single game,Current best {0},0
+BankGame,OneGamebank,16,Bank {0} times in a single game,Current best {0},0
+FullBoardBank,FullBoardBank,1,Bank a full board {0} times,Current {0},0
+FullBoardBank,FullBoardBank,10,Bank a full board {0} times,Current {0},0
+FullBoardBank,FullBoardBank,20,Bank a full board {0} times,Current {0},0
+FullBoardBank,FullBoardBank,40,Bank a full board {0} times,Current {0},0
+FullBoardBank,FullBoardBank,100,Bank a full board {0} times,Current {0},0
+BoardFiller,BoardFilled,5,Fill the board {0} times,Current {0},0
+BoardFiller,BoardFilled,25,Fill the board {0} times,Current {0},0
+BoardFiller,BoardFilled,50,Fill the board {0} times,Current {0},0
+BoardFiller,BoardFilled,100,Fill the board {0} times,Current {0},0

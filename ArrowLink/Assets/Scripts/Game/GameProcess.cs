@@ -35,11 +35,12 @@ namespace ArrowLink
         [SerializeField]
         Transform m_playingCardTransform = null;
         [SerializeField]
-        Transform m_nextPlayingCardTransform = null;
-
-        [SerializeField]
         Transform m_holdingCardTransform = null;
 
+        [SerializeField]
+        bool m_previewNextTile = false;
+
+        private ArrowCard m_nextPlayedCard = null;
         private ArrowCard m_holdedCard = null;
         public bool IsHoldingCard { get { return m_holdedCard != null; } }
 
@@ -50,7 +51,7 @@ namespace ArrowLink
         AnimatedLinePool m_darkAnimatedLinePool = null;
 
         ArrowCard m_currentCard = null;
-        ArrowCard m_nextCard = null;
+        ArrowCard m_holdedCards = null;
 
         BoardSlot m_playedSlot;
         ArrowCard m_pressedCard = null;
@@ -124,11 +125,15 @@ namespace ArrowLink
             pos.z = ArrowCard.c_secondLevel; ;
             m_playingCardTransform.position = pos;
 
-            pos = m_nextPlayingCardTransform.position;
+            pos = m_popingCardTransform.position;
             pos.z = ArrowCard.c_firstLevel;
-            m_nextPlayingCardTransform.position = pos;
+            m_popingCardTransform.position = pos;
 
-            DrawNextCard();
+            if (m_previewNextTile)
+            {
+                ShootNewNextCard();
+            }
+            DrawNextCards();
 
             m_currentScore = 0;
             m_nbCardOnTheWay = 0;
@@ -168,18 +173,22 @@ namespace ArrowLink
             }
         }
 
-        void DrawNextCard()
+        void DrawNextCards()
         {
-            ShootNewCurrentCard();
+            if (!m_previewNextTile)
+            {
+                ShootNewNextCard();
+            }
+            UseNextCardAsCurrent();
+            if (m_previewNextTile)
+            {
+                ShootNewNextCard();
+            }
         }
 
-        private void ShootNewCurrentCard()
+        private void UseNextCardAsCurrent()
         {
-            GameObject currentCardObject = Instantiate(m_cardPrefab);
-            currentCardObject.transform.SetParent(transform, false);
-            currentCardObject.SetActive(true);
-            m_currentCard = currentCardObject.GetComponent<ArrowCard>();
-            m_currentCard.transform.position = m_popingCardTransform.position;
+            m_currentCard = m_nextPlayedCard;
             var unveilTween = m_currentCard.m_tweens.ActivationUnveil;
             m_currentCard.MoveToPosition(m_playingCardTransform.position);
             unveilTween.StartTween();
@@ -190,11 +199,8 @@ namespace ArrowLink
             GameObject nextCardObject = Instantiate(m_cardPrefab);
             nextCardObject.transform.SetParent(transform, false);
             nextCardObject.SetActive(true);
-            m_nextCard = nextCardObject.GetComponent<ArrowCard>();
-            m_nextCard.transform.position = m_nextPlayingCardTransform.position;
-            m_nextCard.PrepareIntroductionTween();
-            var introTween = m_nextCard.m_tweens.Introduction;
-            introTween.StartTween();
+            m_nextPlayedCard = nextCardObject.GetComponent<ArrowCard>();
+            m_nextPlayedCard.transform.position = m_popingCardTransform.position;
         }
 
         public void OnTilePressed(BoardSlot slot)
@@ -223,7 +229,7 @@ namespace ArrowLink
                 m_currentCard.GoToSlot(m_playedSlot, cardPlayedAction);
                 m_nbCardOnTheWay += 1;
                 m_currentCard = null;
-                DrawNextCard();
+                DrawNextCards();
 
                 foreach (var act in m_onTilePlayedListeners)
                 {
@@ -324,8 +330,12 @@ namespace ArrowLink
                 }
 
             }
-
+            
             AchievementManager.NotifyEventMaxing("BestTileChain", chainAsList.Count);
+            if (m_boardLogic.IsBoardFull())
+            {
+                AchievementManager.NotifyEventIncrement("BoardFilled");
+            }
         }
 
         private void RewardTiles(List<LogicTile> chainAsList, float baseAnimDelay = 0f)
@@ -370,7 +380,6 @@ namespace ArrowLink
                 if (m_bankPoints >= m_bankPointTarget)
                 {
                     m_guiManager.SetBankable(true);
-                    //m_guiManager.SetCapsuleBonusEnabled(true);
                 }
                 
 
@@ -455,14 +464,14 @@ namespace ArrowLink
         {
             if (m_pressedCard != null)
             {
-                if (m_pressedCard == m_nextCard)
+                if (m_pressedCard == m_holdedCards)
                 {
-                    m_nextCard.MoveToPosition(m_playingCardTransform.position);
-                    m_currentCard.MoveToPosition(m_nextPlayingCardTransform.position);
-                    m_nextCard.m_tweens.ActivationUnveil.StartTween();
+                    m_holdedCards.MoveToPosition(m_playingCardTransform.position);
+                    m_currentCard.MoveToPosition(m_holdingCardTransform.position);
+                    m_holdedCards.m_tweens.ActivationUnveil.StartTween();
                     m_currentCard.m_tweens.ActivationVeil.StartTween();
-                    var temp = m_nextCard;
-                    m_nextCard = m_currentCard;
+                    var temp = m_holdedCards;
+                    m_holdedCards = m_currentCard;
                     m_currentCard = temp;
                 }
 
@@ -515,7 +524,7 @@ namespace ArrowLink
 
             if (m_currentCard == null)
             {
-                DrawNextCard();
+                DrawNextCards();
             }
 
             m_bankDots.StopAllDots();
@@ -544,6 +553,10 @@ namespace ArrowLink
             if (m_boardLogic.IsBoardEmpty())
             {
                 AchievementManager.NotifyEventIncrement("BoardCleared");
+            }
+            if (tileLinked == 16)
+            {
+                AchievementManager.NotifyEventIncrement("FullBoardBank");
             }
             CheckEndGame();
 
@@ -875,7 +888,7 @@ namespace ArrowLink
             if (temp != null)
                 m_currentCard = temp;
             else
-                DrawNextCard();
+                DrawNextCards();
 
             AchievementManager.NotifyEventIncrement("TileKeeped");
         }
