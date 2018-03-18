@@ -40,17 +40,17 @@ TotalPlaceTile,TotalTilePlaced,5000,Total tile placed {0},Current {0},0
 TotalPlaceTile,TotalTilePlaced,10000,Total tile placed {0},Current {0},0
 TotalPlaceTile,TotalTilePlaced,20000,Total tile placed {0},Current {0},0
 TotalPlaceTile,TotalTilePlaced,50000,Total tile placed {0},Current {0},0
-LongestChain,BestTileChain,6,Make a tile chain of {0},Current {0},0
-LongestChain,BestTileChain,7,Make a tile chain of {0},Current {0},0
-LongestChain,BestTileChain,8,Make a tile chain of {0},Current {0},0
-LongestChain,BestTileChain,9,Make a tile chain of {0},Current {0},0
-LongestChain,BestTileChain,10,Make a tile chain of {0},Current {0},0
-LongestChain,BestTileChain,11,Make a tile chain of {0},Current {0},0
-LongestChain,BestTileChain,12,Make a tile chain of {0},Current {0},0
-LongestChain,BestTileChain,13,Make a tile chain of {0},Current {0},0
-LongestChain,BestTileChain,14,Make a tile chain of {0},Current {0},0
-LongestChain,BestTileChain,15,Make a tile chain of {0},Current {0},0
-LongestChain,BestTileChain,16,Make a tile chain of {0},Current {0},0
+LongestChain,BestTileChain,6,Make a tile chain of {0},Current best {0},0
+LongestChain,BestTileChain,7,Make a tile chain of {0},Current best {0},0
+LongestChain,BestTileChain,8,Make a tile chain of {0},Current best {0},0
+LongestChain,BestTileChain,9,Make a tile chain of {0},Current best {0},0
+LongestChain,BestTileChain,10,Make a tile chain of {0},Current best {0},0
+LongestChain,BestTileChain,11,Make a tile chain of {0},Current best {0},0
+LongestChain,BestTileChain,12,Make a tile chain of {0},Current best {0},0
+LongestChain,BestTileChain,13,Make a tile chain of {0},Current best {0},0
+LongestChain,BestTileChain,14,Make a tile chain of {0},Current best {0},0
+LongestChain,BestTileChain,15,Make a tile chain of {0},Current best {0},0
+LongestChain,BestTileChain,16,Make a tile chain of {0},Current best {0},0
 FeedBackSent,FeedbackSent,1,Send a feedback,Current {0},0
 TileKeeper,TileKeeped,200,Keep {0} Tile,Current {0},0
 TileKeeper,TileKeeped,1000,Keep {0} Tile,Current {0},0
@@ -60,12 +60,12 @@ BoardClear,BoardCleared,1,Clear the board {0} times,Current {0},0
 BoardClear,BoardCleared,10,Clear the board {0} times,Current {0},0
 BoardClear,BoardCleared,50,Clear the board {0} times,Current {0},0
 BoardClear,BoardCleared,100,Clear the board {0} times,Current {0},0
-BankGame,OneGamebank,8,Bank {0} times in one game,Current {0},0
-BankGame,OneGamebank,9,Bank {0} times in one game,Current {0},0
-BankGame,OneGamebank,10,Bank {0} times in one game,Current {0},0
-BankGame,OneGamebank,11,Bank {0} times in one game,Current {0},0
-BankGame,OneGamebank,12,Bank {0} times in one game,Current {0},0
-BankGame,OneGamebank,13,Bank {0} times in one game,Current {0},0
-BankGame,OneGamebank,14,Bank {0} times in one game,Current {0},0
-BankGame,OneGamebank,15,Bank {0} times in one game,Current {0},0
-BankGame,OneGamebank,16,Bank {0} times in one game,Current {0},0
+BankGame,OneGamebank,8,Bank {0} times in one game,Current best {0},0
+BankGame,OneGamebank,9,Bank {0} times in one game,Current best {0},0
+BankGame,OneGamebank,10,Bank {0} times in one game,Current best {0},0
+BankGame,OneGamebank,11,Bank {0} times in one game,Current best {0},0
+BankGame,OneGamebank,12,Bank {0} times in one game,Current best {0},0
+BankGame,OneGamebank,13,Bank {0} times in one game,Current best {0},0
+BankGame,OneGamebank,14,Bank {0} times in one game,Current best {0},0
+BankGame,OneGamebank,15,Bank {0} times in one game,Current best {0},0
+BankGame,OneGamebank,16,Bank {0} times in one game,Current best {0},0

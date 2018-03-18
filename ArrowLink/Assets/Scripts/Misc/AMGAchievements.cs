@@ -96,7 +96,7 @@ namespace AntonMakesGames
 
         public static void NotifyEventMaxing(string eventName, int value)
         {
-            ArrowLink.MainProcess.Instance.Achievements._NotifyEventMaxing(eventName, value = 1);
+            ArrowLink.MainProcess.Instance.Achievements._NotifyEventMaxing(eventName, value);
         }
 
         public int GetEventValue(string eventName)
