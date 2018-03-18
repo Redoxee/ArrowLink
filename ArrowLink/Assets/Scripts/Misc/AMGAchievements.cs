@@ -74,7 +74,6 @@ namespace AntonMakesGames
             {
                 m_events[eventName] = Value;
             }
-            Debug.Log(eventName);
         }
 
         public void _NotifyEventMaxing(string eventName, int Value)
@@ -88,7 +87,6 @@ namespace AntonMakesGames
             {
                 m_events[eventName] = Value;
             }
-            Debug.Log(eventName);
         }
 
         public static void NotifyEventIncrement(string eventName, int value = 1)
