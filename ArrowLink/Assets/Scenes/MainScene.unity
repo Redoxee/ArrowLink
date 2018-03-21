@@ -717,6 +717,7 @@ MonoBehaviour:
   m_achievementConfiguration: {fileID: 4900000, guid: a42670de5f5a98e4c88f29abd36fa062,
     type: 3}
   m_notificationUI: {fileID: 489981353}
+  ColorManager: {fileID: 694401371}
 --- !u!114 &694401371
 MonoBehaviour:
   m_ObjectHideFlags: 0

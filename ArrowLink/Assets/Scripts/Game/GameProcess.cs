@@ -69,7 +69,7 @@ namespace ArrowLink
         private int m_crunchCoolDown = 0;
         public bool CanCrunch { get { return (m_crunchCoolDown < 1) && !m_boardLogic.IsBoardEmpty(); } }
 
-        private int m_bankPointTarget = 2;
+        private int m_bankPointTarget = 3;
         private int m_bankPoints = 0;
         public const int c_maxBankPoints = 33;
         
@@ -99,6 +99,7 @@ namespace ArrowLink
 
         public bool IsGamePaused = false;
 
+        private ArrowFlag m_firstFlag = (ArrowFlag)255;
 
         private void Awake()
         {
@@ -131,7 +132,7 @@ namespace ArrowLink
 
             if (m_previewNextTile)
             {
-                ShootNewNextCard();
+                ShootNewNextCard(m_firstFlag);
             }
             DrawNextCards();
 
@@ -194,13 +195,19 @@ namespace ArrowLink
             unveilTween.StartTween();
         }
 
-        private void ShootNewNextCard()
+        private void ShootNewNextCard(ArrowFlag forcedFlags = ArrowFlag.NONE)
         {
             GameObject nextCardObject = Instantiate(m_cardPrefab);
             nextCardObject.transform.SetParent(transform, false);
             nextCardObject.SetActive(true);
             m_nextPlayedCard = nextCardObject.GetComponent<ArrowCard>();
             m_nextPlayedCard.transform.position = m_popingCardTransform.position;
+
+            if (forcedFlags == ArrowFlag.NONE)
+            {
+                forcedFlags = m_flagDistributor.PickRandomFlags();
+            }
+            m_nextPlayedCard.SetupArrows(forcedFlags);
         }
 
         public void OnTilePressed(BoardSlot slot)

@@ -128,7 +128,7 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 1
-  bundleVersion: TileLink0.0.65
+  bundleVersion: TileLink0.0.69
   preloadedAssets: []
   metroInputSource: 0
   wsaTransparentSwapchain: 0
@@ -163,7 +163,7 @@ PlayerSettings:
     Android: com.antonmakesgames.tilelinks
     iOS: com.antonmakesgames.arrowlink
   buildNumber: {}
-  AndroidBundleVersionCode: 60
+  AndroidBundleVersionCode: 63
   AndroidMinSdkVersion: 16
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1
@@ -246,8 +246,8 @@ PlayerSettings:
   AndroidTargetDevice: 0
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: C:/Users/Anton/Documents/git/ArrowLink/ArrowLink/Doc/TileLinks.keystore
-  AndroidKeyaliasName: 
+  AndroidKeystoreName: C:/Users/Anton/Documents/git/ArrowLink/ArrowLink/Doc/tilelink.keystore
+  AndroidKeyaliasName: release
   AndroidTVCompatibility: 0
   AndroidIsGame: 1
   AndroidEnableTango: 0

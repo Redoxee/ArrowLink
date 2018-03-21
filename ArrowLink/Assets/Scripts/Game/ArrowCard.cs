@@ -109,9 +109,6 @@ namespace ArrowLink
             FlagDistributor distribuor = FlagDistributor;
 
             GrabLinkTweens();
-
-			SetupArrows(distribuor.PickRandomFlags());
-			distribuor.RegisterUsedFlag(m_arrows);
 		}
 
         private void OnDestroy()
@@ -136,6 +133,10 @@ namespace ArrowLink
 
             m_basicParticles.SetArrows(ArrowFlag.NONE);
             m_superParticles.SetArrows(ArrowFlag.NONE);
+            
+            FlagDistributor distribuor = FlagDistributor;
+            if (distribuor)
+                distribuor.RegisterUsedFlag(m_arrows);
         }
 
         public void LigthArrows(IEnumerable<ArrowFlag> directions)

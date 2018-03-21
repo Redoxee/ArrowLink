@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace ArrowLink
 {
@@ -17,7 +18,10 @@ namespace ArrowLink
         private FlagDistributor m_flagDistributor = null;
 
         public FlagDistributor FlagDistributor { get { return m_flagDistributor; } }
-        
+
+        [SerializeField]
+        private DayNightModule m_dayNightModule;
+
         private void Awake()
         {
             Debug.Assert(s_instance == null, "More than one instance of the main menu !!");
@@ -25,6 +29,15 @@ namespace ArrowLink
 
             CheckIsItANewDay();
             m_achievementPopup.HidePage();
+
+            if (MainProcess.Instance != null)
+            {
+                m_dayNightModule.ManagerRef = MainProcess.Instance.ColorManager;
+            }
+            else
+            {
+                m_dayNightModule.ManagerRef = ColorManager.Instance;
+            }
         }
 
         public const string c_lastConectionKey = "LastConection";
@@ -70,6 +83,39 @@ namespace ArrowLink
         public void RequestAchievement()
         {
             m_achievementPopup.ShowPage();
+        }
+
+        public void ToggleDayNight()
+        {
+            m_dayNightModule.ToggleColors();
+        }
+
+        [Serializable]
+        public struct DayNightModule
+        {
+            public ColorCollection NightCollection;
+            public ColorCollection DayCollection;
+            [NonSerialized]
+            public ColorManager ManagerRef;
+            private ColorCollection m_currentCollection;
+
+            public Image CurrentStateIcon;
+            public Sprite NightIcon;
+            public Sprite DayIcon;
+
+            public void ToggleColors()
+            {
+                if (ManagerRef.ColorCollection != DayCollection)
+                {
+                    ManagerRef.ColorCollection = DayCollection;
+                    CurrentStateIcon.sprite = NightIcon;
+                }
+                else
+                {
+                    ManagerRef.ColorCollection = NightCollection;
+                    CurrentStateIcon.sprite = DayIcon;
+                }
+            }
         }
     }
 }

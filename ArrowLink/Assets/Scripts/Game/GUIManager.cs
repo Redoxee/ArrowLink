@@ -45,9 +45,6 @@ namespace ArrowLink
         [SerializeField]
         TweenToggle m_bankableTweenToggle = null;
 
-        [SerializeField]
-        private DayNightModule m_dayNightModule;
-
         GameProcess m_gameProcess;
 
         private void Start()
@@ -60,8 +57,6 @@ namespace ArrowLink
             m_scoreDeltaText.ReachedAction = OnScoreDeltaTextAnimEnded;
 
             m_endScreen.Initialize(this);
-
-            m_dayNightModule.ManagerRef = ColorManager.Instance;
 
             m_multiplierVeil = m_scoreMultiplier.GetComponent<VeilText>();
             InstantHideMultiplier();
@@ -176,11 +171,6 @@ namespace ArrowLink
 
         GUIFSMState m_currentState;
 
-        public void OnDayNightButtonPressed()
-        {
-            m_dayNightModule.ToggleColors();
-        }
-
 		#region FSM
 		GUIFSMState m_inGameState; 
 
@@ -254,33 +244,5 @@ namespace ArrowLink
         #endregion
 
         #endregion
-
-        [Serializable]
-        struct DayNightModule
-        {
-            public ColorCollection NightCollection;
-            public ColorCollection DayCollection;
-            [NonSerialized]
-            public ColorManager ManagerRef;
-            private ColorCollection m_currentCollection;
-
-            public Image CurrentStateIcon;
-            public Sprite NightIcon;
-            public Sprite DayIcon;
-
-            public void ToggleColors()
-            {
-                if (ManagerRef.ColorCollection != DayCollection)
-                {
-                    ManagerRef.ColorCollection = DayCollection;
-                    CurrentStateIcon.sprite = NightIcon;
-                }
-                else
-                {
-                    ManagerRef.ColorCollection = NightCollection;
-                    CurrentStateIcon.sprite = DayIcon;
-                }
-            }
-        }
 	}
 }

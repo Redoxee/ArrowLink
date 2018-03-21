@@ -43,6 +43,8 @@ namespace ArrowLink
         private FloatingNotificationUI m_notificationUI = null;
         public FloatingNotificationUI NotificationUI { get { return m_notificationUI; } }
 
+        public ColorManager ColorManager;
+
         private void Awake()
         {
             s_instance = this;
@@ -61,8 +63,6 @@ namespace ArrowLink
                 m_additionalSceneLoaded.Add(sceneIndex);
                 return;
             }
-
-            
 
             LoadScene(c_menuScene);
         }
