@@ -45,6 +45,9 @@ namespace ArrowLink
         [SerializeField]
         TweenToggle m_bankableTweenToggle = null;
 
+        [SerializeField]
+        TweenToggle m_crunchTweenToggle = null;
+
         GameProcess m_gameProcess;
 
         private void Start()
@@ -146,7 +149,7 @@ namespace ArrowLink
                 m_scoreDeltaText.gameObject.SetActive(false);
             }
         }
-        
+
         public void OnIntroCloseButtonPressed()
         {
             SetState(m_inGameState);
@@ -155,13 +158,18 @@ namespace ArrowLink
         public void OnCrunchButtonPressed()
         {
             m_gameProcess.RequestTileCrunchToggle();
-            
+
         }
 
         public void SetBankable(bool isBankable)
         {
             m_bankVeil.SetVeilState(!isBankable);
             m_bankableTweenToggle.IsOn = isBankable;
+        }
+
+        public void SetFocusCrunch(bool isFocusCrunch)
+        {
+            m_crunchTweenToggle.IsOn = isFocusCrunch;
         }
 
         public void SetCrunchable(bool isCrunchable)

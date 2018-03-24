@@ -342,6 +342,10 @@ namespace ArrowLink
             if (m_boardLogic.IsBoardFull())
             {
                 AchievementManager.NotifyEventIncrement("BoardFilled");
+                if (!CanBank && CanCrunch)
+                {
+                    m_guiManager.SetFocusCrunch(true);
+                }
             }
         }
 
@@ -785,11 +789,18 @@ namespace ArrowLink
             TrackingManager.TrackEvent("GameEnd",1 , endTrackingParameters);
         }
 
+        public bool CanBank
+        {
+            get {
+                return m_bankPoints >= m_bankPointTarget;
+            }
+        }
+
         public void RequestBank()
         {
             if (IsGamePaused)
                 return;
-            if (m_bankPoints >= m_bankPointTarget)
+            if (CanBank)
             {
                 EndCombo();
             }
@@ -805,6 +816,7 @@ namespace ArrowLink
                 if (CanCrunch)
                 {
                     SetState(TileCrunchState);
+                    m_guiManager.SetFocusCrunch(false);
                 }
             }
             else if (m_currentState == TileCrunchState)
