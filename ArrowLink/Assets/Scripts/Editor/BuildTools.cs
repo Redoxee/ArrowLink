@@ -196,7 +196,7 @@ namespace AntonMakesGames.Tools
 
 		string m_buildFolder = "../../TileLink/";
 		string m_buildnameTemplate = "TileLink_{0:D}_{1:D2}_{2:D3}";
-
+		string m_buildVersionNameTemplate = "{0}.{1}.{2}";
 		string[] StandardSetup()
 		{
 			SetSceneInProjects();
@@ -229,6 +229,7 @@ namespace AntonMakesGames.Tools
 
             UnityEditor.PlayerSettings.bundleVersion = m_currentBuildData.GetVersionLabel();
             UnityEditor.PlayerSettings.Android.bundleVersionCode += 1;
+			UnityEditor.PlayerSettings.iOS.buildNumber += 1;
 
 
 		}
@@ -350,6 +351,10 @@ namespace AntonMakesGames.Tools
 			{
 				bo = bo | BuildOptions.AutoRunPlayer;
 			}
+
+			PlayerSettings.bundleVersion = string.Format (m_buildVersionNameTemplate, m_currentBuildData.Version,
+				m_currentBuildData.Revision,
+				m_currentBuildData.Patch);
 
 			UnityEngine.Debug.Log("IOS building : " + buildName);
 			//SetSymbols ();
