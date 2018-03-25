@@ -7,9 +7,6 @@ namespace ArrowLink
     public class FloatingNotificationUI : MonoBehaviour
     {
         [SerializeField]
-        BaseUITween m_dailyTween = null;
-
-        [SerializeField]
         SimpleFloatingNotification[] m_floatingMessages = null;
 
         private class WaitingMessage
@@ -21,21 +18,6 @@ namespace ArrowLink
         }
 
         private List<WaitingMessage> m_pendingMessages = new List<WaitingMessage>();
-
-        private void Start()
-        {
-        }
-
-        public void ShowDailyTween()
-        {
-            m_dailyTween.gameObject.SetActive(true);
-            m_dailyTween.StartTween(_onDailyTweenOver);
-        }
-
-        private void _onDailyTweenOver()
-        {
-            m_dailyTween.gameObject.SetActive(false);
-        }
 
         public void AddMessageToQueue(string title, string subtitle, Action onEnd = null)
         {
