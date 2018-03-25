@@ -2744,7 +2744,7 @@ MonoBehaviour:
   m_name: MoveTween
   m_parameters:
     m_optionalTarget: {fileID: 0}
-    Duration: 0.5
+    Duration: 0.4
     IsPosition: 1
     IsLocalPosition: 0
     PositionStart: {x: 0, y: 0, z: 0}
@@ -2872,7 +2872,7 @@ MonoBehaviour:
   m_name: PlaySlide
   m_parameters:
     m_optionalTarget: {fileID: 0}
-    Duration: 0.65
+    Duration: 0.45
     IsPosition: 1
     IsLocalPosition: 0
     PositionStart: {x: 0, y: 0, z: 0}
