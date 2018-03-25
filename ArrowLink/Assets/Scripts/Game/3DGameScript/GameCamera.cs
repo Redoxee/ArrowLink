@@ -25,7 +25,8 @@ namespace ArrowLink
 			Debug.Assert(m_boardRef != null);
 
 			var camera = GetComponent<Camera>();
-			var ratio = (float)Screen.height / (float)Screen.width;
+            Rect safe = Screen.safeArea;
+			var ratio = (float)safe.height / (float)safe.width;
 			var halfHeight = (TargetWidth) * ratio;
 			camera.orthographicSize = halfHeight;
             var camPos = camera.transform.position;
