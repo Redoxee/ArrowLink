@@ -803,6 +803,7 @@ namespace ArrowLink
             if (CanBank)
             {
                 EndCombo();
+                UntoggleCrunch();
             }
         }
 
@@ -820,6 +821,14 @@ namespace ArrowLink
                 }
             }
             else if (m_currentState == TileCrunchState)
+            {
+                SetState(DefaultState);
+            }
+        }
+
+        private void UntoggleCrunch()
+        {
+            if (m_currentState == TileCrunchState)
             {
                 SetState(DefaultState);
             }
@@ -878,6 +887,7 @@ namespace ArrowLink
             foreach (var tile in m_boardLogic.AllTilePlaced)
             {
                 tile.PhysicalCard.IsWigglingAnimation = true;
+                m_board.GetSlot(tile.X, tile.Y).IsFlashing = true;
             }
         }
 
@@ -887,6 +897,10 @@ namespace ArrowLink
             foreach (var tile in m_boardLogic.AllTilePlaced)
             {
                 tile.PhysicalCard.IsWigglingAnimation = false;
+            }
+            foreach (var slot in m_board.m_slots)
+            {
+                slot.IsFlashing = false;
             }
         }
 
@@ -908,21 +922,29 @@ namespace ArrowLink
                 m_currentCard = temp;
             else
                 DrawNextCards();
+            UntoggleCrunch();
 
             AchievementManager.NotifyEventIncrement("TileKeeped");
         }
 
         public void OnNextButtonPressed()
         {
-            for (int x = 0; x < BoardLogic.c_col; ++x)
+            if (m_currentState == DefaultState)
             {
-                for (int y = 0; y < BoardLogic.c_row; ++y)
+                for (int x = 0; x < BoardLogic.c_col; ++x)
                 {
-                    if (!m_boardLogic.IsFilled(x, y))
+                    for (int y = 0; y < BoardLogic.c_row; ++y)
                     {
-                        m_board.GetSlot(x, y).Flash();
+                        if (!m_boardLogic.IsFilled(x, y))
+                        {
+                            m_board.GetSlot(x, y).Flash();
+                        }
                     }
                 }
+            }
+            else
+            {
+                UntoggleCrunch();
             }
         }
 

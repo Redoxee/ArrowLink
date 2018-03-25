@@ -8879,7 +8879,6 @@ GameObject:
   - component: {fileID: 995049771}
   - component: {fileID: 995049770}
   - component: {fileID: 995049769}
-  - component: {fileID: 995049772}
   - component: {fileID: 995049773}
   - component: {fileID: 995049774}
   m_Layer: 0
@@ -8996,18 +8995,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 995049767}
---- !u!114 &995049772
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 995049767}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1200242548, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ShowMaskGraphic: 1
 --- !u!114 &995049773
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18631,51 +18618,6 @@ Prefab:
     - target: {fileID: 1065674328535258, guid: a7f477e4809188d40a1355cbdbba9fed, type: 2}
       propertyPath: m_Name
       value: Slot 13
-      objectReference: {fileID: 0}
-    - target: {fileID: 212134796479730978, guid: a7f477e4809188d40a1355cbdbba9fed,
-        type: 2}
-      propertyPath: m_Color.r
-      value: 0.10196079
-      objectReference: {fileID: 0}
-    - target: {fileID: 212134796479730978, guid: a7f477e4809188d40a1355cbdbba9fed,
-        type: 2}
-      propertyPath: m_Color.g
-      value: 0.1137255
-      objectReference: {fileID: 0}
-    - target: {fileID: 212134796479730978, guid: a7f477e4809188d40a1355cbdbba9fed,
-        type: 2}
-      propertyPath: m_Color.b
-      value: 0.13725491
-      objectReference: {fileID: 0}
-    - target: {fileID: 212218715173197132, guid: a7f477e4809188d40a1355cbdbba9fed,
-        type: 2}
-      propertyPath: m_Color.r
-      value: 0.16470589
-      objectReference: {fileID: 0}
-    - target: {fileID: 212218715173197132, guid: a7f477e4809188d40a1355cbdbba9fed,
-        type: 2}
-      propertyPath: m_Color.g
-      value: 0.19607845
-      objectReference: {fileID: 0}
-    - target: {fileID: 212218715173197132, guid: a7f477e4809188d40a1355cbdbba9fed,
-        type: 2}
-      propertyPath: m_Color.b
-      value: 0.24705884
-      objectReference: {fileID: 0}
-    - target: {fileID: 212648682487839160, guid: a7f477e4809188d40a1355cbdbba9fed,
-        type: 2}
-      propertyPath: m_Color.r
-      value: 0.18039216
-      objectReference: {fileID: 0}
-    - target: {fileID: 212648682487839160, guid: a7f477e4809188d40a1355cbdbba9fed,
-        type: 2}
-      propertyPath: m_Color.g
-      value: 0.21568629
-      objectReference: {fileID: 0}
-    - target: {fileID: 212648682487839160, guid: a7f477e4809188d40a1355cbdbba9fed,
-        type: 2}
-      propertyPath: m_Color.b
-      value: 0.27450982
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a7f477e4809188d40a1355cbdbba9fed, type: 2}
