@@ -128,7 +128,7 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 1
-  bundleVersion: TileLink0.0.75
+  bundleVersion: TileLink0.0.77
   preloadedAssets: []
   metroInputSource: 0
   wsaTransparentSwapchain: 0
@@ -163,8 +163,8 @@ PlayerSettings:
     Android: com.antonmakesgames.tilelinks
     iOS: com.antonmakesgames.arrowlink
   buildNumber:
-    iOS: 7311
-  AndroidBundleVersionCode: 69
+    iOS: 731111
+  AndroidBundleVersionCode: 71
   AndroidMinSdkVersion: 16
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1

@@ -22,6 +22,9 @@ namespace ArrowLink
         [SerializeField]
         private DayNightModule m_dayNightModule;
 
+        [SerializeField]
+        private Text m_highScoreLabel = null;
+
         private void Awake()
         {
             Debug.Assert(s_instance == null, "More than one instance of the main menu !!");
@@ -38,6 +41,9 @@ namespace ArrowLink
             {
                 m_dayNightModule.ManagerRef = ColorManager.Instance;
             }
+
+            int bestScore = MainProcess.Instance.Achievements.GetEventValue("BestScore");
+            m_highScoreLabel.text = string.Format("BEST SCORE : {0}",bestScore);
         }
 
         public const string c_lastConectionKey = "LastConection";

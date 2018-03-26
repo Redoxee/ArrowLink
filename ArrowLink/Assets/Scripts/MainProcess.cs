@@ -64,7 +64,15 @@ namespace ArrowLink
                 return;
             }
 
-            LoadScene(c_menuScene);
+            int nbGameFinished = m_achievementsManager.GetEventValue("GameFinished");
+            if (nbGameFinished > 0)
+            {
+                LoadScene(c_menuScene);
+            }
+            else
+            {
+                LoadScene(c_gameScene);
+            }
         }
 
         private void OnApplicationFocus(bool focus)
