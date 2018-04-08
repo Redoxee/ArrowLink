@@ -968,6 +968,22 @@ namespace ArrowLink
             if (m_onTilePlayedListeners.Contains(act))
                 m_onTilePlayedListeners.Remove(act);
         }
+
+        public void OnApplicationPause(bool pause)
+        {
+            if (pause)
+            {
+                if (!IsGamePaused)
+                {
+                    if (m_currentState == TileCrunchState)
+                    {
+                        RequestTileCrunchToggle();
+                    }
+                    m_guiManager.OnPausePressed();
+                    
+                }
+            }
+        }
     }
     #endregion
 

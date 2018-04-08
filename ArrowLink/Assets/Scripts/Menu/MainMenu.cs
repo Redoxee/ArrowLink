@@ -62,8 +62,6 @@ namespace ArrowLink
                     mp.NotificationUI.ShowFloatingMessage("Hello","Welcome back!");
                     PlayerPrefs.SetString(c_lastConectionKey, currentDay.ToString());
                     mp.Achievements._NotifyEventIncrement("ConnectedDay");
-                    mp.Achievements.Save();
-                    mp.DisplayCompletedAchievements();
                     
                 }
 
@@ -71,6 +69,10 @@ namespace ArrowLink
             else
             {
                 PlayerPrefs.SetString(c_lastConectionKey, currentDay.ToString());
+                MainProcess mp = MainProcess.Instance;
+                mp.Achievements._NotifyEventIncrement("ConnectedDay");
+                mp.Achievements.Save();
+                mp.DisplayCompletedAchievements();
             }
 
         }
