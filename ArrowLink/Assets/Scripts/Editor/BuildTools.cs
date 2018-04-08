@@ -229,7 +229,8 @@ namespace AntonMakesGames.Tools
 
             UnityEditor.PlayerSettings.bundleVersion = m_currentBuildData.GetVersionLabel();
             UnityEditor.PlayerSettings.Android.bundleVersionCode += 1;
-			UnityEditor.PlayerSettings.iOS.buildNumber += 1;
+
+			UnityEditor.PlayerSettings.iOS.buildNumber = UnityEditor.PlayerSettings.Android.bundleVersionCode.ToString();
 
 
 		}
