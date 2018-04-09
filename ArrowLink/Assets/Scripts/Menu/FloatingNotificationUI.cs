@@ -15,18 +15,19 @@ namespace ArrowLink
             public string Subtitle;
             public Action OnEnd;
             public bool IsBeeingDisplayed;
+            public bool IsColorAnimated;
         }
 
         private List<WaitingMessage> m_pendingMessages = new List<WaitingMessage>();
 
-        public void AddMessageToQueue(string title, string subtitle, Action onEnd = null)
+        public void AddMessageToQueue(string title, string subtitle, bool isColorAnimated = false, Action onEnd = null)
         {
-            m_pendingMessages.Add(new WaitingMessage { Title = title, Subtitle = subtitle, OnEnd = onEnd });
+            m_pendingMessages.Add(new WaitingMessage { Title = title, Subtitle = subtitle, OnEnd = onEnd, IsColorAnimated = isColorAnimated });
         }
 
-        public void ShowFloatingMessage(string title, string subtitle, Action onEnd = null)
+        public void ShowFloatingMessage(string title, string subtitle, bool isColorAnimated = false, Action onEnd = null)
         {
-            AddMessageToQueue(title, subtitle, onEnd);
+            AddMessageToQueue(title, subtitle, isColorAnimated, onEnd);
             DisplayNextMessagesInQueue();
             
         }
@@ -50,7 +51,7 @@ namespace ArrowLink
                 {
                     WaitingMessage message = m_pendingMessages[firstNonDisplayedMessage + displayedMessage];
                     float delay = c_delayBetweenMesages * displayedMessage;
-                    m_floatingMessages[i].ShowMessage(message.Title, message.Subtitle, delay, _OnMessageDisplayEnd);
+                    m_floatingMessages[i].ShowMessage(message.Title, message.Subtitle, delay, message.IsColorAnimated, _OnMessageDisplayEnd);
                     message.IsBeeingDisplayed = true;
                     displayedMessage++;
 

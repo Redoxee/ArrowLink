@@ -18,6 +18,8 @@ namespace ArrowLink
         Text m_title = null;
         [SerializeField]
         Text m_subTitle = null;
+        [SerializeField]
+        SpriteColorCycler m_colorAnimation = null;
 
         private float m_delay = 0f;
 
@@ -36,7 +38,7 @@ namespace ArrowLink
 
         private Action m_endAction;
 
-        public void ShowMessage(string title, string subtitle, float delay = 0, Action onEnd = null)
+        public void ShowMessage(string title, string subtitle, float delay = 0, bool animateBorders = false, Action onEnd = null)
         {
             m_delay = delay;
             m_title.text = title;
@@ -51,6 +53,7 @@ namespace ArrowLink
             {
                 m_fullAnimation.SetToFirstFrame();
             }
+            m_colorAnimation.IsAnimating = animateBorders;
         }
 
         private void Update()

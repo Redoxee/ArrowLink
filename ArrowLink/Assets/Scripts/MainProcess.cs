@@ -57,6 +57,8 @@ namespace ArrowLink
 
             m_achievementsManager = new AchievementManager(m_achievementConfiguration);
 
+            CheckIsItANewDay();
+
             int sceneIndex = SceneManager.GetActiveScene().buildIndex;
             if (sceneIndex != 0)
             {
@@ -73,6 +75,7 @@ namespace ArrowLink
             {
                 LoadScene(c_gameScene);
             }
+
         }
 
         private void OnApplicationFocus(bool focus)
@@ -182,9 +185,43 @@ namespace ArrowLink
             for (int i = count - 1; i > -1; --i)
             {
                 Achievement achievement = completedAchievements[i];
-                m_notificationUI.AddMessageToQueue(achievement.Title, "Completed");
+                m_notificationUI.AddMessageToQueue(achievement.Title, "Completed", true);
             }
             m_notificationUI.DisplayNextMessagesInQueue();
+        }
+
+        #endregion
+
+        #region Daily check
+
+        public const string c_lastConectionKey = "LastConection";
+
+        private void CheckIsItANewDay()
+        {
+            long currentDay = DateTime.Today.Ticks;
+            if (PlayerPrefs.HasKey(c_lastConectionKey))
+            {
+                string strDate = PlayerPrefs.GetString(c_lastConectionKey);
+                long lastConection;
+                long.TryParse(strDate, out lastConection);
+                if (currentDay > lastConection)
+                {
+                    MainProcess mp = MainProcess.Instance;
+                    mp.NotificationUI.ShowFloatingMessage("Hello", "Welcome back!");
+                    PlayerPrefs.SetString(c_lastConectionKey, currentDay.ToString());
+                    mp.Achievements._NotifyEventIncrement("ConnectedDay");
+
+                }
+
+            }
+            else
+            {
+                PlayerPrefs.SetString(c_lastConectionKey, currentDay.ToString());
+                MainProcess mp = MainProcess.Instance;
+                mp.Achievements._NotifyEventIncrement("ConnectedDay");
+                mp.Achievements.Save();
+                mp.DisplayCompletedAchievements();
+            }
         }
 
         #endregion

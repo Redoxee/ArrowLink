@@ -30,7 +30,6 @@ namespace ArrowLink
             Debug.Assert(s_instance == null, "More than one instance of the main menu !!");
             s_instance = this;
 
-            CheckIsItANewDay();
             m_achievementPopup.HidePage();
 
             if (MainProcess.Instance != null)
@@ -46,36 +45,6 @@ namespace ArrowLink
             m_highScoreLabel.text = string.Format("BEST SCORE : {0}",bestScore);
         }
 
-        public const string c_lastConectionKey = "LastConection";
-
-        private void CheckIsItANewDay()
-        {
-            long currentDay = DateTime.Today.Ticks;
-            if (PlayerPrefs.HasKey(c_lastConectionKey))
-            {
-                string strDate = PlayerPrefs.GetString(c_lastConectionKey);
-                long lastConection;
-                long.TryParse(strDate,out lastConection);
-                if (currentDay > lastConection)
-                {
-                    MainProcess mp = MainProcess.Instance;
-                    mp.NotificationUI.ShowFloatingMessage("Hello","Welcome back!");
-                    PlayerPrefs.SetString(c_lastConectionKey, currentDay.ToString());
-                    mp.Achievements._NotifyEventIncrement("ConnectedDay");
-                    
-                }
-
-            }
-            else
-            {
-                PlayerPrefs.SetString(c_lastConectionKey, currentDay.ToString());
-                MainProcess mp = MainProcess.Instance;
-                mp.Achievements._NotifyEventIncrement("ConnectedDay");
-                mp.Achievements.Save();
-                mp.DisplayCompletedAchievements();
-            }
-
-        }
 
         public void RequestPlay()
         {
