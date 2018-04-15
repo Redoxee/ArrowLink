@@ -12,7 +12,7 @@ namespace ArrowLink
         public static MainMenu Instance { get { return s_instance; } }
 
         [SerializeField]
-        private AchievementPopup m_achievementPopup;
+        private AchievementPopup m_achievementPopup = null;
 
         [SerializeField]
         private FlagDistributor m_flagDistributor = null;
@@ -20,7 +20,9 @@ namespace ArrowLink
         public FlagDistributor FlagDistributor { get { return m_flagDistributor; } }
 
         [SerializeField]
-        private DayNightModule m_dayNightModule;
+        private Transform m_colorsButtonsTransform = null;
+        [SerializeField]
+        private GameObject m_colorButtonPrefab = null;
 
         [SerializeField]
         private Text m_highScoreLabel = null;
@@ -31,20 +33,32 @@ namespace ArrowLink
             s_instance = this;
 
             m_achievementPopup.HidePage();
-
+            
             if (MainProcess.Instance != null)
             {
-                m_dayNightModule.ManagerRef = MainProcess.Instance.ColorManager;
-            }
-            else
-            {
-                m_dayNightModule.ManagerRef = ColorManager.Instance;
+                int bestScore = MainProcess.Instance.Achievements.GetEventValue("BestScore");
+                m_highScoreLabel.text = string.Format("BEST SCORE : {0}", bestScore);
+
+                CreateColorButons();
             }
 
-            int bestScore = MainProcess.Instance.Achievements.GetEventValue("BestScore");
-            m_highScoreLabel.text = string.Format("BEST SCORE : {0}",bestScore);
         }
 
+        private void CreateColorButons()
+        {
+            ColorModule colorModule = MainProcess.Instance.ColorModule;
+
+            for (int i = 0; i < colorModule.ColorColections.Count; ++i)
+            {
+                var go = Instantiate(m_colorButtonPrefab, m_colorsButtonsTransform);
+                var button = go.GetComponent<Button>();
+                button.onClick.RemoveAllListeners();
+                int index = i;
+                button.onClick.AddListener(() => { colorModule.SelectColors(index); });
+                var icon = button.transform.GetChild(0).GetComponent<Image>();
+                icon.sprite = colorModule.ColorColections[i].CollectionIcon;
+            }
+        }
 
         public void RequestPlay()
         {
@@ -62,11 +76,6 @@ namespace ArrowLink
             m_achievementPopup.ShowPage();
         }
 
-        public void ToggleDayNight()
-        {
-            m_dayNightModule.ToggleColors();
-        }
-
         [Serializable]
         public struct DayNightModule
         {
@@ -74,7 +83,6 @@ namespace ArrowLink
             public ColorCollection DayCollection;
             [NonSerialized]
             public ColorManager ManagerRef;
-            private ColorCollection m_currentCollection;
 
             public Image CurrentStateIcon;
             public Sprite NightIcon;

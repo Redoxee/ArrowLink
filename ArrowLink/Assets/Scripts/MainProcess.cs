@@ -45,6 +45,8 @@ namespace ArrowLink
 
         public ColorManager ColorManager;
 
+        public ColorModule ColorModule;
+
         private void Awake()
         {
             s_instance = this;
@@ -58,6 +60,8 @@ namespace ArrowLink
             m_achievementsManager = new AchievementManager(m_achievementConfiguration);
 
             CheckIsItANewDay();
+
+            ColorModule.Initialize();
 
             int sceneIndex = SceneManager.GetActiveScene().buildIndex;
             if (sceneIndex != 0)

@@ -534,6 +534,7 @@ GameObject:
   - component: {fileID: 694401372}
   - component: {fileID: 694401371}
   - component: {fileID: 694401370}
+  - component: {fileID: 694401373}
   m_Layer: 0
   m_Name: MainProcess
   m_TagString: Untagged
@@ -556,6 +557,7 @@ MonoBehaviour:
     type: 3}
   m_notificationUI: {fileID: 489981353}
   ColorManager: {fileID: 694401371}
+  ColorModule: {fileID: 694401373}
 --- !u!114 &694401371
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -581,6 +583,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &694401373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 694401369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b17a53633f750944bfc65f04695dc9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ColorColections:
+  - {fileID: 11400000, guid: 6860944837c1ced4c802fe13ac006900, type: 2}
+  - {fileID: 11400000, guid: 7208acd61fd87b74f887b9d933415fbd, type: 2}
+  - {fileID: 11400000, guid: cb3ce29b0fbe6374d8b0c9602e3e0bba, type: 2}
+  - {fileID: 11400000, guid: cdb5c5ac32003c940ac4f93ccbd86c45, type: 2}
+  ManagerRef: {fileID: 694401371}
 --- !u!1001 &717571066
 Prefab:
   m_ObjectHideFlags: 0

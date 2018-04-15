@@ -4,6 +4,8 @@ using UnityEngine;
 
 [CreateAssetMenu]
 public class ColorCollection : ScriptableObject {
+    public Sprite CollectionIcon;
+
 
     public Color Back;
 
@@ -25,22 +27,27 @@ public class ColorCollection : ScriptableObject {
     public Color TextLight;
     public Color TextDark;
 
+    public Color Icon;
+    public Color TextOnBack;
+
     public enum GrabbableColor
     {
-        Back,
-        Tile,
-        TileShadow,
-        LinkBase,
-        LinkOn,
-        LinkSuper,
-        Slot,
-        SlotShadow,
-        ButtonLight,
-        ButtonDark,
-        TextLight,
-        TextDark,
-        LinkDark,
-        DotSlot,
+        Back = 0,
+        Tile = 1,
+        TileShadow = 2,
+        LinkBase = 3,
+        LinkOn = 4,
+        LinkSuper = 5,
+        Slot = 6,
+        SlotShadow = 7,
+        ButtonLight = 8,
+        ButtonDark = 9,
+        TextLight = 10,
+        TextDark = 11,
+        LinkDark = 12,
+        DotSlot = 13,
+        ButtonIcon = 14,
+        TextOnBack = 15,
     }
 
     public Color GetColor(GrabbableColor c)
@@ -75,6 +82,10 @@ public class ColorCollection : ScriptableObject {
                 return LinkDark;
             case GrabbableColor.DotSlot:
                 return DotSlot;
+            case GrabbableColor.ButtonIcon:
+                return Icon;
+            case GrabbableColor.TextOnBack:
+                return TextOnBack;
             default:
                 throw new System.NotSupportedException();
         }

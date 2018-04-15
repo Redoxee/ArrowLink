@@ -19,7 +19,10 @@ public class ColorCollectionInspector : Editor {
             {
                 grabber.ApplyColor(collection);
             }
-            UnityEditor.SceneManagement.EditorSceneManager.MarkAllScenesDirty();
+            if (!Application.isPlaying)
+            {
+                UnityEditor.SceneManagement.EditorSceneManager.MarkAllScenesDirty();
+            }
         }
     }
 }
