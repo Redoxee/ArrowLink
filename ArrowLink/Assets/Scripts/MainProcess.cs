@@ -63,6 +63,8 @@ namespace ArrowLink
 
             ColorModule.Initialize();
 
+            m_adManager = new AdManager();
+
             int sceneIndex = SceneManager.GetActiveScene().buildIndex;
             if (sceneIndex != 0)
             {
@@ -106,6 +108,12 @@ namespace ArrowLink
                 });
             }
         }
+
+        #endregion
+
+        #region Ads
+
+        private AdManager m_adManager;
 
         #endregion
 
@@ -168,6 +176,22 @@ namespace ArrowLink
                 yield return SceneManager.UnloadSceneAsync(sceneIndex);
             }
             OnUnloaded();
+        }
+
+        [SerializeField]
+        private int m_interstitalToVideoAdCount = 2;
+        private int m_nbAdPing = 0;
+        public void RequestGameScene()
+        {
+            m_nbAdPing++;
+            if (m_nbAdPing > 1)
+            {
+                m_adManager.RequestInterstitial();
+            }
+            else
+            {
+                LoadOrReloadGameScene();
+            }
         }
 
         public void LoadOrReloadGameScene()
