@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Facebook.Unity;
 using AntonMakesGames;
 
 namespace ArrowLink
@@ -31,6 +30,8 @@ namespace ArrowLink
 
         private List<int> m_additionalSceneLoaded;
 
+        [SerializeField]
+        private GameAnalyticsSDK.GameAnalytics m_gameAnalitycs = null;
         private TrackingManager m_tracking;
         public TrackingManager TrackingManager { get { return m_tracking; } }
 
@@ -84,30 +85,8 @@ namespace ArrowLink
 
         private void OnApplicationFocus(bool focus)
         {
-            if (focus)
-            {
-                FBInit();
-            }
+
         }
-
-        #region Facebook
-
-        private void FBInit()
-        {
-            if (FB.IsInitialized)
-            {
-                FB.ActivateApp();
-            }
-            else
-            {
-                FB.Init(() =>
-                {
-                    FB.ActivateApp();
-                });
-            }
-        }
-
-        #endregion
 
         private void LoadScene(int sceneIndex, Action onLoaded = null)
         {

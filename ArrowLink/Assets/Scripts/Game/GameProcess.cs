@@ -155,6 +155,7 @@ namespace ArrowLink
                 Dictionary<string, object> startParams = new Dictionary<string, object>();
                 startParams["date"] = DateTime.UtcNow.ToString();
                 TrackingManager.TrackEvent("Game Start", 1, startParams);
+                GameAnalyticsSDK.GameAnalytics.NewProgressionEvent(GameAnalyticsSDK.GAProgressionStatus.Start, "game");
             }
             m_gameStartTime = Time.time;
 
@@ -656,7 +657,6 @@ namespace ArrowLink
             Vector3 startPosition = m_guiManager.BonusCapsuleTransform.position;
 
             float multiplier = ComputeMultiplierBonus(m_bonusLevel);
-            int nbParticle = Mathf.Min(m_bonusLevel, 100);
 
             for (int i = 0; i < m_bonusLevel; ++i)
             {
@@ -787,6 +787,8 @@ namespace ArrowLink
             endTrackingParameters["HasUsedHold"] = m_holdedCard != null;
             endTrackingParameters["NbCombo"] = m_nbCombo;
             TrackingManager.TrackEvent("GameEnd",1 , endTrackingParameters);
+
+            GameAnalyticsSDK.GameAnalytics.NewProgressionEvent(GameAnalyticsSDK.GAProgressionStatus.Complete, "game", m_currentScore);
         }
 
         public bool CanBank

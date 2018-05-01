@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Facebook.Unity;
 using UnityEngine.Analytics;
 using UnityEngine;
+using GameAnalyticsSDK;
 using System.Text;
 
 namespace ArrowLink
@@ -18,8 +18,7 @@ namespace ArrowLink
         public void TrackEvents(string eventName, int numValue, Dictionary<string, object> parameters)
         {
             parameters["GameVersion"] = Application.version;
-            if(FB.IsInitialized)
-                FB.LogAppEvent(eventName, numValue ,parameters);
+
             Analytics.CustomEvent(eventName, parameters);
 
 #if UNITY_EDITOR
