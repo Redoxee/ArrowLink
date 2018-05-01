@@ -428,6 +428,9 @@ namespace AntonMakesGames.Tools
 			System.Diagnostics.Process.Start("explorer.exe", "/select," + itemPath);
 		}
 
-#endregion
-	}
+        #endregion
+
+        [MenuItem("AMG/Reset Playerprefs")]
+        public static void DeletePlayerPrefs() { PlayerPrefs.DeleteAll(); }
+    }
 }

@@ -29,8 +29,8 @@ namespace ArrowLink
             //Debug.LogFormat("Ratio : {0}", ratio);
             ratio = Mathf.Max(m_minRatio, ratio);
 
-			var halfHeight = (TargetWidth) * ratio;
-			camera.orthographicSize = halfHeight;
+            var halfHeight = (TargetWidth) * ratio;
+            camera.orthographicSize = halfHeight;
 
             var camPos = camera.transform.position;
             if (ratio > m_maxRatio)
@@ -38,17 +38,20 @@ namespace ArrowLink
                 halfHeight += m_maxRatioVerticalBump;
             }
             camera.transform.position = new Vector3(camPos.x, halfHeight, camPos.z);
-
-            //res = new Vector2(Screen.width,Screen.height);
+#if (UNITY_ANDROID || UNITY_IOS)
+        }
+#else
+            res = new Vector2(Screen.width,Screen.height);
         }
 
-        //Vector2 res;
-        //private void Update()
-        //{
-        //    if (res.x != Screen.width || res.y != Screen.height)
-        //    {
-        //        Initialize();
-        //    }
-        //}
+        Vector2 res;
+        private void Update()
+        {
+            if (res.x != Screen.width || res.y != Screen.height)
+            {
+                Initialize();
+            }
+        }
+#endif
     }
 }
