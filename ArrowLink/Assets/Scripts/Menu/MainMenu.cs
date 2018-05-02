@@ -13,6 +13,8 @@ namespace ArrowLink
 
         [SerializeField]
         private AchievementPopup m_achievementPopup = null;
+        [SerializeField]
+        private SharePopup m_sharePopup = null;
 
         [SerializeField]
         private FlagDistributor m_flagDistributor = null;
@@ -25,6 +27,9 @@ namespace ArrowLink
         private GameObject m_colorButtonPrefab = null;
 
         [SerializeField]
+        private Transform m_getTheGame = null;
+
+        [SerializeField]
         private Text m_highScoreLabel = null;
 
         private void Awake()
@@ -33,13 +38,22 @@ namespace ArrowLink
             s_instance = this;
 
             m_achievementPopup.HidePage();
-            
+            m_sharePopup.Hide();
+
+
             if (MainProcess.Instance != null)
             {
                 int bestScore = MainProcess.Instance.Achievements.GetEventValue("BestScore");
                 m_highScoreLabel.text = string.Format("BEST SCORE : {0}", bestScore);
 
+#if UNITY_ANDROID || UNITY_IOS
+                m_colorsButtonsTransform.gameObject.SetActive(true);
                 CreateColorButons();
+                m_getTheGame.gameObject.SetActive(false);
+#else
+                m_colorsButtonsTransform.gameObject.SetActive(false);
+                m_getTheGame.gameObject.SetActive(true);
+#endif
             }
 
         }
@@ -71,9 +85,19 @@ namespace ArrowLink
             MainProcess.Instance.LoadOrReloadGameScene();
         }
 
+        public void RequestGetTheGame()
+        {
+            Application.OpenURL("https://antonoti.itch.io/8-links");
+        }
+
         public void RequestAchievement()
         {
             m_achievementPopup.ShowPage();
+        }
+
+        public void RequestShare()
+        {
+            m_sharePopup.Show();
         }
 
         [Serializable]

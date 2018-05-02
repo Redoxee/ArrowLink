@@ -27,21 +27,26 @@ MonoBehaviour:
   gameKey:
   - c21ea370a3f8139ed2afc4cdb3b89f26
   - d3c1ae777915f6d65802f7ade1ffb08d
+  - 215594342a0ce75a9000abfd2f5382f4
   secretKey:
   - c1726bd9a7b07f00fafd23b0063a050007f70329
   - 599cc7050ad8753279723887f1a3d84e7686ae92
+  - 92d4339fbeda9d10077c6036c34cb46c7cc882fa
   Build:
+  - 0.1
   - 0.1
   - 0.1
   SelectedPlatformStudio:
   - AntonMakesGames
   - AntonMakesGames
+  - AntonMakesGames
   SelectedPlatformGame:
   - ArrowLink
   - ArrowLink iOS
-  SelectedPlatformGameID: 91c6000093c60000
-  SelectedStudio: 0100000001000000
-  SelectedGame: 0100000002000000
+  - Arrow Link PC
+  SelectedPlatformGameID: 91c6000093c60000cac60000
+  SelectedStudio: 010000000100000001000000
+  SelectedGame: 010000000200000003000000
   NewVersion: 
   Changes: 
   SignUpOpen: 0
@@ -61,7 +66,7 @@ MonoBehaviour:
   ResourceItemTypes: []
   ResourceCurrencies: []
   LastCreatedGamePlatform: -1
-  Platforms: 0b00000008000000
+  Platforms: 0b0000000800000002000000
   CurrentInspectorState: 1
   ClosedHints: 
   DisplayHints: 0
@@ -88,7 +93,7 @@ MonoBehaviour:
   IncludeGooglePlay: 1
   FpsCriticalThreshold: 20
   FpsCirticalSubmitInterval: 1
-  PlatformFoldOut: 0101
+  PlatformFoldOut: 010101
   CustomDimensions01FoldOut: 0
   CustomDimensions02FoldOut: 0
   CustomDimensions03FoldOut: 0
