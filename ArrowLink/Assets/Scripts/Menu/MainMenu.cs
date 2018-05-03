@@ -90,6 +90,11 @@ namespace ArrowLink
             Application.OpenURL("https://antonoti.itch.io/8-links");
         }
 
+        public void RequestFastCredits()
+        {
+            Application.OpenURL("https://twitter.com/Redoxee");
+        }
+
         public void RequestAchievement()
         {
             m_achievementPopup.ShowPage();
