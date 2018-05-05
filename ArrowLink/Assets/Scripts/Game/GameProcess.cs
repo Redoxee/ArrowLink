@@ -88,9 +88,11 @@ namespace ArrowLink
 
         List<Action> m_onTilePlayedListeners = null;
 
-        private const int c_dotBonusTarget = 4;
-        private int m_dotBonusCurrent = c_dotBonusTarget;
-        private int m_bonusLevel = 0;
+        private const int c_dotBonusTarget = 5;
+        private int m_dotBonusCurrent = c_dotBonusTarget - 2;
+        private int BonusLevel { get { return (m_dotBonusCurrent + 1) / c_dotBonusTarget; } }
+        private int DotBonusLocalIndex { get { return m_dotBonusCurrent % c_dotBonusTarget; } }
+        private bool IsSpecialDotBonus { get { return DotBonusLocalIndex == c_dotBonusTarget - 1; } }
 
         private const float c_multiplierPerBonus = 1.0f;
 
@@ -159,7 +161,7 @@ namespace ArrowLink
             }
             m_gameStartTime = Time.time;
 
-            m_overlinkDotCollection.SetNumberOfDots(c_dotBonusTarget);
+            m_overlinkDotCollection.SetNumberOfDots(c_dotBonusTarget - 1);
             
         }
 
@@ -350,6 +352,26 @@ namespace ArrowLink
             }
         }
 
+        private void RewardTilesLogic(List<LogicTile> chainAsList)
+        {
+
+            int chainCount = chainAsList.Count;
+            int pointToBank = Mathf.Clamp(chainCount, 0, m_bankPointTarget - m_bankPoints);
+            int pointToOverLink = chainCount - pointToBank;
+            m_bankPoints += pointToBank;
+
+            m_dotBonusCurrent += pointToOverLink;
+            m_dotBonusCurrent = m_dotBonusCurrent % c_dotBonusTarget;
+        }
+
+        private void GetRewardForChain(List<LogicTile> chainAsList,out int pointToBank, out int pointToOverLink)
+        {
+            int chainCount = chainAsList.Count;
+            pointToBank = Mathf.Clamp(chainCount, 0, m_bankPointTarget - m_bankPoints);
+            pointToOverLink = chainCount - pointToBank;
+
+        }
+
         private void RewardTiles(List<LogicTile> chainAsList, float baseAnimDelay = 0f)
         {
             int pointToBank = 0;
@@ -404,21 +426,20 @@ namespace ArrowLink
                         int tileIndex = pointToBank + i;
                         var logicTilePosition = chainAsList[tileIndex].PhysicalCard.transform.position;
 
-                        if (m_dotBonusCurrent <=  c_dotBonusTarget)
+                        int bonusIndex = (m_dotBonusCurrent % c_dotBonusTarget);
+                        bool isBonus = bonusIndex == c_dotBonusTarget - 1;
+                        if (!isBonus)
                         {
-                            int dotIndex = m_dotBonusCurrent - 1;
-                            Transform dot = m_overlinkDotCollection.GetDot(dotIndex);
+                            Transform dot = m_overlinkDotCollection.GetDot(bonusIndex);
                             Action lightDots = () =>
                             {
-                                m_overlinkDotCollection.LightDot(dotIndex);
+                                m_overlinkDotCollection.LightDot(bonusIndex);
                             };
                             AnimatedLineWithDelay(animationDelay + c_lineDelay, logicTilePosition, dot.position, lightDots, m_overLinkDelayedAction);
                         }
                         else
                         {
-                            m_dotBonusCurrent = 0;
-                            m_bonusLevel++;
-                            int levelCopy = m_bonusLevel;
+                            int levelCopy = BonusLevel;
                             Action incrementBonus = () =>
                             {
                                 m_overlinkDotCollection.StopAllDots();
@@ -498,7 +519,7 @@ namespace ArrowLink
 
             int tileLinked = 0;
 
-            int nextBankTarget = m_bankPointTarget + ComputeBankBonus(m_bonusLevel);
+            int nextBankTarget = m_bankPointTarget + ComputeBankBonus(BonusLevel);
             nextBankTarget = Mathf.Min(nextBankTarget, c_maxBankPoints);
 
             float pointsAnimationDelay = m_bankPoints > 1 ? c_bankPointAnimationShotTime / (m_bankPoints - 1) : 0;
@@ -515,7 +536,7 @@ namespace ArrowLink
             float multiplierDelay = BankApplyBonusesAnimations(bonusDelay + animatedLineDuration);
             
             int basePoints = ComputebasePoints(m_bankPoints);
-            float multiplier = ComputeMultiplierBonus(m_bonusLevel);
+            float multiplier = ComputeMultiplierBonus(BonusLevel);
 
             int gainedPoints = Mathf.FloorToInt(basePoints * multiplier);
             m_currentScore += gainedPoints;
@@ -544,15 +565,14 @@ namespace ArrowLink
             m_bankPointTarget = nextBankTarget;
             m_guiManager.SetBankable(false);
 
-            float displayDelay = (m_bonusLevel > 0) ? multiplierDelay - animatedLineDuration : 0;
+            float displayDelay = (BonusLevel > 0) ? multiplierDelay - animatedLineDuration : 0;
 
             m_bankDelayedAction.AddAction(displayDelay, () => {
                 m_guiManager.SetCapsuleBonusValues(ComputeMultiplierBonus(0), ComputeBankBonus(0),true);
                 m_guiManager.SetCapsuleBonusEnabled(false);
             });
 
-            m_dotBonusCurrent = c_dotBonusTarget;
-            m_bonusLevel = 0;
+            m_dotBonusCurrent = c_dotBonusTarget - 2;
             --m_crunchCoolDown;
             if (m_crunchCoolDown < 1)
             {
@@ -656,9 +676,9 @@ namespace ArrowLink
             
             Vector3 startPosition = m_guiManager.BonusCapsuleTransform.position;
 
-            float multiplier = ComputeMultiplierBonus(m_bonusLevel);
+            float multiplier = ComputeMultiplierBonus(BonusLevel);
 
-            for (int i = 0; i < m_bonusLevel; ++i)
+            for (int i = 0; i < BonusLevel; ++i)
             {
                 animationDelay += .05f;
                 Action freeLine;
@@ -681,7 +701,7 @@ namespace ArrowLink
                 m_bankDelayedAction.AddAction(animationDelay, () => { lineAnimation.StartAnimation(); });
             }
            
-            int bankBonus = ComputeBankBonus(m_bonusLevel);
+            int bankBonus = ComputeBankBonus(BonusLevel);
             m_bankDelayedAction.AddAction(animationDelay, () =>
             {
                 m_bankDots.SetNumberOfDots(m_bankPointTarget);
@@ -975,6 +995,7 @@ namespace ArrowLink
         {
             if (pause)
             {
+#if !UNITY_EDITOR
                 if (!IsGamePaused)
                 {
                     if (m_currentState == TileCrunchState)
@@ -984,12 +1005,13 @@ namespace ArrowLink
                     m_guiManager.OnPausePressed();
                     
                 }
+#endif
             }
         }
     }
-    #endregion
+#endregion
 
-    #region Delayed Action
+#region Delayed Action
 
     public class DelayedActionCollection
     {
@@ -1041,6 +1063,6 @@ namespace ArrowLink
         }
     }
 
-    #endregion
+#endregion
 }
 
