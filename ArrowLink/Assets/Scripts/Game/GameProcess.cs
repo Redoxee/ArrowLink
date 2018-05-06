@@ -89,9 +89,9 @@ namespace ArrowLink
         List<Action> m_onTilePlayedListeners = null;
 
         private const int c_dotBonusTarget = 5;
-        private int m_dotBonusCurrent = c_dotBonusTarget - 2;
-        private int BonusLevel { get { return (m_dotBonusCurrent + 1) / c_dotBonusTarget; } }
-        private int DotBonusLocalIndex { get { return m_dotBonusCurrent % c_dotBonusTarget; } }
+        private int m_overLinkCurrent = c_dotBonusTarget - 2;
+        private int BonusLevel { get { return (m_overLinkCurrent + 1) / c_dotBonusTarget; } }
+        private int DotBonusLocalIndex { get { return m_overLinkCurrent % c_dotBonusTarget; } }
         private bool IsSpecialDotBonus { get { return DotBonusLocalIndex == c_dotBonusTarget - 1; } }
 
         private const float c_multiplierPerBonus = 1.0f;
@@ -102,6 +102,15 @@ namespace ArrowLink
         public bool IsGamePaused = false;
 
         private ArrowFlag m_firstFlag = (ArrowFlag)255;
+
+        #region Reusable Collection
+
+        private HashSet<LogicTile> m_reusableTileSet = new HashSet<LogicTile>();
+        private List<LogicTile> m_resusableTileChain = new List<LogicTile>();
+        private List<float> m_reusableDepthList = new List<float>();
+        private List<LogicLinkStandalone> m_reusableFreeLinks = new List<LogicLinkStandalone>();
+
+        #endregion
 
         private void Awake()
         {
@@ -231,13 +240,29 @@ namespace ArrowLink
         {
             if ((m_playedSlot != null) && !m_boardLogic.IsFilled(m_playedSlot.X, m_playedSlot.Y) && m_currentCard != null)
             {
+
                 var logicTile = m_boardLogic.AddTile(m_playedSlot.X, m_playedSlot.Y, m_currentCard.MultiFlags);
+
                 logicTile.PhysicalCard = m_currentCard;
                 logicTile.IsPlaced = false;
-                Action cardPlayedAction = () => { CardTweenToSlotEnd(logicTile); }; // garbage here
+                logicTile.PlayedFrame = (uint)Time.frameCount;
 
+                m_boardLogic.ComputeTileNeighbor(logicTile);
+
+                List<LogicTile> tileChain = new List<LogicTile>();
+                m_reusableFreeLinks.Clear();
+                logicTile.ComputeLinkedChain(ref m_reusableTileSet, ref tileChain, ref m_reusableDepthList, ref m_reusableFreeLinks);
+                int pointToBank, pointToOverLink;
+                int baseBank = m_bankPoints;
+                int baseOverLink = m_overLinkCurrent;
+                RewardTilesLogic(tileChain, out pointToBank, out pointToOverLink);
+
+                Action cardPlayedAction = () => {
+                    CardTweenToSlotEnd(logicTile, tileChain, baseBank, pointToBank, baseOverLink, pointToOverLink);
+                }; // garbage here
                 m_currentCard.GoToSlot(m_playedSlot, cardPlayedAction);
                 m_nbCardOnTheWay += 1;
+
                 m_currentCard = null;
                 DrawNextCards();
 
@@ -258,13 +283,7 @@ namespace ArrowLink
             {
                 LogicTile tile = m_boardLogic.GetTile(m_playedSlot.X, m_playedSlot.Y);
                 
-                HashSet<LogicTile> chain = new HashSet<LogicTile>();
-                List<LogicTile> chainAsList = new List<LogicTile>();
-                List<float> depthList = new List<float>();
-                List<LogicLinkStandalone> freeLinks = new List<LogicLinkStandalone>();
                 m_boardLogic.ComputeTileNeighbor(tile);
-                tile.ComputeLinkedChain(ref chain, ref chainAsList, ref depthList, ref freeLinks);
-                chainAsList.Remove(tile);
 
                 foreach (var entry in tile.m_linkedTile)
                 {
@@ -289,8 +308,6 @@ namespace ArrowLink
 
                 m_guiManager.SetCrunchable(false);
 
-                //RewardTiles(chainAsList);
-
                 ++m_nbCrunch;
             }
             m_playedSlot = null;
@@ -299,7 +316,7 @@ namespace ArrowLink
         public const float c_flashDelay = .15f;
         public const float c_lineDelay = .25f;
 
-        void CardTweenToSlotEnd(LogicTile tile)
+        void CardTweenToSlotEnd(LogicTile tile, List<LogicTile> tileChain, int baseBank, int pointToBank, int baseOverLink, int pointToOverLink)
         {
             m_nbCardOnTheWay -= 1;
             tile.IsPlaced = true;
@@ -310,16 +327,9 @@ namespace ArrowLink
             pos.z = ArrowCard.c_firstLevel;
             placedCard.transform.position = pos;
 
-            HashSet<LogicTile> chain = new HashSet<LogicTile>();
-            List<LogicTile> chainAsList = new List<LogicTile>();
-            List<float> depthList = new List<float>();
-            List<LogicLinkStandalone> freeLinks = new List<LogicLinkStandalone>();
-            m_boardLogic.ComputeTileNeighbor(tile);
-            tile.ComputeLinkedChain(ref chain, ref chainAsList, ref depthList, ref freeLinks);
-
             var newLinkDirection = tile.m_linkedTile.Keys;
 
-            RewardTiles(chainAsList);
+            RewardTileVisually(tileChain, baseBank, pointToBank, baseOverLink, pointToOverLink);
 
 
             placedCard.m_tileLinks = new List<TileLink>(tile.m_listLinkedTile.Count);
@@ -341,7 +351,7 @@ namespace ArrowLink
 
             }
             
-            AchievementManager.NotifyEventMaxing("BestTileChain", chainAsList.Count);
+            AchievementManager.NotifyEventMaxing("BestTileChain", tileChain.Count);
             if (m_boardLogic.IsBoardFull())
             {
                 AchievementManager.NotifyEventIncrement("BoardFilled");
@@ -352,31 +362,32 @@ namespace ArrowLink
             }
         }
 
-        private void RewardTilesLogic(List<LogicTile> chainAsList)
+        private void GetRewardForChain(List<LogicTile> chainAsList, out int pointToBank, out int pointToOverLink)
         {
-
             int chainCount = chainAsList.Count;
-            int pointToBank = Mathf.Clamp(chainCount, 0, m_bankPointTarget - m_bankPoints);
-            int pointToOverLink = chainCount - pointToBank;
+            if (chainCount > 1)
+            {
+                pointToBank = Mathf.Clamp(chainCount, 0, m_bankPointTarget - m_bankPoints);
+                pointToOverLink = chainCount - pointToBank;
+            }
+            else
+            {
+                pointToBank = pointToOverLink = 0;
+            }
+        }
+
+        private void RewardTilesLogic(List<LogicTile> chainAsList, out int pointToBank, out int pointToOverLink)
+        {
+            GetRewardForChain(chainAsList, out pointToBank, out pointToOverLink);
+
             m_bankPoints += pointToBank;
-
-            m_dotBonusCurrent += pointToOverLink;
-            m_dotBonusCurrent = m_dotBonusCurrent % c_dotBonusTarget;
+            m_overLinkCurrent += pointToOverLink;
         }
 
-        private void GetRewardForChain(List<LogicTile> chainAsList,out int pointToBank, out int pointToOverLink)
-        {
-            int chainCount = chainAsList.Count;
-            pointToBank = Mathf.Clamp(chainCount, 0, m_bankPointTarget - m_bankPoints);
-            pointToOverLink = chainCount - pointToBank;
 
-        }
-
-        private void RewardTiles(List<LogicTile> chainAsList, float baseAnimDelay = 0f)
+        private void RewardTileVisually(List<LogicTile> chainAsList, int baseBank, int pointToBank, int baseOverLink ,int pointToOverLink)
         {
-            int pointToBank = 0;
-            int pointToOverLink = 0;
-            float animationDelay = baseAnimDelay;
+            float animationDelay = 0f;
 
             int chainCount = chainAsList.Count;
             if (chainCount > 1)
@@ -388,16 +399,10 @@ namespace ArrowLink
                     FlashWithDelay(i * c_flashDelay, flashingCard);
                 }
 
-
-                pointToBank = Mathf.Clamp(chainCount, 0, m_bankPointTarget - m_bankPoints);
-                
-                pointToOverLink = chainCount - pointToBank;
-
-
                 for (int i = 0; i < pointToBank; ++i)
                 {
 
-                    int dotIndex = m_bankPoints + i;
+                    int dotIndex = baseBank + i;
                     Transform dot = m_bankDots.GetDot(dotIndex);
                     var logicTile = chainAsList[i];
                     animationDelay += c_flashDelay;
@@ -409,9 +414,8 @@ namespace ArrowLink
                         , m_bankDelayedAction
                         );
                 }
-
-                m_bankPoints += pointToBank;
-                if (m_bankPoints >= m_bankPointTarget)
+                
+                if (baseBank + pointToBank>= m_bankPointTarget)
                 {
                     m_guiManager.SetBankable(true);
                 }
@@ -420,13 +424,14 @@ namespace ArrowLink
                 if (pointToOverLink > 0)
                 {
                     m_guiManager.SetCapsuleBonusEnabled(true);
+
                     for (int i = 0; i < pointToOverLink; ++i)
                     {
-                        m_dotBonusCurrent++;
+                        int overLink = baseOverLink + i + 1;
                         int tileIndex = pointToBank + i;
                         var logicTilePosition = chainAsList[tileIndex].PhysicalCard.transform.position;
 
-                        int bonusIndex = (m_dotBonusCurrent % c_dotBonusTarget);
+                        int bonusIndex = (overLink % c_dotBonusTarget);
                         bool isBonus = bonusIndex == c_dotBonusTarget - 1;
                         if (!isBonus)
                         {
@@ -572,7 +577,7 @@ namespace ArrowLink
                 m_guiManager.SetCapsuleBonusEnabled(false);
             });
 
-            m_dotBonusCurrent = c_dotBonusTarget - 2;
+            m_overLinkCurrent = c_dotBonusTarget - 2;
             --m_crunchCoolDown;
             if (m_crunchCoolDown < 1)
             {
@@ -822,7 +827,7 @@ namespace ArrowLink
         {
             if (IsGamePaused)
                 return;
-            if (CanBank)
+            if (CanBank && m_nbCardOnTheWay == 0)
             {
                 EndCombo();
                 UntoggleCrunch();
@@ -836,7 +841,7 @@ namespace ArrowLink
 
             if (m_currentState == DefaultState)
             {
-                if (CanCrunch)
+                if (CanCrunch && m_nbCardOnTheWay < 1)
                 {
                     SetState(TileCrunchState);
                     m_guiManager.SetFocusCrunch(false);

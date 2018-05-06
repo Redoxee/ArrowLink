@@ -55,7 +55,7 @@ namespace ArrowLink{
 				if (IsInside(nx, ny))
 				{
 					var neighbor = m_board[nx, ny];
-					if (neighbor != null && neighbor.IsPlaced)
+					if (neighbor != null && tile.PlayedFrame > neighbor.PlayedFrame)
 					{
 						var oposite = dir.Reverse();
                         if (neighbor.m_flags.DoHave(oposite))
@@ -156,6 +156,7 @@ namespace ArrowLink{
 
         public ArrowCard PhysicalCard = null;
         public bool IsPlaced = false;
+        public uint PlayedFrame = 0; 
 
         public LogicTile(ArrowFlag multiFlags, int x, int y)
         {
