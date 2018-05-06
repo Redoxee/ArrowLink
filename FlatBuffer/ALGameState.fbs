@@ -1,0 +1,28 @@
+// save file
+ 
+namespace ArrowLink;
+
+table Distributor
+{
+	DifficultyLevel:int;
+	Precedence:[int];
+}
+
+table GameState {
+	Version:int;
+	Board:[int];
+	CurrentTile:int;
+	NextTile:int;
+	HoldTile:int;
+	BankTarget:int;
+	BankState:int;
+	CrunchState:int;
+	OverLinkState:int;
+	Score:int;
+	TileScore:int;
+	ComboCounter:int;
+	CrunchCounter:int;
+	DistributorState:Distributor;
+} 
+ 
+root_type GameState;

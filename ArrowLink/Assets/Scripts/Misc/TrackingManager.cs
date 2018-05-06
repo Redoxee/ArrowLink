@@ -9,6 +9,11 @@ namespace ArrowLink
 {
     public class TrackingManager
     {
+        public TrackingManager()
+        {
+            GameAnalytics.Initialize();
+        }
+
         public static void TrackEvent(string eventName, int numValue, Dictionary<string, object> parameters)
         {
             if (MainProcess.IsReady)

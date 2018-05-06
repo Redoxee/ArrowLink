@@ -42,6 +42,7 @@ namespace ArrowLink
 
         private ArrowCard m_nextPlayedCard = null;
         private ArrowCard m_holdedCard = null;
+        private ArrowCard m_currentCard = null;
         public bool IsHoldingCard { get { return m_holdedCard != null; } }
 
         [SerializeField]
@@ -50,8 +51,6 @@ namespace ArrowLink
         [SerializeField]
         AnimatedLinePool m_darkAnimatedLinePool = null;
 
-        ArrowCard m_currentCard = null;
-        ArrowCard m_holdedCards = null;
 
         BoardSlot m_playedSlot;
         ArrowCard m_pressedCard = null;
@@ -94,6 +93,8 @@ namespace ArrowLink
         private int DotBonusLocalIndex { get { return m_overLinkCurrent % c_dotBonusTarget; } }
         private bool IsSpecialDotBonus { get { return DotBonusLocalIndex == c_dotBonusTarget - 1; } }
 
+        private const int c_baseComboPoints = 10;
+
         private const float c_multiplierPerBonus = 1.0f;
 
         private int m_nbCombo = 0;
@@ -112,6 +113,9 @@ namespace ArrowLink
 
         #endregion
 
+        [NonSerialized]
+        private GameSaver m_gameSaver;
+
         private void Awake()
         {
             if (s_instance != null)
@@ -123,6 +127,8 @@ namespace ArrowLink
             s_instance = this;
 
             m_onTilePlayedListeners = new List<Action>();
+
+            m_gameSaver = new GameSaver();
         }
 
         private void Start()
@@ -271,6 +277,8 @@ namespace ArrowLink
                     act();
                 }
                 AntonMakesGames.AchievementManager.NotifyEventIncrement("TotalTilePlaced");
+
+                Save();
             }
             m_playedSlot = null;
         }
@@ -502,14 +510,14 @@ namespace ArrowLink
         {
             if (m_pressedCard != null)
             {
-                if (m_pressedCard == m_holdedCards)
+                if (m_pressedCard == m_holdedCard)
                 {
-                    m_holdedCards.MoveToPosition(m_playingCardTransform.position);
+                    m_holdedCard.MoveToPosition(m_playingCardTransform.position);
                     m_currentCard.MoveToPosition(m_holdingCardTransform.position);
-                    m_holdedCards.m_tweens.ActivationUnveil.StartTween();
+                    m_holdedCard.m_tweens.ActivationUnveil.StartTween();
                     m_currentCard.m_tweens.ActivationVeil.StartTween();
-                    var temp = m_holdedCards;
-                    m_holdedCards = m_currentCard;
+                    var temp = m_holdedCard;
+                    m_holdedCard = m_currentCard;
                     m_currentCard = temp;
                 }
 
@@ -749,9 +757,7 @@ namespace ArrowLink
             lineAnimation.SetUpLine(start, target.position, factor, freeLine);
             m_bankDelayedAction.AddAction(animationDelay, () => { lineAnimation.StartAnimation(); });
         }
-
-        const int c_baseComboPoints = 10;
-
+        
         int ComputebasePoints(int nbTile)
         {
             return nbTile * c_baseComboPoints;
@@ -1013,10 +1019,38 @@ namespace ArrowLink
 #endif
             }
         }
-    }
-#endregion
+        #endregion
 
-#region Delayed Action
+        #region Save
+
+        private void Save()
+        {
+            //m_gameSaver.Version = Application.version;
+            m_gameSaver.Score = m_currentScore;
+            m_gameSaver.TileScore = m_currentTileScore;
+            m_gameSaver.BankTarget = m_bankPointTarget;
+            m_gameSaver.BankState = m_bankPoints;
+            m_gameSaver.OverLinkState = m_overLinkCurrent;
+            m_gameSaver.CrunchState = m_crunchCoolDown;
+            m_gameSaver.ComboCounter = m_nbCombo;
+            m_gameSaver.CrunchCounter = m_nbCrunch;
+
+            m_gameSaver.CurrentTile = (int)m_currentCard.MultiFlags;
+            m_gameSaver.NextTile = m_nextPlayedCard == null ? 0 : (int)m_nextPlayedCard.MultiFlags;
+            m_gameSaver.HoldTile = m_holdedCard == null ? 0 : (int)m_holdedCard.MultiFlags;
+
+        //Version: int;
+        //Board:[int];
+        //DistributorState: Distributor;
+        
+        m_gameSaver.Save();
+        }
+
+        #endregion
+    }
+
+
+    #region Delayed Action
 
     public class DelayedActionCollection
     {
