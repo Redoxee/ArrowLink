@@ -4,60 +4,60 @@ using UnityEngine;
 
 
 namespace ArrowLink{
-	public class BoardLogic {
+    public class BoardLogic {
 
-		public const int c_row = 4;
-		public const int c_col = 4;
+        public const int c_row = 4;
+        public const int c_col = 4;
 
-		LogicTile[,] m_board;
+        LogicTile[,] m_board;
         List<LogicTile> m_allPlacedTile;
         public List<LogicTile> AllTilePlaced { get { return m_allPlacedTile; } }
 
-		private int m_nbTilePlaced = 0;
+        private int m_nbTilePlaced = 0;
 
-		public BoardLogic()
-		{
-			m_board = new LogicTile[c_row,c_col];
+        public BoardLogic()
+        {
+            m_board = new LogicTile[c_row, c_col];
             m_allPlacedTile = new List<LogicTile>(c_row * c_col);
-			m_nbTilePlaced = 0;
-		}
+            m_nbTilePlaced = 0;
+        }
 
-		public bool IsFilled(int x, int y)
-		{
-			return m_board[x, y] != null;
-		}
+        public bool IsFilled(int x, int y)
+        {
+            return m_board[x, y] != null;
+        }
 
-		public bool IsInside(int x, int y)
-		{
-			return !(x < 0 || y < 0) && (x < c_col && y < c_row);
-		}
+        public bool IsInside(int x, int y)
+        {
+            return !(x < 0 || y < 0) && (x < c_col && y < c_row);
+        }
 
-		public LogicTile AddTile(int x, int y, ArrowFlag flags)
-		{
-			Debug.Assert(m_board[x, y] == null, "trying to assign an already filled tile");
+        public LogicTile AddTile(int x, int y, ArrowFlag flags)
+        {
+            Debug.Assert(m_board[x, y] == null, "trying to assign an already filled tile");
 
-			LogicTile tile = new LogicTile(flags, x, y);
-			m_board[x, y] = tile;
+            LogicTile tile = new LogicTile(flags, x, y);
+            m_board[x, y] = tile;
 
-			m_nbTilePlaced += 1;
+            m_nbTilePlaced += 1;
             m_allPlacedTile.Add(tile);
-			return tile;
-		}
+            return tile;
+        }
 
-		public void ComputeTileNeighbor(LogicTile tile)
-		{
-			for (int i = 0; i < tile.m_arrowCount; ++i)
-			{
-				ArrowFlag dir = tile.m_arrows[i];
+        public void ComputeTileNeighbor(LogicTile tile)
+        {
+            for (int i = 0; i < tile.m_arrowCount; ++i)
+            {
+                ArrowFlag dir = tile.m_arrows[i];
 
-				int nx = tile.X, ny = tile.Y;
-				dir.GetDecal(ref nx, ref ny);
-				if (IsInside(nx, ny))
-				{
-					var neighbor = m_board[nx, ny];
-					if (neighbor != null && tile.PlayedFrame > neighbor.PlayedFrame)
-					{
-						var oposite = dir.Reverse();
+                int nx = tile.X, ny = tile.Y;
+                dir.GetDecal(ref nx, ref ny);
+                if (IsInside(nx, ny))
+                {
+                    var neighbor = m_board[nx, ny];
+                    if (neighbor != null && tile.PlayedFrame >= neighbor.PlayedFrame)
+                    {
+                        var oposite = dir.Reverse();
                         if (neighbor.m_flags.DoHave(oposite))
                         {
                             tile.m_linkedTile[dir] = neighbor;
@@ -69,10 +69,10 @@ namespace ArrowLink{
                                 neighbor.m_listLinkedTile.Add(tile);
                             }
                         }
-					}
-				}
-			}
-		}
+                    }
+                }
+            }
+        }
 
         public List<List<LogicTile>> GetAllChains(ref List<LogicLinkStandalone> freeLinks)
         {
@@ -89,7 +89,7 @@ namespace ArrowLink{
                     continue;
                 List<LogicTile> chain = new List<LogicTile>();
 
-                tile.ComputeLinkedChain(ref temp,ref chain, ref trash, ref freeLinks);
+                tile.ComputeLinkedChain(ref temp, ref chain, ref trash, ref freeLinks);
                 processed.AddRange(chain);
                 chains.Add(chain);
             }
@@ -97,16 +97,16 @@ namespace ArrowLink{
             return chains;
         }
 
-        public void GetFreeLinkFromChain(List<LogicTile> chain,ref List<LogicLinkStandalone> linkList)
+        public void GetFreeLinkFromChain(List<LogicTile> chain, ref List<LogicLinkStandalone> linkList)
         {
             linkList.Clear();
             foreach (var tile in chain)
             {
                 for (int i = 0; i < tile.m_arrowCount; ++i)
                 {
-                    if(!tile.m_linkedTile.ContainsKey(tile.m_arrows[i]))
+                    if (!tile.m_linkedTile.ContainsKey(tile.m_arrows[i]))
                     {
-                        var logic = new LogicLinkStandalone(tile,tile.m_arrows[i]);
+                        var logic = new LogicLinkStandalone(tile, tile.m_arrows[i]);
                         linkList.Add(logic);
 
                     }
@@ -114,9 +114,9 @@ namespace ArrowLink{
             }
         }
 
-		public void RemoveTile(int x, int y)
-		{
-			Debug.Assert(m_board[x, y] != null, "trying to remove an empty slot");
+        public void RemoveTile(int x, int y)
+        {
+            Debug.Assert(m_board[x, y] != null, "trying to remove an empty slot");
             var tile = m_board[x, y];
             foreach (var entry in tile.m_linkedTile)
             {
@@ -124,24 +124,40 @@ namespace ArrowLink{
                 entry.Value.m_linkedTile.Remove(direction);
                 entry.Value.m_listLinkedTile.Remove(tile);
             }
-			m_board[x, y] = null;
-			m_nbTilePlaced -= 1;
+            m_board[x, y] = null;
+            m_nbTilePlaced -= 1;
             m_allPlacedTile.Remove(tile);
-		}
+        }
 
         public bool IsBoardEmpty()
         {
             return m_nbTilePlaced == 0;
         }
 
-		public bool IsBoardFull()
-		{
-			return m_nbTilePlaced >= (c_col * c_row);
-		}
+        public bool IsBoardFull()
+        {
+            return m_nbTilePlaced >= (c_col * c_row);
+        }
 
         public LogicTile GetTile(int x, int y)
         {
             return m_board[x, y];
+        }
+
+        public void FillArray(ref int[] array)
+        {
+            for (int x = 0; x < c_col; ++x)
+            {
+                for (int y = 0; y < c_row; ++y)
+                {
+                    int i = y * c_col + x;
+
+                    if (m_board[x, y] != null)
+                        array[i] = (int)m_board[x, y].m_flags;
+                    else
+                        array[i] = 0;
+                }
+            }
         }
 	}
 
@@ -155,7 +171,6 @@ namespace ArrowLink{
         public List<LogicTile> m_listLinkedTile = new List<LogicTile>(8);
 
         public ArrowCard PhysicalCard = null;
-        public bool IsPlaced = false;
         public uint PlayedFrame = 0; 
 
         public LogicTile(ArrowFlag multiFlags, int x, int y)

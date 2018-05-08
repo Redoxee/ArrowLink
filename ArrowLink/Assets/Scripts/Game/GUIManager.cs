@@ -89,6 +89,7 @@ namespace ArrowLink
         public void OnHomePressed()
         {
             MainProcess.Instance.LoadMenuScene();
+            m_gameProcess.NotifyLeavingGame();
         }
 
         public void OnBankPressed()

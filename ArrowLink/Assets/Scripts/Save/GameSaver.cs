@@ -7,15 +7,18 @@ namespace ArrowLink
 {
     public class GameSaver
     {
-        FlatBufferBuilder m_builder = new FlatBufferBuilder(64);
+        FlatBufferBuilder m_builder = new FlatBufferBuilder(256);
 
         public const string c_saveName = "gamesState.sav";
 
-        public string SaveFullname
+        private static string s_fullName = null;
+        public static string SaveFullname
         {
             get
             {
-                return Application.persistentDataPath + "/" + c_saveName;
+                if(s_fullName == null)
+                    s_fullName = Application.persistentDataPath + "/" + c_saveName;
+                return s_fullName;
             }
         }
 
@@ -67,6 +70,45 @@ namespace ArrowLink
                 File.WriteAllBytes(SaveFullname, ms.ToArray());
                 Debug.Log("data saved");
             }
+        }
+
+        public bool Load()
+        {
+            string name = SaveFullname;
+            if (!File.Exists(name))
+                return false;
+
+            ByteBuffer bb = new ByteBuffer(File.ReadAllBytes(name));
+            GameState save = GameState.GetRootAsGameState(bb);
+
+            //public int Version = 0;
+            for (int i = 0; i < save.BoardLength; ++i)
+                BoardState[i] = save.Board(i);
+
+            CurrentTile = save.CurrentTile;
+            NextTile = save.NextTile;
+            HoldTile = save.HoldTile;
+            BankTarget = save.BankTarget;
+            BankState = save.BankState;
+            CrunchState = save.CrunchState;
+            OverLinkState = save.OverLinkState;
+            Score = save.Score;
+            TileScore = save.TileScore;
+            ComboCounter = save.ComboCounter;
+            CrunchCounter = save.CrunchCounter;
+            var flatDistrib = save.DistributorState.GetValueOrDefault();
+            DistributorDifficultyLevel = flatDistrib.DifficultyLevel;
+            for (int i = 0; i < flatDistrib.PrecedenceLength; ++i)
+                DistributorPrecedence[i] = flatDistrib.Precedence(i); 
+
+            return true;
+        }
+
+        public static void DeleteGameSaved()
+        {
+            string name = SaveFullname;
+            if (File.Exists(name))
+                File.Delete(name);
         }
     }
 }

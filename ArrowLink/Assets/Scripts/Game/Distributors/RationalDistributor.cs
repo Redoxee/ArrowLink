@@ -102,5 +102,20 @@ namespace ArrowLink
             return result;
         }
 
+        public int DifficultyLevel { get { return m_currentDifficultyLevel; } }
+        public void FillPrecedence(ref int[] array)
+        {
+            for (int i = 0; i < m_precedence.Length; ++i)
+                array[i] = m_precedence[i];
+        }
+
+        public void Setup(int difficultylevel, int[] precedence)
+        {
+            m_currentDifficultyLevel = difficultylevel;
+            for (int i = 0; i < m_precedence.Length; ++i)
+            {
+                m_precedence[i] = precedence[i];
+            }
+        }
     }
 }

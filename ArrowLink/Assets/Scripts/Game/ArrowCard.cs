@@ -41,8 +41,6 @@ namespace ArrowLink
 		ArrowFlag m_arrows = ArrowFlag.NONE;
 		public ArrowFlag MultiFlags { get { return m_arrows; } }
 
-		public List<TileLink> m_tileLinks = null;
-
         [SerializeField]
         GameObject m_centerRef = null;
 
@@ -58,6 +56,7 @@ namespace ArrowLink
 
         [SerializeField]
         private BoxCollider2D m_trigger = null;
+        public BoxCollider2D Collider { get { return m_trigger; } }
 
         private bool m_isWiggling = false;
         public bool IsWigglingAnimation { get { return m_isWiggling; } set

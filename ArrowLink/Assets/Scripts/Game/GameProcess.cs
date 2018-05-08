@@ -147,6 +147,31 @@ namespace ArrowLink
             pos.z = ArrowCard.c_firstLevel;
             m_popingCardTransform.position = pos;
 
+            m_overlinkDotCollection.SetNumberOfDots(c_dotBonusTarget - 1);
+
+            bool hasGameSaved = m_gameSaver.Load();
+            if(!hasGameSaved)
+            {
+                InitGame();
+            }
+            else
+            {
+                LoadFromSave(); 
+            }
+            
+
+            if (MainProcess.IsReady)
+            {
+                Dictionary<string, object> startParams = new Dictionary<string, object>();
+                startParams["date"] = DateTime.UtcNow.ToString();
+                TrackingManager.TrackEvent("Game Start", 1, startParams);
+                GameAnalyticsSDK.GameAnalytics.NewProgressionEvent(GameAnalyticsSDK.GAProgressionStatus.Start, "game");
+            }
+            m_gameStartTime = Time.time;
+        }
+
+        private void InitGame()
+        {
             if (m_previewNextTile)
             {
                 ShootNewNextCard(m_firstFlag);
@@ -166,17 +191,6 @@ namespace ArrowLink
             m_guiManager.SetCrunchable(false);
 
             m_guiManager.SetCapsuleBonusValues(ComputeMultiplierBonus(0), ComputeBankBonus(0));
-            
-            if (MainProcess.IsReady)
-            {
-                Dictionary<string, object> startParams = new Dictionary<string, object>();
-                startParams["date"] = DateTime.UtcNow.ToString();
-                TrackingManager.TrackEvent("Game Start", 1, startParams);
-                GameAnalyticsSDK.GameAnalytics.NewProgressionEvent(GameAnalyticsSDK.GAProgressionStatus.Start, "game");
-            }
-            m_gameStartTime = Time.time;
-
-            m_overlinkDotCollection.SetNumberOfDots(c_dotBonusTarget - 1);
             
         }
 
@@ -250,7 +264,6 @@ namespace ArrowLink
                 var logicTile = m_boardLogic.AddTile(m_playedSlot.X, m_playedSlot.Y, m_currentCard.MultiFlags);
 
                 logicTile.PhysicalCard = m_currentCard;
-                logicTile.IsPlaced = false;
                 logicTile.PlayedFrame = (uint)Time.frameCount;
 
                 m_boardLogic.ComputeTileNeighbor(logicTile);
@@ -317,6 +330,7 @@ namespace ArrowLink
                 m_guiManager.SetCrunchable(false);
 
                 ++m_nbCrunch;
+                Save();
             }
             m_playedSlot = null;
         }
@@ -327,7 +341,6 @@ namespace ArrowLink
         void CardTweenToSlotEnd(LogicTile tile, List<LogicTile> tileChain, int baseBank, int pointToBank, int baseOverLink, int pointToOverLink)
         {
             m_nbCardOnTheWay -= 1;
-            tile.IsPlaced = true;
 
             var placedCard = tile.PhysicalCard;
 
@@ -340,7 +353,6 @@ namespace ArrowLink
             RewardTileVisually(tileChain, baseBank, pointToBank, baseOverLink, pointToOverLink);
 
 
-            placedCard.m_tileLinks = new List<TileLink>(tile.m_listLinkedTile.Count);
             var p1 = tile.PhysicalCard.transform.position;
 
             if (tile.m_listLinkedTile.Count > 0)
@@ -604,7 +616,7 @@ namespace ArrowLink
                 AchievementManager.NotifyEventIncrement("FullBoardBank");
             }
             CheckEndGame();
-
+            Save();
         }
 
         private List<LogicLinkStandalone> m_trashList = new List<LogicLinkStandalone>(16 * 8);
@@ -634,11 +646,6 @@ namespace ArrowLink
 
                         m_boardLogic.RemoveTile(tile.X, tile.Y);
                         var card = tile.PhysicalCard;
-                        foreach (var link in card.m_tileLinks)
-                        {
-                            Destroy(link.gameObject);
-                        }
-
                         card.SoftDestroy();
 
                         tileLinked++;
@@ -820,6 +827,7 @@ namespace ArrowLink
             TrackingManager.TrackEvent("GameEnd",1 , endTrackingParameters);
 
             GameAnalyticsSDK.GameAnalytics.NewProgressionEvent(GameAnalyticsSDK.GAProgressionStatus.Complete, "game", m_currentScore);
+            GameSaver.DeleteGameSaved();
         }
 
         public bool CanBank
@@ -1021,6 +1029,11 @@ namespace ArrowLink
         }
         #endregion
 
+        public void NotifyLeavingGame()
+        {
+            GameSaver.DeleteGameSaved();
+        }
+
         #region Save
 
         private void Save()
@@ -1038,12 +1051,136 @@ namespace ArrowLink
             m_gameSaver.CurrentTile = (int)m_currentCard.MultiFlags;
             m_gameSaver.NextTile = m_nextPlayedCard == null ? 0 : (int)m_nextPlayedCard.MultiFlags;
             m_gameSaver.HoldTile = m_holdedCard == null ? 0 : (int)m_holdedCard.MultiFlags;
+            m_boardLogic.FillArray(ref m_gameSaver.BoardState);
 
+            var dirtyDistrib = (RationalDistributor)m_flagDistributor;
+            m_gameSaver.DistributorDifficultyLevel = dirtyDistrib.DifficultyLevel;
+            dirtyDistrib.FillPrecedence(ref m_gameSaver.DistributorPrecedence);
         //Version: int;
         //Board:[int];
         //DistributorState: Distributor;
-        
-        m_gameSaver.Save();
+
+            m_gameSaver.Save();
+        }
+
+        private void LoadFromSave()
+        {
+            m_currentScore = m_gameSaver.Score;
+            m_currentTileScore = m_gameSaver.TileScore;
+            m_bankPointTarget = m_gameSaver.BankTarget;
+            m_bankPoints = m_gameSaver.BankState;
+            m_overLinkCurrent = m_gameSaver.OverLinkState;
+            m_crunchCoolDown = m_gameSaver.CrunchState ;
+            m_nbCombo = m_gameSaver.ComboCounter ;
+            m_nbCrunch = m_gameSaver.CrunchCounter;
+
+            m_guiManager.SetCrunchable(m_crunchCoolDown < 1);
+
+            ArrowFlag currentFlag = (ArrowFlag)m_gameSaver.CurrentTile;
+
+            GameObject currentCard = Instantiate(m_cardPrefab);
+            currentCard.transform.SetParent(transform, false);
+            currentCard.SetActive(true);
+            m_currentCard = currentCard.GetComponent<ArrowCard>();
+            m_currentCard.transform.position = m_playingCardTransform.position;
+            m_currentCard.SetupArrows(currentFlag);
+            m_currentCard.m_tweens.ActivationUnveil.StartTween();
+
+            ((RationalDistributor)m_flagDistributor).Setup(m_gameSaver.DistributorDifficultyLevel, m_gameSaver.DistributorPrecedence);
+
+            m_bankDots.SetNumberOfDots(m_bankPointTarget);
+            for (int i = 0; i < m_bankPoints; ++i)
+            {
+                m_bankDots.LightDot(i);
+            }
+
+            m_guiManager.SetBankable(m_bankPoints >= m_bankPointTarget);
+
+            m_guiManager.SetCapsuleBonusEnabled(m_bankPoints >= m_bankPointTarget);
+
+            m_guiManager.SetCapsuleBonusValues(ComputeMultiplierBonus(BonusLevel), ComputeBankBonus(BonusLevel));
+            if (BonusLevel > 1)
+            {
+                int nbDots = Math.Min(DotBonusLocalIndex + 1, c_dotBonusTarget - 1);
+                for (int i = 0; i < nbDots; ++i)
+                {
+                    m_overlinkDotCollection.LightDot(i);
+                }
+            }
+
+            m_guiManager.ApplyScoreDelta(m_currentScore);
+
+            ArrowFlag nextFlag = (ArrowFlag)m_gameSaver.NextTile;
+            if (nextFlag != ArrowFlag.NONE)
+            {
+                GameObject nextCard = Instantiate(m_cardPrefab);
+                nextCard.transform.SetParent(transform, false);
+                nextCard.SetActive(true);
+                m_nextPlayedCard = nextCard.GetComponent<ArrowCard>();
+                m_nextPlayedCard.transform.position = m_popingCardTransform.position;
+                m_nextPlayedCard.SetupArrows(nextFlag);
+            }
+
+            ArrowFlag holdFlag = (ArrowFlag)m_gameSaver.HoldTile;
+            if (holdFlag != ArrowFlag.NONE)
+            {
+                GameObject holdCard = Instantiate(m_cardPrefab);
+                holdCard.transform.SetParent(transform, false);
+                holdCard.SetActive(true);
+                m_holdedCard = holdCard.GetComponent<ArrowCard>();
+                m_holdedCard.transform.position = m_holdingCardTransform.position;
+                m_holdedCard.SetupArrows(holdFlag);
+            }
+
+            for(int i = 0; i < m_gameSaver.BoardState.Length; ++i)
+            {
+                int f = m_gameSaver.BoardState[i];
+                if (f > 0)
+                {
+                    ArrowFlag flags = (ArrowFlag)f;
+
+                    int x = i % BoardLogic.c_col;
+                    int y = i / BoardLogic.c_col;
+
+                    GameObject go = Instantiate(m_cardPrefab);
+                    go.transform.SetParent(transform, false);
+                    go.SetActive(true);
+                    ArrowCard card = go.GetComponent<ArrowCard>();
+                    card.SetupArrows(flags);
+                    LogicTile logicTile = m_boardLogic.AddTile(x, y, flags);
+                    card.m_tweens.ActivationUnveil.StartTween();
+
+                    var slot = m_board.GetSlot(x, y);
+                    Vector3 target = slot.transform.position;
+                    target.z = ArrowCard.c_firstLevel;
+                    card.transform.position = target;
+
+                    logicTile.PhysicalCard = card;
+                    logicTile.PlayedFrame = (uint)Time.frameCount;
+                    card.Collider.enabled = false;
+
+                    m_boardLogic.ComputeTileNeighbor(logicTile);
+
+                    if (logicTile.m_listLinkedTile.Count > 0)
+                    {
+
+                        logicTile.PhysicalCard.LigthArrows(logicTile.m_linkedTile.Keys);
+                        logicTile.PhysicalCard.SwitchCenter(true);
+                        logicTile.PhysicalCard.IsSuperMode = true;
+                        foreach (var entry in logicTile.m_linkedTile)
+                        {
+                            var neighbor = entry.Value;
+                            var dir = entry.Key.Reverse();
+                            neighbor.PhysicalCard.SwitchArrow(dir, true);
+                            neighbor.PhysicalCard.SwitchCenter(true);
+                            neighbor.PhysicalCard.IsSuperMode = true;
+                        }
+
+                    }
+                }
+            }
+
+
         }
 
         #endregion
