@@ -110,5 +110,10 @@ namespace ArrowLink
             if (File.Exists(name))
                 File.Delete(name);
         }
+
+        public static bool HasGameSaved()
+        {
+            return File.Exists(SaveFullname);
+        }
     }
 }

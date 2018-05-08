@@ -72,7 +72,7 @@ namespace ArrowLink
             }
 
             int nbGameFinished = m_achievementsManager.GetEventValue("GameFinished");
-            if (nbGameFinished > 0)
+            if (nbGameFinished > 0 && !GameSaver.HasGameSaved())
             {
                 LoadScene(c_menuScene);
             }
