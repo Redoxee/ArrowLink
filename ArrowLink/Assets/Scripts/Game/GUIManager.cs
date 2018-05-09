@@ -138,6 +138,11 @@ namespace ArrowLink
             m_scoreDeltaText.SetNumber(0);
         }
 
+        public void InstantSetScore(int newScore)
+        {
+            m_scoreText.SetDisplay(newScore);
+        }
+
         public void SetCapsuleBonusEnabled(bool enabled)
         {
             m_bonusCapsuleVeil.SetVeilState(!enabled);

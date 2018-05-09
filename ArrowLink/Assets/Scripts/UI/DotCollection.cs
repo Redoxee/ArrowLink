@@ -20,7 +20,7 @@ public class DotCollection : MonoBehaviour {
     private int m_currentDiplay = 0;
     private int m_targetDisplay = 0;
 
-    private float m_lightGap = .20f;
+    private float m_lightGap = .18f;
     private float m_animationTimer = 0f;
 
 

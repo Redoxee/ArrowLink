@@ -223,6 +223,10 @@ namespace ArrowLink
             {
                 m_tweens.Crunchable.StartTween(null,true);
             }
+            else
+            {
+                transform.rotation = Quaternion.AngleAxis(0, new Vector3(0, 0, 1));
+            }
         }
 
         public System.Collections.IEnumerator FlashWithDelay(float delay)

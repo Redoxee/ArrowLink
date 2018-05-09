@@ -335,6 +335,23 @@ namespace ArrowLink
             m_playedSlot = null;
         }
 
+        private void CrunchCurrentTile()
+        {
+            if (m_currentState != TileCrunchState)
+                return;
+
+            m_currentCard.SoftDestroy();
+
+            m_currentCard = null;
+            DrawNextCards();
+
+            SetState(DefaultState);
+            m_crunchCoolDown = c_crunchCooldown;
+            m_guiManager.SetCrunchable(false);
+            ++m_nbCrunch;
+            Save();
+        }
+
         public const float c_flashDelay = .15f;
         public const float c_lineDelay = .25f;
 
@@ -930,6 +947,7 @@ namespace ArrowLink
                 tile.PhysicalCard.IsWigglingAnimation = true;
                 m_board.GetSlot(tile.X, tile.Y).IsFlashing = true;
             }
+            m_currentCard.IsWigglingAnimation = true;
         }
 
         private void _TileCrunchStateEnd()
@@ -943,6 +961,7 @@ namespace ArrowLink
             {
                 slot.IsFlashing = false;
             }
+            m_currentCard.IsWigglingAnimation = false;
         }
 
         public void OnHoldButtonPressed()
@@ -957,13 +976,13 @@ namespace ArrowLink
             m_currentCard.m_tweens.ActivationUnveil.StopTween();
             m_currentCard.m_tweens.ActivationVeil.StartTween();
 
+            UntoggleCrunch();
             var temp = m_holdedCard;
             m_holdedCard = m_currentCard;
             if (temp != null)
                 m_currentCard = temp;
             else
                 DrawNextCards();
-            UntoggleCrunch();
 
             AchievementManager.NotifyEventIncrement("TileKeeped");
         }
@@ -983,9 +1002,9 @@ namespace ArrowLink
                     }
                 }
             }
-            else
+            else if (m_currentState == TileCrunchState)
             {
-                UntoggleCrunch();
+                CrunchCurrentTile();
             }
         }
 
@@ -1108,7 +1127,7 @@ namespace ArrowLink
                 }
             }
 
-            m_guiManager.ApplyScoreDelta(m_currentScore);
+            m_guiManager.InstantSetScore(m_currentScore);
 
             ArrowFlag nextFlag = (ArrowFlag)m_gameSaver.NextTile;
             if (nextFlag != ArrowFlag.NONE)
