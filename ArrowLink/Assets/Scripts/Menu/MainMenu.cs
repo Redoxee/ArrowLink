@@ -17,6 +17,9 @@ namespace ArrowLink
         private SharePopup m_sharePopup = null;
 
         [SerializeField]
+        private SettingsMenu m_settingsPopup = null;
+
+        [SerializeField]
         private FlagDistributor m_flagDistributor = null;
 
         public FlagDistributor FlagDistributor { get { return m_flagDistributor; } }
@@ -39,7 +42,7 @@ namespace ArrowLink
 
             m_achievementPopup.HidePage();
             m_sharePopup.Hide();
-
+            m_settingsPopup.Hide();
 
             if (MainProcess.Instance != null)
             {
@@ -103,6 +106,11 @@ namespace ArrowLink
         public void RequestShare()
         {
             m_sharePopup.Show();
+        }
+
+        public void RequestSettings()
+        {
+            m_settingsPopup.Show();
         }
 
         [Serializable]
