@@ -947,7 +947,6 @@ namespace ArrowLink
                 tile.PhysicalCard.IsWigglingAnimation = true;
                 m_board.GetSlot(tile.X, tile.Y).IsFlashing = true;
             }
-            m_currentCard.IsWigglingAnimation = true;
         }
 
         private void _TileCrunchStateEnd()
@@ -961,7 +960,6 @@ namespace ArrowLink
             {
                 slot.IsFlashing = false;
             }
-            m_currentCard.IsWigglingAnimation = false;
         }
 
         public void OnHoldButtonPressed()
@@ -1004,7 +1002,7 @@ namespace ArrowLink
             }
             else if (m_currentState == TileCrunchState)
             {
-                CrunchCurrentTile();
+                SetState(DefaultState);
             }
         }
 

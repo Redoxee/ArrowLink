@@ -49,7 +49,7 @@ namespace ArrowLink
                 int bestScore = MainProcess.Instance.Achievements.GetEventValue("BestScore");
                 m_highScoreLabel.text = string.Format("BEST SCORE : {0}", bestScore);
 
-#if UNITY_ANDROID || UNITY_IOS
+#if UNITY_ANDROID || UNITY_IOS || UNITY_EDITOR
                 m_colorsButtonsTransform.gameObject.SetActive(true);
                 CreateColorButons();
                 m_getTheGame.gameObject.SetActive(false);
