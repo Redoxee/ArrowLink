@@ -2,18 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine.Analytics;
 using UnityEngine;
-using GameAnalyticsSDK;
 using System.Text;
 
 namespace ArrowLink
 {
     public class TrackingManager
     {
-        public TrackingManager()
-        {
-            GameAnalytics.Initialize();
-        }
-
         public static void TrackEvent(string eventName, int numValue, Dictionary<string, object> parameters)
         {
             if (MainProcess.IsReady)

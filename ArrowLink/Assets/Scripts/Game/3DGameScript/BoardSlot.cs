@@ -10,8 +10,6 @@ namespace ArrowLink
 		[SerializeField]
 		SingleTween m_unfocusTween = null;
         [SerializeField]
-        ParticleSystem m_flashParticles = null;
-        [SerializeField]
         SingleTween m_flashTween = null;
 
         private bool m_isFlashing = false;

@@ -165,7 +165,6 @@ namespace ArrowLink
                 Dictionary<string, object> startParams = new Dictionary<string, object>();
                 startParams["date"] = DateTime.UtcNow.ToString();
                 TrackingManager.TrackEvent("Game Start", 1, startParams);
-                GameAnalyticsSDK.GameAnalytics.NewProgressionEvent(GameAnalyticsSDK.GAProgressionStatus.Start, "game");
             }
             m_gameStartTime = Time.time;
         }
@@ -843,7 +842,6 @@ namespace ArrowLink
             endTrackingParameters["NbCombo"] = m_nbCombo;
             TrackingManager.TrackEvent("GameEnd",1 , endTrackingParameters);
 
-            GameAnalyticsSDK.GameAnalytics.NewProgressionEvent(GameAnalyticsSDK.GAProgressionStatus.Complete, "game", m_currentScore);
             GameSaver.DeleteGameSaved();
         }
 

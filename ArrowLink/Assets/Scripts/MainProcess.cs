@@ -30,8 +30,6 @@ namespace ArrowLink
 
         private List<int> m_additionalSceneLoaded;
 
-        [SerializeField]
-        private GameAnalyticsSDK.GameAnalytics m_gameAnalitycs = null;
         private TrackingManager m_tracking;
         public TrackingManager TrackingManager { get { return m_tracking; } }
 
