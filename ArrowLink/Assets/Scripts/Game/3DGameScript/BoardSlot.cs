@@ -12,6 +12,9 @@ namespace ArrowLink
         [SerializeField]
         SingleTween m_flashTween = null;
 
+        [SerializeField]
+        BoxCollider2D m_box2D = null;
+
         private bool m_isFlashing = false;
         public bool IsFlashing
         {
@@ -69,6 +72,11 @@ namespace ArrowLink
         {
             if (m_isFlashing)
                 m_flashTween.StartTween(OnFlashEnd);
+        }
+
+        public bool IsPositionIn(Vector2 pos)
+        {
+            return m_box2D.OverlapPoint(pos);
         }
     }
 }

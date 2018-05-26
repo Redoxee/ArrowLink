@@ -21,6 +21,8 @@ namespace ArrowLink
 
         [SerializeField]
         GameCamera m_gameCamera = null;
+        Camera m_camera = null;
+        public Camera GameCamera { get { return m_camera; } }
 
         [SerializeField]
         GUIManager m_guiManager = null;
@@ -53,8 +55,6 @@ namespace ArrowLink
 
 
         BoardSlot m_playedSlot;
-        ArrowCard m_pressedCard = null;
-
 
         private int m_currentScore = 0;
         public int CurrentScore { get { return m_currentScore; } }
@@ -137,6 +137,7 @@ namespace ArrowLink
             InitializeStates();
 
             m_gameCamera.Initialize();
+            m_camera = m_gameCamera.GetComponent<Camera>();
             m_board.Initialize(this);
 
             var pos = m_playingCardTransform.position;
@@ -197,7 +198,6 @@ namespace ArrowLink
         {
             if (!IsGamePaused)
             {
-                ProcessPressedCard();
                 m_currentState.ProcessPlayedSlot();
                 m_bankDelayedAction.ManualUpdate();
                 m_crunchDelayedAction.ManualUpdate();
@@ -221,6 +221,7 @@ namespace ArrowLink
         private void UseNextCardAsCurrent()
         {
             m_currentCard = m_nextPlayedCard;
+            m_currentCard.IsCurrentCard = true;
             var unveilTween = m_currentCard.m_tweens.ActivationUnveil;
             m_currentCard.MoveToPosition(m_playingCardTransform.position);
             unveilTween.StartTween();
@@ -233,12 +234,12 @@ namespace ArrowLink
             nextCardObject.SetActive(true);
             m_nextPlayedCard = nextCardObject.GetComponent<ArrowCard>();
             m_nextPlayedCard.transform.position = m_popingCardTransform.position;
-
             if (forcedFlags == ArrowFlag.NONE)
             {
                 forcedFlags = m_flagDistributor.PickRandomFlags();
             }
             m_nextPlayedCard.SetupArrows(forcedFlags);
+            m_nextPlayedCard.IsCurrentCard = false;
         }
 
         public void OnTilePressed(BoardSlot slot)
@@ -246,13 +247,6 @@ namespace ArrowLink
             if (IsGamePaused)
                 return;
             m_playedSlot = slot;
-        }
-
-        public void OnArrowCardPressed(ArrowCard pressedCard)
-        {
-            if (IsGamePaused)
-                return;
-            m_pressedCard = pressedCard;
         }
 
         private void DefaultProcessPlayedSlot()
@@ -280,6 +274,7 @@ namespace ArrowLink
                 }; // garbage here
                 m_currentCard.GoToSlot(m_playedSlot, cardPlayedAction);
                 m_nbCardOnTheWay += 1;
+                m_currentCard.IsCurrentCard = false;
 
                 m_currentCard = null;
                 DrawNextCards();
@@ -293,6 +288,15 @@ namespace ArrowLink
                 Save();
             }
             m_playedSlot = null;
+        }
+
+        private void ExitDefaultState()
+        {
+            if (m_currentCard != null && m_currentCard.IsDragging)
+            {
+                m_currentCard.RequestCancelDrag();
+                m_currentCard.MoveToPosition(m_playingCardTransform.position);
+            }
         }
         
         private void TileCrunchProcessSlot()
@@ -533,26 +537,7 @@ namespace ArrowLink
             float lineDuration = AnimatedLinePool.GetLineAnimationDuration();
             delayManager.AddAction(delay + lineDuration,endAction);
         }
-
-        private void ProcessPressedCard()
-        {
-            if (m_pressedCard != null)
-            {
-                if (m_pressedCard == m_holdedCard)
-                {
-                    m_holdedCard.MoveToPosition(m_playingCardTransform.position);
-                    m_currentCard.MoveToPosition(m_holdingCardTransform.position);
-                    m_holdedCard.m_tweens.ActivationUnveil.StartTween();
-                    m_currentCard.m_tweens.ActivationVeil.StartTween();
-                    var temp = m_holdedCard;
-                    m_holdedCard = m_currentCard;
-                    m_currentCard = temp;
-                }
-
-                m_pressedCard = null;
-            }
-        }
-
+        
         void EndCombo()
         {
 
@@ -701,6 +686,20 @@ namespace ArrowLink
                 animationDelay += animationSteps;
             }
 
+        }
+
+        public void OnArrowCardDragReleased(ArrowCard card)
+        {
+            Vector3 pos = card.transform.position;
+            var slot = m_board.GetSlotFromWorldPosition(pos);
+            if (slot != null && !m_boardLogic.IsFilled(slot.X,slot.Y) && m_currentState == DefaultState)
+            {
+                m_playedSlot = slot;
+            }
+            else
+            {
+                m_currentCard.MoveToPosition(m_playingCardTransform.position);
+            }
         }
 
         private float BankApplyBonusesAnimations(float animationDelay)
@@ -933,7 +932,7 @@ namespace ArrowLink
 
         private void InitializeStates()
         {
-            DefaultState = new GameState { ProcessPlayedSlot = DefaultProcessPlayedSlot };
+            DefaultState = new GameState { ProcessPlayedSlot = DefaultProcessPlayedSlot, End = ExitDefaultState };
             TileCrunchState = new GameState { ProcessPlayedSlot = TileCrunchProcessSlot, Start = _TileCrunchStateStart, End = _TileCrunchStateEnd };
             m_currentState = DefaultState;
         }
@@ -967,10 +966,13 @@ namespace ArrowLink
                 m_holdedCard.MoveToPosition(m_playingCardTransform.position);
                 m_holdedCard.m_tweens.ActivationVeil.StopTween();
                 m_holdedCard.m_tweens.ActivationUnveil.StartTween();
+                m_holdedCard.IsCurrentCard = true;
             }
             m_currentCard.MoveToPosition(m_holdingCardTransform.position);
             m_currentCard.m_tweens.ActivationUnveil.StopTween();
             m_currentCard.m_tweens.ActivationVeil.StartTween();
+            m_currentCard.IsCurrentCard = false;
+            m_currentCard.RequestCancelDrag();
 
             UntoggleCrunch();
             var temp = m_holdedCard;
@@ -1053,7 +1055,6 @@ namespace ArrowLink
 
         private void Save()
         {
-            //m_gameSaver.Version = Application.version;
             m_gameSaver.Score = m_currentScore;
             m_gameSaver.TileScore = m_currentTileScore;
             m_gameSaver.BankTarget = m_bankPointTarget;
@@ -1071,9 +1072,6 @@ namespace ArrowLink
             var dirtyDistrib = (RationalDistributor)m_flagDistributor;
             m_gameSaver.DistributorDifficultyLevel = dirtyDistrib.DifficultyLevel;
             dirtyDistrib.FillPrecedence(ref m_gameSaver.DistributorPrecedence);
-        //Version: int;
-        //Board:[int];
-        //DistributorState: Distributor;
 
             m_gameSaver.Save();
         }
@@ -1100,6 +1098,7 @@ namespace ArrowLink
             m_currentCard.transform.position = m_playingCardTransform.position;
             m_currentCard.SetupArrows(currentFlag);
             m_currentCard.m_tweens.ActivationUnveil.StartTween();
+            m_currentCard.IsCurrentCard = true;
 
             ((RationalDistributor)m_flagDistributor).Setup(m_gameSaver.DistributorDifficultyLevel, m_gameSaver.DistributorPrecedence);
 
@@ -1134,6 +1133,7 @@ namespace ArrowLink
                 m_nextPlayedCard = nextCard.GetComponent<ArrowCard>();
                 m_nextPlayedCard.transform.position = m_popingCardTransform.position;
                 m_nextPlayedCard.SetupArrows(nextFlag);
+                m_nextPlayedCard.IsCurrentCard = false;
             }
 
             ArrowFlag holdFlag = (ArrowFlag)m_gameSaver.HoldTile;
@@ -1145,6 +1145,7 @@ namespace ArrowLink
                 m_holdedCard = holdCard.GetComponent<ArrowCard>();
                 m_holdedCard.transform.position = m_holdingCardTransform.position;
                 m_holdedCard.SetupArrows(holdFlag);
+                m_holdedCard.IsCurrentCard = false;
             }
 
             for(int i = 0; i < m_gameSaver.BoardState.Length; ++i)
@@ -1172,7 +1173,7 @@ namespace ArrowLink
 
                     logicTile.PhysicalCard = card;
                     logicTile.PlayedFrame = (uint)Time.frameCount;
-                    card.Collider.enabled = false;
+                    card.IsCurrentCard = false;
 
                     m_boardLogic.ComputeTileNeighbor(logicTile);
 

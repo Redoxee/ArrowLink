@@ -23,5 +23,17 @@ namespace ArrowLink
         {
             return (m_slots[y * BoardLogic.c_col + x]);
         }
+
+        public BoardSlot GetSlotFromWorldPosition(Vector2 pos)
+        {
+            foreach (BoardSlot slot in m_slots)
+            {
+                if (slot.IsPositionIn(pos))
+                {
+                    return slot;
+                }
+            }
+            return null;
+        }
 	}
 }

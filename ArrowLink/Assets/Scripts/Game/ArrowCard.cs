@@ -11,8 +11,6 @@ namespace ArrowLink
 		public const int c_secondLevel = -10;
 		public const int c_thirdLevel = -20;
 
-		public TileState m_currentState = TileState.Activated;
-
 		[Header("Arrows")]
 		[SerializeField]
 		GameObject m_N = null;
@@ -56,7 +54,9 @@ namespace ArrowLink
 
         [SerializeField]
         private BoxCollider2D m_trigger = null;
-        public BoxCollider2D Collider { get { return m_trigger; } }
+
+        private bool m_isDragging = false;
+        public bool IsDragging { get { return m_isDragging; } }
 
         private bool m_isWiggling = false;
         public bool IsWigglingAnimation { get { return m_isWiggling; } set
@@ -87,6 +87,12 @@ namespace ArrowLink
             m_tweens.LinkTweens[direction].IsNudging = isNudging;
         }
         
+        public bool IsCurrentCard
+        {
+            get { return m_trigger.enabled; }
+            set { m_trigger.enabled = value; }
+        }
+
         private FlagDistributor FlagDistributor
         {
             get
@@ -187,12 +193,9 @@ namespace ArrowLink
 
 		public void GoToSlot(BoardSlot slot, Action onArriveToSlot)
 		{
-			m_currentState = TileState.SlidingToPosition;
 			m_onGoToSlotEnd = onArriveToSlot;
 
-            m_trigger.enabled = false;
-
-			Vector3 target = slot.transform.position;
+            Vector3 target = slot.transform.position;
 
             var currentPos = transform.position;
             currentPos.z = c_thirdLevel;
@@ -208,7 +211,6 @@ namespace ArrowLink
 
 		private void OnGoToSlotEnd()
 		{
-			m_currentState = TileState.Played;
             var pos = transform.position;
             pos.z = c_firstLevel;
             transform.position = pos;
@@ -353,20 +355,7 @@ namespace ArrowLink
             public BaseTween BackFadeOut;
             public BaseTween CenterFadeOut;
 		}
-
-		public enum TileState
-		{
-			FadingIn,
-			WaitingForActivation,
-			Activating,
-			Activated,
-			SlidingToPosition,
-			Played,
-			ComboActivated,
-			Destroyed,
-		}
-
-
+        
         void GrabLinkTweens()
         {
             m_branchDictionary[ArrowFlag.N] = m_N;
@@ -390,10 +379,35 @@ namespace ArrowLink
             
         }
 
-        private void OnMouseUpAsButton()
+        private void OnMouseDrag()
         {
-            if(GameProcess.Instance)
-                GameProcess.Instance.OnArrowCardPressed(this);
+            if (!m_isDragging)
+                return;
+            var mp = Input.mousePosition;
+            var cam = GameProcess.Instance.GameCamera;
+            mp = cam.ScreenToWorldPoint(mp);
+            var pos = transform.position;
+            pos.x = mp.x;
+            pos.y = mp.y;
+            transform.position = pos;
+        }
+
+        private void OnMouseDown()
+        {
+            m_isDragging = true;
+        }
+
+        private void OnMouseUp()
+        {
+            if (IsCurrentCard && m_isDragging)
+            {
+                GameProcess.Instance.OnArrowCardDragReleased(this);
+            }
+        }
+
+        public void RequestCancelDrag()
+        {
+            m_isDragging = false;
         }
 
         [Serializable]

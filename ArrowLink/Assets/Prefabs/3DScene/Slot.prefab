@@ -162,7 +162,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 3, y: 3}
+  m_Size: {x: 3.49, y: 3.49}
   m_EdgeRadius: 0
 --- !u!114 &114063865418994696
 MonoBehaviour:
@@ -270,6 +270,7 @@ MonoBehaviour:
   m_focusTween: {fileID: 114953842111744066}
   m_unfocusTween: {fileID: 114443083486040572}
   m_flashTween: {fileID: 114930196264411842}
+  m_box2D: {fileID: 61907310152283678}
   X: 0
   Y: 0
 --- !u!114 &114862219284395232
