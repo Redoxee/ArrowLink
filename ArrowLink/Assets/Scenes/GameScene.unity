@@ -1222,7 +1222,7 @@ Prefab:
     - target: {fileID: 224653160438311008, guid: 499c76845d9b1484b85659f4125a42b7,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 224653160438311008, guid: 499c76845d9b1484b85659f4125a42b7,
         type: 2}
@@ -2016,7 +2016,7 @@ Prefab:
     - target: {fileID: 224653160438311008, guid: 499c76845d9b1484b85659f4125a42b7,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 224653160438311008, guid: 499c76845d9b1484b85659f4125a42b7,
         type: 2}
@@ -5411,7 +5411,7 @@ Prefab:
     - target: {fileID: 224653160438311008, guid: 499c76845d9b1484b85659f4125a42b7,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 224653160438311008, guid: 499c76845d9b1484b85659f4125a42b7,
         type: 2}
@@ -5896,6 +5896,7 @@ GameObject:
   m_Component:
   - component: {fileID: 608220603}
   - component: {fileID: 608220604}
+  - component: {fileID: 608220605}
   m_Layer: 0
   m_Name: Board
   m_TagString: Untagged
@@ -5962,6 +5963,19 @@ MonoBehaviour:
   - {fileID: 1608819725}
   - {fileID: 1270400238}
   - {fileID: 529733679}
+--- !u!114 &608220605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 608220602}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e7aee58783a51a43b146dc6972fdd63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_grid: {fileID: 608220604}
+  m_intervals: 0.1
 --- !u!1 &620746657
 GameObject:
   m_ObjectHideFlags: 0
@@ -6154,7 +6168,7 @@ Prefab:
     - target: {fileID: 224653160438311008, guid: 499c76845d9b1484b85659f4125a42b7,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 224653160438311008, guid: 499c76845d9b1484b85659f4125a42b7,
         type: 2}
@@ -9810,6 +9824,7 @@ MonoBehaviour:
   m_bankDots: {fileID: 869303494}
   m_overlinkDotCollection: {fileID: 1232143803}
   IsGamePaused: 0
+  m_gridBlinker: {fileID: 608220605}
 --- !u!4 &1065526240
 Transform:
   m_ObjectHideFlags: 0
@@ -13939,7 +13954,7 @@ Prefab:
     - target: {fileID: 224653160438311008, guid: 499c76845d9b1484b85659f4125a42b7,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 224653160438311008, guid: 499c76845d9b1484b85659f4125a42b7,
         type: 2}

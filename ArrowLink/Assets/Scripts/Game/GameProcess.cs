@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using AntonMakesGames;
 
+
+
 namespace ArrowLink
 {
     public class GameProcess : MonoBehaviour
@@ -116,6 +118,9 @@ namespace ArrowLink
         [NonSerialized]
         private GameSaver m_gameSaver;
 
+        [SerializeField]
+        private GridBlinker m_gridBlinker = null;
+
         private void Awake()
         {
             if (s_instance != null)
@@ -191,6 +196,7 @@ namespace ArrowLink
             m_guiManager.SetCrunchable(false);
 
             m_guiManager.SetCapsuleBonusValues(ComputeMultiplierBonus(0), ComputeBankBonus(0));
+            m_gridBlinker.StartAnimation(2);
             
         }
 
