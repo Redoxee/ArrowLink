@@ -39,6 +39,7 @@ namespace ArrowLink
             Custom,
             Particles,
             LineRenderer,
+            Mesh,
         }
 
         void GrabColor()
@@ -71,6 +72,9 @@ namespace ArrowLink
                     break;
                 case GrabMode.LineRenderer:
                     GrabLineRenderer(col);
+                    break;
+                case GrabMode.Mesh:
+                    GrabMesh(col);
                     break;
                 default:
                     throw new System.NotSupportedException();
@@ -127,6 +131,14 @@ namespace ArrowLink
             col.a = 1;
             lr.startColor = col;
             lr.endColor = col;
+        }
+
+        void GrabMesh(Color col)
+        {
+            var mr = GetComponent<MeshRenderer>();
+            var c = mr.sharedMaterial.color;
+            col.a = c.a;
+            mr.sharedMaterial.color = col;
         }
 
 #if UNITY_EDITOR

@@ -121,6 +121,9 @@ namespace ArrowLink
         [SerializeField]
         private GridBlinker m_gridBlinker = null;
 
+        [SerializeField]
+        private HightLightCircle m_highLightCircle = null;
+
         private void Awake()
         {
             if (s_instance != null)
@@ -196,8 +199,8 @@ namespace ArrowLink
             m_guiManager.SetCrunchable(false);
 
             m_guiManager.SetCapsuleBonusValues(ComputeMultiplierBonus(0), ComputeBankBonus(0));
-            m_gridBlinker.StartAnimation(2);
-            
+            m_gridBlinker.StartAnimation(1);
+            m_highLightCircle.Show();
         }
 
         private void Update()
@@ -292,6 +295,7 @@ namespace ArrowLink
                 AntonMakesGames.AchievementManager.NotifyEventIncrement("TotalTilePlaced");
 
                 Save();
+                m_highLightCircle.CancelHighLight();
             }
             m_playedSlot = null;
         }
