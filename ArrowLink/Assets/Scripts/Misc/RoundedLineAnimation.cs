@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define NO_ANIMATED_LINE
+
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -192,6 +194,7 @@ public class RoundedLineAnimation : MonoBehaviour {
 
     public void StartAnimation()
     {
+#if ! NO_ANIMATED_LINE
         m_frontAnimationTime = 0;
         enabled = true;
         m_linePoints = new Vector3[m_lineLengthInPoints + 1];
@@ -203,6 +206,8 @@ public class RoundedLineAnimation : MonoBehaviour {
         m_startSprite.SetActive(true);
         m_endSprite.SetActive(true);
         m_lineRenderer.enabled = true;
+#else
+#endif
     }
 
     public System.Collections.IEnumerator StartAnimationDelayed(float f)

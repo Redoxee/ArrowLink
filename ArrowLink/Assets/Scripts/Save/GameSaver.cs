@@ -68,7 +68,6 @@ namespace ArrowLink
             using (var ms = new MemoryStream(m_builder.DataBuffer.ToFullArray(), m_builder.DataBuffer.Position, m_builder.Offset))
             {
                 File.WriteAllBytes(SaveFullname, ms.ToArray());
-                Debug.Log("data saved");
             }
         }
 
