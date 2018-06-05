@@ -1,4 +1,4 @@
-﻿#define NO_ANIMATED_LINE
+﻿//#define NO_ANIMATED_LINE
 
 using System;
 using System.Collections.Generic;
