@@ -15,6 +15,8 @@ namespace ArrowLink
         [SerializeField]
         AnimatedTextNumber m_scoreText = null;
         [SerializeField]
+        private ShineAndFlash m_scoreParticles = null;
+        [SerializeField]
         AnimatedTextNumber m_scoreDeltaText = null;
         [SerializeField]
         Transform m_deltaTarget = null;
@@ -132,10 +134,18 @@ namespace ArrowLink
             m_scoreDeltaText.SetNumber(newDeltaScore);
         }
 
-        public void ApplyScoreDelta(int newScore)
+        public void ApplyScoreDelta(int newScore, int delta)
         {
+            m_scoreParticles.StartShine(delta);
+            m_scoreText.ReachedAction = ScoreApplied;
             m_scoreText.SetNumber(newScore);
+
             m_scoreDeltaText.SetNumber(0);
+        }
+
+        private void ScoreApplied()
+        {
+            m_scoreParticles.StopShine();
         }
 
         public void InstantSetScore(int newScore)

@@ -581,14 +581,15 @@ namespace ArrowLink
 
             m_guiManager.NotifyDeltaScoreChanged(basePoints, animatedLineDuration);
 
+            int delta = Mathf.FloorToInt(basePoints * multiplier);
             if (multiplier > 1f)
             {
-                m_bankDelayedAction.AddAction(multiplierDelay + 1.5f, () => { m_guiManager.ApplyMultiplier(Mathf.FloorToInt(basePoints * multiplier)); });
-                m_bankDelayedAction.AddAction(multiplierDelay + 3.5f, () => { m_guiManager.ApplyScoreDelta(m_currentScore); });
+                m_bankDelayedAction.AddAction(multiplierDelay + 1.5f, () => { m_guiManager.ApplyMultiplier(delta); });
+                m_bankDelayedAction.AddAction(multiplierDelay + 3.5f, () => { m_guiManager.ApplyScoreDelta(m_currentScore, delta); });
             }
             else
             {
-                m_bankDelayedAction.AddAction(multiplierDelay + 1.5f, () => { m_guiManager.ApplyScoreDelta(m_currentScore); });
+                m_bankDelayedAction.AddAction(multiplierDelay + 1.5f, () => { m_guiManager.ApplyScoreDelta(m_currentScore, delta); });
             }
 
             if (m_currentCard == null)

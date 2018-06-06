@@ -23,9 +23,6 @@ public class AnimatedTextNumber : MonoBehaviour {
 
     private bool m_isSpeeding = false;
     private float m_alternativeSpeed = 1f;
-
-    [SerializeField]
-    private ShineAndFlash m_decorator = null;
     
     void Awake () {
         m_text = GetComponent<Text>();
@@ -53,11 +50,6 @@ public class AnimatedTextNumber : MonoBehaviour {
         {
             m_isSpeeding = true;
             m_alternativeSpeed = distance / m_maxDuration;
-        }
-
-        if (m_delayTimer <= 0)
-        {
-            Shine((int)distance);
         }
     }
 
@@ -109,24 +101,8 @@ public class AnimatedTextNumber : MonoBehaviour {
         {
             enabled = false;
 
-            StopShine();
-
             if (m_reachedAction != null)
                 m_reachedAction();
         }
 	}
-
-    private void Shine(int value)
-    {
-        if (m_decorator != null)
-            m_decorator.StartShine(value);
-    }
-
-    private void StopShine()
-    {
-        if (m_decorator != null)
-        {
-            m_decorator.StopShine();
-        }
-    }
 }
