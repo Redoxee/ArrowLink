@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#define NO_SHADE_PREVIEW
+
 using UnityEngine;
 
 namespace ArrowLink
@@ -42,15 +43,19 @@ namespace ArrowLink
 
 		public void OnFocus()
 		{
-			m_unfocusTween.StopTween();
+#if !NO_SHADE_PREVIEW
+            m_unfocusTween.StopTween();
 			m_focusTween.StartTween(null);
+#endif
 		}
 
 		public void OnUnfocus()
 		{
-			m_focusTween.StopTween();
+#if !NO_SHADE_PREVIEW
+            m_focusTween.StopTween();
 			m_unfocusTween.StartTween(null);
-		}
+#endif
+        }
         
         private void OnMouseEnter()
         {

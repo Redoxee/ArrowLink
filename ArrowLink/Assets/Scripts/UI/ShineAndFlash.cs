@@ -1,58 +1,57 @@
-﻿using System.Collections;
+﻿//#define NO_SHINE_ON_SCORE
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ShineAndFlash : MonoBehaviour {
 
-    [SerializeField]
-    ParticleSystem m_firstLevel = null;
-    [SerializeField]
-    ParticleSystem m_secondLevel = null;
-    [SerializeField]
-    ParticleSystem m_thirdLevel = null;
-    [SerializeField]
-    ParticleSystem m_fourthLevel = null;
+    [System.Serializable]
+    private struct ParticlesLevel
+    {
+        public ParticleSystem Particles;
+        public int Threshold;
+        public bool IsEndFX;
+    }
 
     [SerializeField]
-    private int m_firstThreshold = 0;
-    [SerializeField]
-    private int m_secondThreshold = 0;
-    [SerializeField]
-    private int m_thirdThreshold = 0;
-    [SerializeField]
-    private int m_fourthThreshold = 0;
+    private ParticlesLevel[] m_levels = null;
 
-    private bool m_shouldBoom = false;
-    private bool m_shouldFourth = false;
+    private int m_firedValue = -1;
 
     public void StartShine(int value)
     {
-        if (value >= m_firstThreshold)
+#if !NO_SHINE_ON_SCORE
+        m_firedValue = value;
+        foreach (ParticlesLevel fx in m_levels)
         {
-            m_firstLevel.Play();
-        }
-        if (value >= m_thirdThreshold)
-        {
-            m_thirdLevel.Play();
-        }
+            if (!fx.IsEndFX && value >= fx.Threshold)
+            {
+                fx.Particles.Play();
+            }
 
-        m_shouldBoom = value >= m_secondThreshold;
-        m_shouldFourth = value > m_fourthThreshold;
+        }
+#endif
     }
 
     public void StopShine()
     {
-        if (m_firstLevel.isEmitting)
-        {    if (m_shouldBoom)
+        foreach (ParticlesLevel fx in m_levels)
+        {
+            if (fx.IsEndFX)
             {
-                m_secondLevel.Play();
+                if (m_firedValue >= fx.Threshold)
+                {
+                    fx.Particles.Play();
+                }
             }
-            if (m_shouldFourth)
+            else
             {
-                m_fourthLevel.Play();
+                if (fx.Particles.isPlaying)
+                {
+                    fx.Particles.Stop();
+                }
             }
         }
-        m_firstLevel.Stop();
-        m_thirdLevel.Stop();
     }
 }
