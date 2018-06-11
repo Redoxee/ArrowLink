@@ -4,11 +4,10 @@ using System.Text;
 using UnityEngine;
 using UnityEditor;
 
-namespace AMG.Tools
+namespace AntonMakesGames.Tools
 {
     public class DefineSymbolsHelper : EditorWindow
     {
-
         private const string DATA_PATH = "Assets/";
         const string DATA_NAME_BASE = "DefineData.Asset";
         private string DataName
@@ -20,14 +19,18 @@ namespace AMG.Tools
 
         DefineData m_defineData = null;
 
-        [MenuItem("AMG/Define Tool")]
+        [MenuItem("Tools/Symbol Tool")]
         public static void OpenWindow()
         {
             DefineSymbolsHelper window = (DefineSymbolsHelper)EditorWindow.GetWindow(typeof(DefineSymbolsHelper));
-            window.name = "Define Tool";
         }
 
         #region GUI
+
+        private void OnEnable()
+        {
+            titleContent.text = "Symbol Tool";
+        }
 
         private void Awake()
         {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace AMG.Tools
+namespace AntonMakesGames.Tools
 {
     [Serializable]
     public class DefineEntity

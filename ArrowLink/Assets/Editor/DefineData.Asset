@@ -13,12 +13,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Collection:
   - Name: NO_SHADE_PREVIEW
-    IsActive: 1
+    IsActive: 0
   - Name: AMG_SUPER_EASY_MODE
-    IsActive: 1
+    IsActive: 0
   - Name: NO_ANIMATED_LINE
-    IsActive: 1
+    IsActive: 0
   - Name: NO_SHINE_ON_SCORE
-    IsActive: 1
-  - Name: TesT
     IsActive: 0

@@ -551,7 +551,7 @@ PlayerSettings:
   webGLLinkerTarget: 0
   scriptingDefineSymbols:
     1: 
-    7: NO_SHADE_PREVIEW;AMG_SUPER_EASY_MODE;NO_ANIMATED_LINE;NO_SHINE_ON_SCORE
+    7: 
   platformArchitecture: {}
   scriptingBackend: {}
   il2cppCompilerConfiguration: {}
