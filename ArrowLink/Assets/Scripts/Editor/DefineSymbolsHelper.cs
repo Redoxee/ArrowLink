@@ -9,10 +9,11 @@ namespace AntonMakesGames.Tools
     public class DefineSymbolsHelper : EditorWindow
     {
         private const string DATA_PATH = "Assets/";
-        const string DATA_NAME_BASE = "DefineData.Asset";
+        const string DATA_NAME_BASE = "defineData.Asset";
         private string DataName
         {
-            get {
+            get
+            {
                 return DATA_NAME_BASE + Application.productName;
             }
         }
@@ -22,7 +23,7 @@ namespace AntonMakesGames.Tools
         [MenuItem("Tools/Symbol Tool")]
         public static void OpenWindow()
         {
-            DefineSymbolsHelper window = (DefineSymbolsHelper)EditorWindow.GetWindow(typeof(DefineSymbolsHelper));
+            EditorWindow.GetWindow(typeof(DefineSymbolsHelper));
         }
 
         #region GUI
@@ -38,58 +39,64 @@ namespace AntonMakesGames.Tools
             if (PlayerPrefs.HasKey(DataName))
             {
                 m_defineData = AssetDatabase.LoadAssetAtPath<DefineData>(PlayerPrefs.GetString(DataName));
-               
             }
-            Grab();
         }
-        
+
         private bool m_settings = false;
         private string m_additionalDefine;
 
         public void OnGUI()
         {
-//            m_settings = EditorGUILayout.BeginToggleGroup("Settings", m_settings);
+            //            m_settings = EditorGUILayout.BeginToggleGroup("Settings", m_settings);
             m_settings = EditorGUILayout.Foldout(m_settings, "Settings");
             if (m_settings)
             {
                 EditorGUI.indentLevel++;
                 ManageDefineData();
-
-                if (GUILayout.Button("Reset"))
+                if (m_defineData != null)
                 {
-                    m_defineData.Collection.Clear();
-                    Grab();
-                }
-
-                if (GUILayout.Button("Grab Values"))
-                {
-                    Grab();
-                }
-
-                if (GUILayout.Button("Save"))
-                {
-                    Save();
-                }
-                GUILayout.BeginHorizontal();
-                {
-                    m_additionalDefine = EditorGUILayout.TextField(m_additionalDefine);
-                    if (GUILayout.Button("Add",GUILayout.Width(40)))
+                    if (GUILayout.Button("Reset"))
                     {
-                        bool added = Add(m_additionalDefine);
-                        if (added)
+                        m_defineData.Collection.Clear();
+                        Grab();
+                    }
+
+                    if (GUILayout.Button("Grab Values"))
+                    {
+                        Grab();
+                    }
+
+                    if (GUILayout.Button("Save"))
+                    {
+                        Save();
+                    }
+                    GUILayout.BeginHorizontal();
+                    {
+                        m_additionalDefine = EditorGUILayout.TextField(m_additionalDefine);
+                        if (GUILayout.Button("Add", GUILayout.Width(40)))
                         {
-                            m_additionalDefine = "";
+                            bool added = Add(m_additionalDefine);
+                            if (added)
+                            {
+                                m_additionalDefine = "";
+                            }
                         }
                     }
+                    GUILayout.EndHorizontal();
                 }
-                GUILayout.EndHorizontal();
+
+                if (GUILayout.Button("Open Player settings"))
+                {
+                    EditorApplication.ExecuteMenuItem("Edit/Project Settings/Player");
+                }
+
                 EditorGUI.indentLevel--;
                 EditorGUILayout.Space();
             }
 
             if (m_defineData == null)
             {
-                GUILayout.Label("Define data not setted!");
+                GUILayout.Label("Define data not set!");
                 return;
             }
 
@@ -197,7 +204,7 @@ namespace AntonMakesGames.Tools
             var currentGroup = EditorUserBuildSettings.selectedBuildTargetGroup;
             PlayerSettings.SetScriptingDefineSymbolsForGroup(currentGroup, sb.ToString());
         }
-        
+
         static DefineData S_CreateDefineData()
         {
             UnityEngine.Debug.Log("Creating a new build data");
