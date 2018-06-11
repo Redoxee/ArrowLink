@@ -276,7 +276,7 @@ namespace AntonMakesGames.Tools
 			/* * * * * * * *
 			 * Actualbuild *
 			 * * * * * * * */
-			string buildResult = BuildPipeline.BuildPlayer(scenes, buildName, BuildTarget.Android,options);
+			var buildResult = BuildPipeline.BuildPlayer(scenes, buildName, BuildTarget.Android,options).ToString();
 
 			if (string.IsNullOrEmpty(buildResult))
 			{
@@ -397,7 +397,7 @@ namespace AntonMakesGames.Tools
 			string[] scenes = StandardSetup();
 			BuildOptions bo = GetOptions(isDebug);
 
-			string buildResult = BuildPipeline.BuildPlayer(scenes, buildName, BuildTarget.WebGL, bo);
+			string buildResult = BuildPipeline.BuildPlayer(scenes, buildName, BuildTarget.WebGL, bo).ToString();
 
 			if (string.IsNullOrEmpty(buildResult))
 			{
