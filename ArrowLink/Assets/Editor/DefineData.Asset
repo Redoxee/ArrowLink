@@ -13,10 +13,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Collection:
   - Name: NO_SHADE_PREVIEW
-    IsActive: 0
+    Targets: 01000000
   - Name: AMG_SUPER_EASY_MODE
-    IsActive: 0
+    Targets: 07000000
   - Name: NO_ANIMATED_LINE
-    IsActive: 0
+    Targets: 
   - Name: NO_SHINE_ON_SCORE
-    IsActive: 0
+    Targets: 07000000
+  LastTargetSelected: 7
