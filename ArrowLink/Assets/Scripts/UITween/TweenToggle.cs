@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿//#define NO_FOOTER_BLINK
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,8 +21,10 @@ namespace ArrowLink
             set
             {
                 m_isOn = value;
+#if !NO_FOOTER_BLINK
                 if (!m_tween.isAnimating())
                     m_tween.StartTween(CheckRestart);
+#endif
             }
         }
 
