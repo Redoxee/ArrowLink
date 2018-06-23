@@ -22,4 +22,6 @@ MonoBehaviour:
     Targets: 07000000
   - Name: NO_FOOTER_BLINK
     Targets: 
+  - Name: AMG_PREDETERMINED_TILES
+    Targets: 01000000
   LastTargetSelected: 1

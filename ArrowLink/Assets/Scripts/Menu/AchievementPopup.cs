@@ -14,7 +14,7 @@ namespace ArrowLink
         [SerializeField]
         private GameObject m_entryPrefab = null;
         [SerializeField]
-        private CanvasGroup m_canvasGroup;
+        private CanvasGroup m_canvasGroup = null;
         [SerializeField]
         private ScrollRect m_scrollRect = null;
 

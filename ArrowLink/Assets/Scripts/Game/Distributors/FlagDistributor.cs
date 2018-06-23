@@ -1,4 +1,6 @@
 ﻿//#define AMG_SUPER_EASY_MODE 
+// #define AMG_PREDETERMINED_TILES
+
 
 using System;
 using System.Collections.Generic;
@@ -20,7 +22,16 @@ namespace ArrowLink
         [SerializeField]
         private int m_maxOneArrow = 3;
 
-		protected virtual void Awake()
+#if AMG_PREDETERMINED_TILES
+        private int m_currentFlagIndex = 0;
+        private ArrowFlag[] m_flagSequence = 
+            {
+                ArrowFlag.N,
+                ArrowFlag.S
+            };
+#endif
+
+        protected virtual void Awake()
 		{
 			Initialize();
 			//TestRules();
@@ -114,6 +125,8 @@ namespace ArrowLink
 
 #if AMG_SUPER_EASY_MODE
             return ArrowFlag.N | ArrowFlag.S | ArrowFlag.E | ArrowFlag.W;
+#elif AMG_PREDETERMINED_TILES
+            return m_flagSequence[m_currentFlagIndex++ % m_flagSequence.Length];
 #else
             return (ArrowFlag)pool[resultIndex];
 #endif

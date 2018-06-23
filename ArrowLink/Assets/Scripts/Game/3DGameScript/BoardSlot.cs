@@ -1,4 +1,4 @@
-﻿#define NO_SHADE_PREVIEW
+﻿//#define NO_SHADE_PREVIEW
 
 using UnityEngine;
 

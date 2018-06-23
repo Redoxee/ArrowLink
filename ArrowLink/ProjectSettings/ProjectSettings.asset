@@ -550,7 +550,7 @@ PlayerSettings:
   webGLCompressionFormat: 1
   webGLLinkerTarget: 0
   scriptingDefineSymbols:
-    1: 
+    1: AMG_PREDETERMINED_TILES
     7: NO_SHADE_PREVIEW;AMG_SUPER_EASY_MODE;NO_ANIMATED_LINE;NO_SHINE_ON_SCORE
   platformArchitecture: {}
   scriptingBackend: {}

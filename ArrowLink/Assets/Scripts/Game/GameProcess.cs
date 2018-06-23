@@ -243,10 +243,14 @@ namespace ArrowLink
             nextCardObject.SetActive(true);
             m_nextPlayedCard = nextCardObject.GetComponent<ArrowCard>();
             m_nextPlayedCard.transform.position = m_popingCardTransform.position;
+#if AMG_PREDETERMINED_TILES
+            forcedFlags = ArrowFlag.NONE;
+#endif
             if (forcedFlags == ArrowFlag.NONE)
             {
                 forcedFlags = m_flagDistributor.PickRandomFlags();
             }
+
             m_nextPlayedCard.SetupArrows(forcedFlags);
             m_nextPlayedCard.IsCurrentCard = false;
         }

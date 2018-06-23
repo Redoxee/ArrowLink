@@ -61,8 +61,6 @@ public class TestFlag : FlagDistributor {
         }
     }
 
-    private ArrowFlag m_currentFlag = ArrowFlag.N | ArrowFlag.NE | ArrowFlag.E;
-
     public FlagDistributor Distributor { get
         {
             return m_refDistributor;
@@ -71,11 +69,6 @@ public class TestFlag : FlagDistributor {
 
     public override ArrowFlag PickRandomFlags()
     {
-        //var result = m_currentFlag;
-        ////m_currentFlag = m_currentFlag.Rotate();
-        ////m_currentFlag = m_currentFlag.Rotate();
-        //m_currentFlag = base.PickRandomFlags();
-        //Debug.Log(result.XorDiff(m_currentFlag) + " | " + result.Differences(m_currentFlag));
         return m_refDistributor.PickRandomFlags();
     }
 }

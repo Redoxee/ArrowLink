@@ -38,10 +38,7 @@ namespace ArrowLink
 
 		ArrowFlag m_arrows = ArrowFlag.NONE;
 		public ArrowFlag MultiFlags { get { return m_arrows; } }
-
-        [SerializeField]
-        GameObject m_centerRef = null;
-
+        
         [SerializeField]
         private ParticleSystem m_flash_particles = null;
 

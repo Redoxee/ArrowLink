@@ -5,13 +5,12 @@ using UnityEngine;
 public class PopAndGrabParticle : MonoBehaviour
 {
     [SerializeField]
-    private Transform m_targetTransform;
+    private Transform m_targetTransform = null;
 
     private Vector3 m_targetPosition;
     [SerializeField]
     private AnimationCurve m_forceCurveFactor = null;
-    [SerializeField]
-    private float m_attractionForce = 1f;
+
     [SerializeField]
     [Range(0,1)]
     private float m_drag = 0;
