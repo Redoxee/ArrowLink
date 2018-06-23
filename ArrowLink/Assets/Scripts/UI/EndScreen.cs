@@ -43,7 +43,7 @@ namespace ArrowLink
 
         public void OnFeedBackPressed()
         {
-            SimpleFeedback();
+            MainProcess.SimpleFeedback();
         }
 
         public void OnRetryPressed()
@@ -53,28 +53,5 @@ namespace ArrowLink
         }
 
 
-        #region Feedback
-        const string c_feedbackEmail = "antonmakesgames@gmail.com";
-
-        public static void SimpleFeedback()
-        {
-            SendFeedback("I have some feedback on Tile link!", "");
-        }
-
-        public static void SendFeedback(string header, string body = "")
-        {
-            string subject = EscapeURL(header);
-            body = EscapeURL(body);
-            Application.OpenURL("mailto:" + c_feedbackEmail + "?subject=" + subject + "&body=" + body);
-            AntonMakesGames.AchievementManager.NotifyEventIncrement("FeedbackSent");
-            MainProcess.Instance.DisplayCompletedAchievements();
-        }
-
-        static string EscapeURL(string url)
-        {
-            return WWW.EscapeURL(url).Replace("+", "%20");
-        }
-
-        #endregion
     }
 }
