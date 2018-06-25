@@ -127,6 +127,9 @@ namespace ArrowLink
         [SerializeField]
         private HightLightCircle m_bankHiglight = null;
 
+        [SerializeField]
+        private HightLightCircle m_crunchHighLight = null;
+
         private void Awake()
         {
             if (s_instance != null)
@@ -967,16 +970,15 @@ namespace ArrowLink
         {
             var allTilePlaced = m_boardLogic.AllTilePlaced;
             bool shouldHighlight = (m_nbCrunch == 0) && (allTilePlaced.Count == 16);
-
+            if (shouldHighlight)
+            {
+                m_crunchHighLight.Show();
+            }
             foreach (var tile in allTilePlaced)
             {
                 tile.PhysicalCard.IsWigglingAnimation = true;
                 BoardSlot slot = m_board.GetSlot(tile.X, tile.Y);
                 slot.IsFlashing = true;
-                if (shouldHighlight)
-                {
-                    slot.SetHighlightCirle(true);
-                }
             }
         }
 
@@ -990,8 +992,8 @@ namespace ArrowLink
             foreach (var slot in m_board.m_slots)
             {
                 slot.IsFlashing = false;
-                slot.SetHighlightCirle(false);
             }
+            m_crunchHighLight.CancelHighLight();
         }
 
         public void OnHoldButtonPressed()

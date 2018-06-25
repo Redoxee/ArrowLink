@@ -16,9 +16,9 @@ namespace ArrowLink
 
         private float[] m_introPattern ={
             00f,01f,02f,03f,
-            11f,12f,13f,04f,
-            10f,15f,14f,05f,
-            09f,08f,07f,06f
+            01f,02f,03f,04f,
+            02f,03f,04f,05f,
+            03f,04f,05f,06f
         };
         
         
