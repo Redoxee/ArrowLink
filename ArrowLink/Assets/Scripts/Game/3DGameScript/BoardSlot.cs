@@ -16,6 +16,9 @@ namespace ArrowLink
         [SerializeField]
         BoxCollider2D m_box2D = null;
 
+        [SerializeField]
+        HightLightCircle m_highlightCircle = null;
+
         private bool m_isFlashing = false;
         public bool IsFlashing
         {
@@ -32,6 +35,17 @@ namespace ArrowLink
                 }
             }
         }
+
+        public void SetHighlightCirle(bool value)
+        {
+            if (value)
+                m_highlightCircle.Show();
+            else
+            {
+                m_highlightCircle.gameObject.SetActive(false);
+            }
+        }
+
         public void Flash()
         {
             if (!m_isFlashing)

@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿//#define AMG_NO_HIGHLIGHT_CIRCLE
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -28,12 +30,19 @@ namespace ArrowLink
 
         public void Show()
         {
+#if !AMG_NO_HIGHLIGHT_CIRCLE
             gameObject.SetActive(true);
             m_timer = m_timeBeforeHighLight;
+
+            transform.rotation = Quaternion.AngleAxis(360 * Random.Range(0f,1f), m_axis);
+#endif
         }
 
         public void CancelHighLight()
         {
+            if(!gameObject.activeSelf)
+                return;
+
             if (m_timer <= 0f)
                 m_hideTween.StartTween(HideComplete);
             else
@@ -48,10 +57,10 @@ namespace ArrowLink
         
         void Update()
         {
-            if (m_timer > 0f)
+            if (m_timer >= 0f)
             {
                 m_timer -= Time.deltaTime;
-                if (m_timer <= 0f)
+                if (m_timer < 0f)
                 {
                     m_showTween.StartTween();
                 }

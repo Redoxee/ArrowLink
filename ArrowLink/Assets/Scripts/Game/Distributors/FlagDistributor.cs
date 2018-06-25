@@ -22,15 +22,6 @@ namespace ArrowLink
         [SerializeField]
         private int m_maxOneArrow = 3;
 
-#if AMG_PREDETERMINED_TILES
-        private int m_currentFlagIndex = 0;
-        private ArrowFlag[] m_flagSequence = 
-            {
-                ArrowFlag.N,
-                ArrowFlag.S
-            };
-#endif
-
         protected virtual void Awake()
 		{
 			Initialize();
@@ -164,31 +155,44 @@ namespace ArrowLink
         public virtual void NotifyBank()
         {
         }
+        
+        #region Predertermined sequence
+#if AMG_PREDETERMINED_TILES
+        private int m_currentFlagIndex = 0;
+        private ArrowFlag[] m_flagSequence =
+            {
 
-		void TestRules()
-		{
-			const int sample = 100000;
+                ArrowFlag.W|ArrowFlag.SW|ArrowFlag.NE|ArrowFlag.E,
+                ArrowFlag.N|ArrowFlag.E|ArrowFlag.S|ArrowFlag.W,
+                ArrowFlag.N|ArrowFlag.E|ArrowFlag.S|ArrowFlag.W,
+                ArrowFlag.N|ArrowFlag.E|ArrowFlag.S|ArrowFlag.W,
+                ArrowFlag.N|ArrowFlag.E|ArrowFlag.S|ArrowFlag.W,
+                ArrowFlag.N|ArrowFlag.E|ArrowFlag.S|ArrowFlag.W,
+                ArrowFlag.N|ArrowFlag.E|ArrowFlag.S|ArrowFlag.W,
+                ArrowFlag.N|ArrowFlag.E|ArrowFlag.S|ArrowFlag.W,
+                ArrowFlag.N|ArrowFlag.E|ArrowFlag.S|ArrowFlag.W,
+                ArrowFlag.N|ArrowFlag.E|ArrowFlag.S|ArrowFlag.W,
+                ArrowFlag.N|ArrowFlag.E|ArrowFlag.S|ArrowFlag.W,
+                ArrowFlag.N|ArrowFlag.E|ArrowFlag.S|ArrowFlag.W,
+                ArrowFlag.N|ArrowFlag.E|ArrowFlag.S|ArrowFlag.W,
+                ArrowFlag.N,
+                ArrowFlag.S|ArrowFlag.SE|ArrowFlag.E,
+                ArrowFlag.NW|ArrowFlag.E,
+                ArrowFlag.W|ArrowFlag.NW|ArrowFlag.NE|ArrowFlag.E,
+                ArrowFlag.SE|ArrowFlag.NE,
+                ArrowFlag.W|ArrowFlag.E,
+                ArrowFlag.W,
+                ArrowFlag.SW|ArrowFlag.E,
+                ArrowFlag.W|ArrowFlag.NW|ArrowFlag.NE|ArrowFlag.SE,
+                ArrowFlag.W|ArrowFlag.SW,
+                ArrowFlag.NW|ArrowFlag.SE,
+                ArrowFlag.SW|ArrowFlag.E,
+                ArrowFlag.NW|ArrowFlag.N,
+                ArrowFlag.N|ArrowFlag.E|ArrowFlag.S|ArrowFlag.W,
 
-			int[] allSample = new int[sample];
-			int[] nbCounter = new int[8];
-			for (int i = 0; i < 8; ++i)
-				nbCounter[i] = 0;
-			float accu = 0;
-
-			for (int i = 0; i < sample; ++i)
-			{
-				int pick = PickNbArrow();
-				nbCounter[pick - 1] += 1;
-				allSample[i] = pick;
-				accu += pick;
-			}
-
-			float average = accu / (float)sample;
-
-			Debug.LogFormat("Average = {0}", average);
-
-			string report = string.Format("distribution : [{0},{1},{2},{3},{4},{5},{6},{7}]", nbCounter[0], nbCounter[1], nbCounter[2], nbCounter[3], nbCounter[4], nbCounter[5], nbCounter[6], nbCounter[7]);
-			Debug.Log(report);
-		}
-	}
+                ArrowFlag.W|ArrowFlag.NW|ArrowFlag.NE|ArrowFlag.E|ArrowFlag.S
+            };
+#endif
+        #endregion
+    }
 }

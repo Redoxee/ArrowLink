@@ -122,7 +122,10 @@ namespace ArrowLink
         private GridBlinker m_gridBlinker = null;
 
         [SerializeField]
-        private HightLightCircle m_highLightCircle = null;
+        private HightLightCircle m_boardHighlight = null;
+
+        [SerializeField]
+        private HightLightCircle m_bankHiglight = null;
 
         private void Awake()
         {
@@ -200,7 +203,7 @@ namespace ArrowLink
 
             m_guiManager.SetCapsuleBonusValues(ComputeMultiplierBonus(0), ComputeBankBonus(0));
             m_gridBlinker.StartAnimation(1);
-            m_highLightCircle.Show();
+            m_boardHighlight.Show();
         }
 
         private void Update()
@@ -299,7 +302,7 @@ namespace ArrowLink
                 AntonMakesGames.AchievementManager.NotifyEventIncrement("TotalTilePlaced");
 
                 Save();
-                m_highLightCircle.CancelHighLight();
+                m_boardHighlight.CancelHighLight();
             }
             m_playedSlot = null;
         }
@@ -409,7 +412,13 @@ namespace ArrowLink
             if (m_boardLogic.IsBoardFull())
             {
                 AchievementManager.NotifyEventIncrement("BoardFilled");
-                if (!CanBank && CanCrunch)
+                if (CanBank)
+                {
+                    if (m_nbCombo == 0)
+                    {
+                        m_bankHiglight.Show();
+                    }
+                } else if (CanCrunch)
                 {
                     m_guiManager.SetFocusCrunch(true);
                 }
@@ -619,6 +628,8 @@ namespace ArrowLink
             {
                 m_guiManager.SetCrunchable(true);
             }
+
+            m_bankHiglight.CancelHighLight();
 
             m_flagDistributor.NotifyBank();
             AchievementManager.NotifyEventIncrement("TotalNbBank");
@@ -954,10 +965,18 @@ namespace ArrowLink
 
         private void _TileCrunchStateStart()
         {
-            foreach (var tile in m_boardLogic.AllTilePlaced)
+            var allTilePlaced = m_boardLogic.AllTilePlaced;
+            bool shouldHighlight = (m_nbCrunch == 0) && (allTilePlaced.Count == 16);
+
+            foreach (var tile in allTilePlaced)
             {
                 tile.PhysicalCard.IsWigglingAnimation = true;
-                m_board.GetSlot(tile.X, tile.Y).IsFlashing = true;
+                BoardSlot slot = m_board.GetSlot(tile.X, tile.Y);
+                slot.IsFlashing = true;
+                if (shouldHighlight)
+                {
+                    slot.SetHighlightCirle(true);
+                }
             }
         }
 
@@ -971,6 +990,7 @@ namespace ArrowLink
             foreach (var slot in m_board.m_slots)
             {
                 slot.IsFlashing = false;
+                slot.SetHighlightCirle(false);
             }
         }
 
