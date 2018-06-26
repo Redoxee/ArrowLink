@@ -49,9 +49,7 @@ namespace ArrowLink
         public void OnRetryPressed()
         {
             GameProcess.Instance.NotifyLeavingGame();
-            MainProcess.Instance.LoadOrReloadGameScene();
+            MainProcess.Instance.RequestGameScene();
         }
-
-
     }
 }

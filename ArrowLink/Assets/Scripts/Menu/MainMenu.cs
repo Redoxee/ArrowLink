@@ -85,7 +85,7 @@ namespace ArrowLink
             //notifs.AddMessageToQueue("coucou", "coucou");
             //notifs.DisplayNextMessagesInQueue();
 
-            MainProcess.Instance.LoadOrReloadGameScene();
+            MainProcess.Instance.RequestGameScene();
         }
 
         public void RequestGetTheGame()

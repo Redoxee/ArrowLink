@@ -27,6 +27,7 @@ namespace ArrowLink
 
         private const int c_gameScene = 1;
         private const int c_menuScene = 2;
+        private const int c_sorryScene = 3;
 
         private List<int> m_additionalSceneLoaded;
 
@@ -45,6 +46,9 @@ namespace ArrowLink
         public ColorManager ColorManager;
 
         public ColorModule ColorModule;
+
+        private MonetManager m_monetManager = new MonetManager();
+        public int NbTryAvailable { get { return m_monetManager.NbGame; } }
 
         private void Awake()
         {
@@ -146,8 +150,21 @@ namespace ArrowLink
             }
             OnUnloaded();
         }
-        
-        public void LoadOrReloadGameScene()
+
+        public void RequestGameScene()
+        {
+            bool isTryLeft = m_monetManager.ConsumeTry();
+            if (isTryLeft)
+            {
+                LoadOrReloadGameScene();
+            }
+            else
+            {
+                LoadSorryScene();
+            }
+        }
+
+        private void LoadOrReloadGameScene()
         {
             UnloadAllAdditionalScene(() => { LoadScene(c_gameScene); } );
         }
@@ -155,6 +172,11 @@ namespace ArrowLink
         public void LoadMenuScene()
         {
             UnloadAllAdditionalScene(() => { LoadScene(c_menuScene); });
+        }
+
+        public void LoadSorryScene()
+        {
+            UnloadAllAdditionalScene(() => { LoadScene(c_sorryScene); });
         }
 
         #region Achievements
@@ -180,6 +202,7 @@ namespace ArrowLink
         private void CheckIsItANewDay()
         {
             long currentDay = DateTime.Today.Ticks;
+            bool isNewyDay = false;
             if (PlayerPrefs.HasKey(c_lastConectionKey))
             {
                 string strDate = PlayerPrefs.GetString(c_lastConectionKey);
@@ -191,9 +214,8 @@ namespace ArrowLink
                     mp.NotificationUI.ShowFloatingMessage("Hello", "Welcome back!");
                     PlayerPrefs.SetString(c_lastConectionKey, currentDay.ToString());
                     mp.Achievements._NotifyEventIncrement("ConnectedDay");
-
+                    isNewyDay = true;
                 }
-
             }
             else
             {
@@ -203,6 +225,8 @@ namespace ArrowLink
                 mp.Achievements.Save();
                 mp.DisplayCompletedAchievements();
             }
+
+            m_monetManager.Initialize(isNewyDay);
         }
 
         #endregion
