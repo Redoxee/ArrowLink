@@ -50,6 +50,9 @@ namespace ArrowLink
         private MonetManager m_monetManager = new MonetManager();
         public int NbTryAvailable { get { return m_monetManager.NbGame; } }
 
+        [SerializeField]
+        private ErrorPopup m_errorPopup = null;
+
         private void Awake()
         {
             s_instance = this;
@@ -254,6 +257,13 @@ namespace ArrowLink
             return WWW.EscapeURL(url).Replace("+", "%20");
         }
 
+        #endregion
+
+        #region Error
+        public void ShowErrorMessage(String message)
+        {
+            m_errorPopup.Show(message);
+        }
         #endregion
     }
 }

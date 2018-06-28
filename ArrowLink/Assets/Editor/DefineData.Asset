@@ -26,4 +26,8 @@ MonoBehaviour:
     Targets: 
   - Name: AMG_NO_HIGHLIGHT_CIRCLE
     Targets: 
+  - Name: AMG_CANCELABLE_IAP
+    Targets: 
+  - Name: AMG_UNLOCK_GAME
+    Targets: 
   LastTargetSelected: 1
