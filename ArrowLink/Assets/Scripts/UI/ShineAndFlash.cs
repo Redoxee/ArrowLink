@@ -12,6 +12,13 @@ public class ShineAndFlash : MonoBehaviour {
         public ParticleSystem Particles;
         public int Threshold;
         public bool IsEndFX;
+
+        public ParticlesLevel(ParticleSystem particles, int threshold, bool isEndFx)
+        {
+            Particles = particles;
+            Threshold = threshold;
+            IsEndFX = isEndFx;
+        }
     }
 
     [SerializeField]

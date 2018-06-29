@@ -48,7 +48,7 @@ namespace ArrowLink
         public ColorModule ColorModule;
 
         private MonetManager m_monetManager = new MonetManager();
-        public int NbTryAvailable { get { return m_monetManager.NbGame; } }
+        public MonetManager MonetManager { get { return m_monetManager; } }
 
         [SerializeField]
         private ErrorPopup m_errorPopup = null;

@@ -13,7 +13,16 @@ namespace ArrowLink
         private IEnumerator Start()
         {
             yield return new MainProcessYield();
-            m_text.text = MainProcess.Instance.NbTryAvailable.ToString();
+            var monetManager = MainProcess.Instance.MonetManager;
+            m_text.text = monetManager.NbGame.ToString();
+            if (monetManager.IsGameUnlocked)
+            {
+                gameObject.SetActive(false);
+            }
+            else
+            {
+                gameObject.SetActive(true);
+            }
         }
 
         public class MainProcessYield : CustomYieldInstruction

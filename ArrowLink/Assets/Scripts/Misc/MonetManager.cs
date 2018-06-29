@@ -209,7 +209,7 @@ namespace ArrowLink
         }
 
         private bool m_isGameUnlocked = false;
-        private bool IsPremium
+        public bool IsGameUnlocked
         {
             get { return m_isGameUnlocked; }
         }

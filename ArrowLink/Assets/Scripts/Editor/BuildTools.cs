@@ -276,9 +276,12 @@ namespace AntonMakesGames.Tools
 			/* * * * * * * *
 			 * Actualbuild *
 			 * * * * * * * */
-			var buildResult = BuildPipeline.BuildPlayer(scenes, buildName, BuildTarget.Android,options).ToString();
+			var buildResult = BuildPipeline.BuildPlayer(scenes, buildName, BuildTarget.Android,options);
 
-			if (string.IsNullOrEmpty(buildResult))
+            int errorCount = buildResult.summary.totalErrors;
+            
+            var buildString = buildResult.ToString();
+			if (errorCount == 0)
 			{
 				UnityEngine.Debug.Log("Android build complete : " + buildName);
 				m_lastBuildName = GetVersionName();
@@ -290,7 +293,7 @@ namespace AntonMakesGames.Tools
 			}
 			else
 			{
-				UnityEngine.Debug.LogError("Error building Android:\n" + buildResult);
+				UnityEngine.Debug.LogError("Error building Android: " + errorCount + " errors");
 			}
 		}
 

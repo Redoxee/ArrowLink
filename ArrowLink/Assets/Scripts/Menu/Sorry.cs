@@ -29,7 +29,16 @@ namespace ArrowLink
 
         public void BuyGame()
         {
-
+            var monetManager = MainProcess.Instance.MonetManager;
+            monetManager.UnlockFullGame(OnPurchaseSuccess, OnpurchaseFail);
         }
+
+        private void OnPurchaseSuccess()
+        {
+            MainProcess.Instance.RequestGameScene();
+        }
+        private void OnpurchaseFail()
+        {
+        } 
     }
 }
