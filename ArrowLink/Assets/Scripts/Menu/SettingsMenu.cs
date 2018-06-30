@@ -12,6 +12,22 @@ namespace ArrowLink
         [SerializeField]
         private BasicPopup m_moreGames = null;
 
+        [SerializeField]
+        private GameObject m_unlockGameButton = null;
+
+        [SerializeField]
+        private GameObject m_restorPurchaseButton = null;
+
+        [SerializeField]
+        private GameObject m_cancelIAPbutton = null;
+
+        private void Start()
+        {
+            m_restorPurchaseButton.SetActive(MonetManager.RestorePurchaseAllowed);
+            m_cancelIAPbutton.SetActive(MonetManager.CancelIAPAllowed && MainProcess.Instance.MonetManager.IsGameUnlocked);
+            m_unlockGameButton.SetActive(!MainProcess.Instance.MonetManager.IsGameUnlocked);
+        }
+
         public void Show()
         {
             m_canvasGroup.alpha = 1f;
@@ -35,5 +51,26 @@ namespace ArrowLink
         {
             m_moreGames.Show();
         }
+
+        public void OnBuyPressed()
+        {
+            MainProcess.Instance.MonetManager.UnlockFullGame(OnBuySuccess, null);
+        }
+
+        private void OnBuySuccess()
+        {
+            MainProcess.Instance.LoadMenuScene();
+        }
+
+        public void OnCancelPurchasePressed()
+        {
+            MainProcess.Instance.MonetManager.CancelIAPPurchase();
+        }
+
+        public void OnRestorePurchasePressed()
+        {
+            MainProcess.Instance.MonetManager.RestorePurchases();
+        }
+
     }
 }

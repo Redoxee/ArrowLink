@@ -288,7 +288,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_canvasGroup: {fileID: 260101097}
-  m_message: {fileID: 621059879}
+  m_message: {fileID: 1967901968}
 --- !u!225 &260101097
 CanvasGroup:
   m_ObjectHideFlags: 0

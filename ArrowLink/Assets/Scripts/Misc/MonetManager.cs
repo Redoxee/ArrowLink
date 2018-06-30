@@ -1,5 +1,6 @@
 ﻿//#define AMG_UNLOCK_GAME
 //#define AMG_CANCELABLE_IAP
+//#define AMG_CANCELABLE_IAP
 
 
 using System;
@@ -25,6 +26,8 @@ namespace ArrowLink
 
         private Action m_purchaseSuccess = null;
         private Action m_purchaseFailed = null;
+
+        public HashSet<Action> InitializedListeners = new HashSet<Action>();
 
         public void Initialize(bool isNewDay)
         {
@@ -102,6 +105,14 @@ namespace ArrowLink
                     m_isGameUnlocked = true;
                     PlayerPrefs.SetInt(c_purchased_save_key, 1);
                     PlayerPrefs.Save();
+
+                    foreach (var listener in InitializedListeners)
+                    {
+                        if (listener != null)
+                        {
+                            listener();
+                        }
+                    }
                 }
             }
         }
@@ -164,9 +175,34 @@ namespace ArrowLink
         public void OnPurchaseFailed(Product i, PurchaseFailureReason p)
         {
             MainProcess.Instance.ShowErrorMessage("SomeThing went wrong : \n" + p.ToString());
+            if (m_purchaseFailed != null)
+            {
+                m_purchaseFailed();
+            }
         }
 
+        public static bool RestorePurchaseAllowed
+        {
+            get
+            {
+#if UNITY_IOS
+                return true;
+#else
+                return false;
+#endif
+            }
+        }
 
+        public static bool CancelIAPAllowed
+        {
+            get {
+#if AMG_CANCELABLE_IAP
+                return true;
+#else
+                return false;
+#endif
+            }
+        }
 
         public void CancelIAPPurchase()
         {
@@ -179,6 +215,31 @@ namespace ArrowLink
                 PlayerPrefs.SetInt(c_purchased_save_key, -1);
 			}
 #endif
+        }
+
+        public void RestorePurchases()
+        {
+            if (!IsInitialized())
+            {
+                Debug.Log("RestorePurchases FAIL. Not initialized.");
+                return;
+            }
+
+            if (Application.platform == RuntimePlatform.IPhonePlayer ||
+                Application.platform == RuntimePlatform.OSXPlayer)
+            {
+                Debug.Log("RestorePurchases started ...");
+
+                IAppleExtensions apple = m_StoreExtensionProvider.GetExtension<IAppleExtensions>();
+                apple.RestoreTransactions((result) =>
+                {
+                    Debug.Log("RestorePurchases continuing: " + result + ". If no further messages, no purchases available to restore.");
+                });
+            }
+            else
+            {
+                Debug.Log("RestorePurchases FAIL. Not supported on this platform. Current = " + Application.platform);
+            }
         }
 
         #endregion
@@ -203,9 +264,20 @@ namespace ArrowLink
 
         public void UnlockFullGame(Action onPurchaseComplete, Action onPurchaseError)
         {
-            m_purchaseSuccess = onPurchaseComplete;
-            m_purchaseFailed = onPurchaseError;
-            m_storeController.InitiatePurchase(c_main_sku);
+            if (IsInitialized())
+            {
+                m_purchaseSuccess = onPurchaseComplete;
+                m_purchaseFailed = onPurchaseError;
+                m_storeController.InitiatePurchase(c_main_sku);
+            }
+            else
+            {
+                MainProcess.Instance.ShowErrorMessage("Sorry,, something is not working :(");
+                if (onPurchaseError != null)
+                {
+                    onPurchaseError();
+                }
+            }
         }
 
         private bool m_isGameUnlocked = false;

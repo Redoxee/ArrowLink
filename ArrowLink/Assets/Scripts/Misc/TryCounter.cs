@@ -13,6 +13,17 @@ namespace ArrowLink
         private IEnumerator Start()
         {
             yield return new MainProcessYield();
+            Init();
+            MainProcess.Instance.MonetManager.InitializedListeners.Add(Init);
+        }
+
+        private void OnDestroy()
+        {
+            MainProcess.Instance.MonetManager.InitializedListeners.Remove(Init);
+        }
+
+        private void Init()
+        {
             var monetManager = MainProcess.Instance.MonetManager;
             m_text.text = monetManager.NbGame.ToString();
             if (monetManager.IsGameUnlocked)
