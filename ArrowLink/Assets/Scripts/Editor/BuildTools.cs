@@ -363,9 +363,11 @@ namespace AntonMakesGames.Tools
 			UnityEngine.Debug.Log("IOS building : " + buildName);
 			//SetSymbols ();
 
-			string buildResult = BuildPipeline.BuildPlayer(scenes, buildName, BuildTarget.iOS,bo);
-			//RestoreSymbols ();
-			if (string.IsNullOrEmpty(buildResult))
+			var buildResult = BuildPipeline.BuildPlayer(scenes, buildName, BuildTarget.iOS,bo);
+            //RestoreSymbols ();
+
+            int nbError = buildResult.summary.totalErrors;
+            if (nbError == 0)
 			{
 				UnityEngine.Debug.Log("IOS build complete : " + buildName);
 				m_lastBuildName = GetVersionName();
