@@ -30,6 +30,14 @@ public class ColorCollection : ScriptableObject {
     public Color Icon;
     public Color TextOnBack;
 
+    public StatusBarStyle StatBarStyle = StatusBarStyle.Light;
+
+    public enum StatusBarStyle
+    {
+        Light = 1,
+        Dark = 2,
+    }
+
     public enum GrabbableColor
     {
         Back = 0,

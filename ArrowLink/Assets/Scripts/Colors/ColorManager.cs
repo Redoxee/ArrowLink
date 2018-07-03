@@ -57,6 +57,9 @@ namespace ArrowLink
             {
                 m_listeners[i].ApplyColor(m_collection);
             }
+
+            StatusBarManager.BarStyle((int)m_collection.StatBarStyle);
+            StatusBarManager.Show(true);
         }
     }
 }

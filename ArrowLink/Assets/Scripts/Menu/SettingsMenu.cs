@@ -69,8 +69,7 @@ namespace ArrowLink
 
         public void OnRestorePurchasePressed()
         {
-            MainProcess.Instance.MonetManager.RestorePurchases();
+            MainProcess.Instance.MonetManager.RestorePurchases(OnBuySuccess);
         }
-
     }
 }

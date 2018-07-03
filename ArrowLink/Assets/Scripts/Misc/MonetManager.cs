@@ -217,7 +217,7 @@ namespace ArrowLink
 #endif
         }
 
-        public void RestorePurchases()
+        public void RestorePurchases(Action onSuccess)
         {
             if (!IsInitialized())
             {
@@ -228,6 +228,7 @@ namespace ArrowLink
             if (Application.platform == RuntimePlatform.IPhonePlayer ||
                 Application.platform == RuntimePlatform.OSXPlayer)
             {
+                m_purchaseSuccess = onSuccess;
                 Debug.Log("RestorePurchases started ...");
 
                 IAppleExtensions apple = m_StoreExtensionProvider.GetExtension<IAppleExtensions>();

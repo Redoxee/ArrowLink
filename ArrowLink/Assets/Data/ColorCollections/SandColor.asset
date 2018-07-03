@@ -28,3 +28,4 @@ MonoBehaviour:
   TextDark: {r: 0.22174577, g: 0.42106783, b: 0.441, a: 1}
   Icon: {r: 1, g: 1, b: 1, a: 1}
   TextOnBack: {r: 0.9568628, g: 0.6313726, b: 0.4156863, a: 1}
+  StatBarStyle: 1
