@@ -613,7 +613,7 @@ PlayerSettings:
   webGLLinkerTarget: 0
   scriptingDefineSymbols:
     1: 
-    7: AMG_CANCELABLE_IAP
+    7: NO_SHADE_PREVIEW;NO_FOOTER_BLINK;AMG_PREDETERMINED_TILES;AMG_NO_HIGHLIGHT_CIRCLE
   platformArchitecture: {}
   scriptingBackend: {}
   il2cppCompilerConfiguration: {}
