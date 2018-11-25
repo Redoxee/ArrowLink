@@ -94,6 +94,11 @@ namespace ArrowLink
             m_gameProcess.NotifyLeavingGame();
         }
 
+        public void OnQuitGamePressed()
+        {
+            UnityEngine.Application.Quit();
+        }
+
         public void OnBankPressed()
         {
             m_gameProcess.RequestBank();
